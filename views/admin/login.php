@@ -8,8 +8,8 @@
     <title>LAB MMT</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon">
-    <link rel="shortcut icon" href="/img/logo.png" type="image/png">
+    <link rel="shortcut icon" href="/img/logo.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="/img/logo.svg" type="image/png">
     <link rel="stylesheet" href="/template_admin/assets/compiled/css/app.css">
     <link rel="stylesheet" href="/template_admin/assets/compiled/css/app-dark.css">
     <link rel="stylesheet" href="/template_admin/assets/compiled/css/iconly.css">
@@ -61,7 +61,7 @@
             <div class="col-md-6 col-lg-4">
                 <div class="card shadow-sm rounded-4">
                     <div class="card-body p-4">
-                        <img src="/img/logo.png" alt="Logo" class="login-icon mb-3">
+                        <img src="/img/logo.svg" alt="Logo" class="login-icon mb-3">
                         <h4 class="text-center mb-4">LAB MMT</h4>
 
                         <form id="formLogin">

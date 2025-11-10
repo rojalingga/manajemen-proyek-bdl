@@ -7,8 +7,8 @@
 
     <title>LAB MMT</title>
 
-    <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon">
-    <link rel="shortcut icon" href="/img/logo.png" type="image/png">
+    <link rel="shortcut icon" href="/img/logo.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="/img/logo.svg" type="image/png">
 
     <link rel="stylesheet" href="/template_admin/assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="/template_admin/assets/extensions/choices.js/public/assets/styles/choices.css">
@@ -244,7 +244,7 @@
                 <div class="sidebar-header position-relative">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="logo">
-                            <a><img src="/img/logo.png" alt="Logo"
+                            <a><img src="/img/logo.svg" alt="Logo"
                                     style="width:80px; height:auto;">
                             </a>
                         </div>
