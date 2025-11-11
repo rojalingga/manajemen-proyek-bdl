@@ -9,3 +9,9 @@ $router->post('/admin/logout', 'AuthController@logout');
 $router->get('/test-koneksi', 'TestKoneksiController@test_koneksi');
 $router->get('/admin/users', 'UsersController@index');
 $router->get('/admin/dashboard', 'DashboardController@index');
+
+$router->get('/artikel-berita', 'LandingPageController@getArtikelBerita');
+
+$router->get('/publikasi-ilmiah', 'LandingPageController@getPublikasiIlmiah');
+
+$router->get('/event-highlight', 'LandingPageController@getEventHighlight');
