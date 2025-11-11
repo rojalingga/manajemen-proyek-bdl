@@ -1,15 +1,17 @@
 <?php
 
-require_once __DIR__ . '/Model.php';
+class Users {
+    private $db;
 
-class Gallery extends Model
-{
-    protected $table = 'users';
+    public function __construct() {
+        $this->db = Database::getInstance()->getConnection();
+    }
 
-    public function getAllUsers()
-    {
-        $stmt = $this->db->query("SELECT * FROM {$this->table}");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function findByUsername($username) {
+        $query = "SELECT * FROM users WHERE username = :username LIMIT 1";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':username', $username);
+        $stmt->execute();
+        return $stmt->fetch();
     }
 }
-

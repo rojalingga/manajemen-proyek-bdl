@@ -64,7 +64,8 @@
                         <img src="/img/logo.svg" alt="Logo" class="login-icon mb-3">
                         <h4 class="text-center mb-4">LAB MMT</h4>
 
-                        <form id="formLogin">
+                        <form id="formLogin" method="POST" action="javascript:void(0);">
+
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
                                 <input type="text" class="form-control" id="username" name="username"
@@ -78,7 +79,7 @@
                             </div>
 
                             <div class="d-grid">
-                                <button type="submit" type="submit" id="submitBtn"
+                                <button type="submit" id="submitBtn"
                                     class="btn btn-primary rounded-pill">
                                     <span class="spinner-border spinner-border-sm mx-1 d-none" role="status"
                                         aria-hidden="true"></span>
@@ -92,13 +93,70 @@
         </div>
     </div>
 
-    <script src="/template/plugins/jquery/jquery.min.js"></script>
+    <script src="/template_admin/plugins/jquery/jquery.min.js"></script>
     <!-- JS -->
-    <script src="/template/assets/static/js/components/dark.js"></script>
-    <script src="/template/assets/compiled/js/app.js"></script>
-    <script src="/template/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <script src="/template_admin/assets/static/js/components/dark.js"></script>
+    <script src="/template_admin/assets/compiled/js/app.js"></script>
+    <script src="/template_admin/plugins/sweetalert2/sweetalert2.min.js"></script>
     <!-- Toastr -->
-    <script src="/template/plugins/toastr/toastr.min.js"></script>
+    <script src="/template_admin/plugins/toastr/toastr.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#formLogin').on('submit', function(e) {
+                e.preventDefault();
+                let form = this;
+                let url = '/admin/login';
+                let formData = new FormData(form);
+                $('.is-invalid').removeClass('is-invalid');
+                $('.invalid-feedback').remove();
+                let submitBtn = $('#submitBtn');
+                let spinner = submitBtn.find('.spinner-border');
+                let btnText = submitBtn.find('.button-text');
+                spinner.removeClass('d-none');
+                btnText.text('Masuk...');
+                submitBtn.prop('disabled', true);
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                   success: function(response) {
+                        if (response.status === 'success') {
+                            window.location.href = '/admin/dashboard';
+                        } else {
+                            alert('Response tidak dikenali: ' + JSON.stringify(response));
+                        }
+                    },
+                    error: function(xhr) {
+                        console.log(xhr);
+                        let response = {};
+
+                        try {
+                            response = xhr.responseJSON || JSON.parse(xhr.responseText);
+                        } catch (e) {}
+
+                        if (xhr.status === 422 && response.errors) {
+                            let errors = response.errors;
+                            $.each(errors, function(key, val) {
+                                let input = $('#' + key);
+                                input.addClass('is-invalid');
+                                input.after('<span class="invalid-feedback" role="alert"><strong>' + val[0] + '</strong></span>');
+                            });
+                        } else {
+                            alert('Terjadi kesalahan pada server. Silakan coba lagi.');
+                        }
+
+                        spinner.addClass('d-none');
+                        btnText.text('Login');
+                        submitBtn.prop('disabled', false);
+                    }
+
+                });
+            });
+        });
+    </script>
 
 </body>
 

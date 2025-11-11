@@ -1,3 +1,15 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['user'])) {
+    header('Location: /admin/login');
+    exit;
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -287,66 +299,81 @@
                 <div class="sidebar-menu">
                     <ul class="menu">
 
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
+              <?php
+                    $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+                    $uri = rtrim($uri, '/');
+
+                    function isActive($route)
+                    {
+                        global $uri;
+                        $cleanRoute = rtrim($route, '/');
+                        return $uri === $cleanRoute ? 'active' : '';
+                    }
+
+                    ?>
+
+                        <li class="sidebar-item <?= isActive('/admin/dashboard') ?>">
+                            <a href="/admin/dashboard" class="sidebar-link">
                                 <i class="bi bi-speedometer2"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
+                        <li class="sidebar-item <?= isActive('/admin/profil-web') ?>">
+                            <a href="/admin/profil-web" class="sidebar-link">
                                 <i class="bi bi-globe2"></i>
                                 <span>Profil Web</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
+                        <li class="sidebar-item <?= isActive('/admin/tim-kreatif') ?>">
+                            <a href="/admin/tim-kreatif" class="sidebar-link">
                                 <i class="bi bi-people-fill"></i>
                                 <span>Tim Kreatif</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
+                        <li class="sidebar-item <?= isActive('/admin/partner-colabolator') ?>">
+                            <a href="/admin/partner-colabolator" class="sidebar-link">
                                 <i class="bi bi-link-45deg"></i>
                                 <span>Partner Colabolator</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
+                        <li class="sidebar-item <?= isActive('/admin/artikel') ?>">
+                            <a href="/admin/artikel" class="sidebar-link">
                                 <i class="bi bi-file-earmark-text"></i>
                                 <span>Artikel</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
+                        <li class="sidebar-item <?= isActive('/admin/berita') ?>">
+                            <a href="/admin/berita" class="sidebar-link">
                                 <i class="bi bi-newspaper"></i>
                                 <span>Berita</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
+                        <li class="sidebar-item <?= isActive('/admin/publikasi-ilmiah') ?>">
+                            <a href="/admin/publikasi-ilmiah" class="sidebar-link">
                                 <i class="bi bi-journal-text"></i>
                                 <span>Publikasi Ilmiah</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
+                        <li class="sidebar-item <?= isActive('/admin/event-highlight') ?>">
+                            <a href="/admin/event-highlight" class="sidebar-link">
                                 <i class="bi bi-calendar-event"></i>
                                 <span>Event Highlight</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
+                        <li class="sidebar-item <?= isActive('/admin/media') ?>">
+                            <a href="/admin/media" class="sidebar-link">
                                 <i class="bi bi-camera-video"></i>
                                 <span>Media</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
+                        <li class="sidebar-item <?= isActive('/admin/users') ?>">
+                            <a href="/admin/users" class="sidebar-link">
                                 <i class="bi bi-person-gear"></i>
                                 <span>Users</span>
                             </a>
                         </li>
+
+
 
 
                         <li class="sidebar-item has-sub">
@@ -367,15 +394,14 @@
                             </ul>
                         </li>
 
-                        <li class="sidebar-item">
+                       <li class="sidebar-item">
                             <a href="#" onclick="logoutConfirm(event)" class="sidebar-link">
                                 <i class="bi bi-box-arrow-right"></i>
                                 <span>Logout</span>
                             </a>
-                            <form id="logout-form" action="" method="POST"
-                                style="display: none;">
-                            </form>
+                            <form id="logout-form" action="/admin/logout" method="POST" style="display: none;"></form>
                         </li>
+
                     </ul>
                 </div>
             </div>

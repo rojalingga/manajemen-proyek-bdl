@@ -95,6 +95,24 @@
         $(this).val(formatted);
     });
 </script>
-
+<script>
+function logoutConfirm(event) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: "Anda akan keluar dari sistem.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, logout!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('logout-form').submit();
+        }
+    });
+}
+</script>
 
 </html>
