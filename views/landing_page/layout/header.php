@@ -106,7 +106,15 @@
                                   </li>
 
                                   <li class="rd-nav-item">
-                                    <a class="rd-nav-link" href="/layanan">Layanan</a>
+                                    <a class="rd-nav-link" href="/artikel-berita">Artikel dan Berita</a>
+                                  </li>
+
+                                   <li class="rd-nav-item">
+                                    <a class="rd-nav-link" href="/publikasi-ilmiah">Publikasi Ilmiah</a>
+                                  </li>
+
+                                   <li class="rd-nav-item">
+                                    <a class="rd-nav-link" href="/event-highlight">Event Highlight</a>
                                   </li>
 
                                   <li class="rd-nav-item">
