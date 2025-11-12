@@ -80,14 +80,33 @@
                         </div>
                     </div>
 
-                    
+
                     <div class="rd-navbar-main-outer">
                         <div class="rd-navbar-main">
                             <div class="rd-navbar-nav-wrap">
                                 <!-- RD Navbar Nav-->
                                <ul class="rd-navbar-nav">
-                                  <li class="rd-nav-item">
-                                    <a class="rd-nav-link" href="/home">Home</a>
+                                <?php
+                                    $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+                                    $uri = rtrim($uri, '/');
+                                    if ($uri === '') {
+                                        $uri = '/';
+                                    }
+
+                                    function isActive($route)
+                                    {
+                                        global $uri;
+                                        $cleanRoute = rtrim($route, '/');
+                                        if ($cleanRoute === '') {
+                                            $cleanRoute = '/';
+                                        }
+
+                                        return $uri === $cleanRoute ? 'active' : '';
+                                    }
+                                ?>
+
+                                  <li class="rd-nav-item                                                          <?php echo isActive('/') ?>">
+                                    <a class="rd-nav-link" href="/">Home</a>
                                   </li>
 
                                   <li class="rd-nav-item">
@@ -105,15 +124,15 @@
                                     </ul>
                                   </li>
 
-                                  <li class="rd-nav-item">
+                                  <li class="rd-nav-item                                                          <?php echo isActive('/artikel-berita') ?>">
                                     <a class="rd-nav-link" href="/artikel-berita">Artikel dan Berita</a>
                                   </li>
 
-                                   <li class="rd-nav-item">
+                                   <li class="rd-nav-item                                                           <?php echo isActive('/publikasi-ilmiah') ?>">
                                     <a class="rd-nav-link" href="/publikasi-ilmiah">Publikasi Ilmiah</a>
                                   </li>
 
-                                   <li class="rd-nav-item">
+                                   <li class="rd-nav-item                                                           <?php echo isActive('/event-highlight') ?>">
                                     <a class="rd-nav-link" href="/event-highlight">Event Highlight</a>
                                   </li>
 
