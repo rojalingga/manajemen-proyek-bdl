@@ -366,6 +366,13 @@
                                 <span>Media</span>
                             </a>
                         </li>
+                        <li class="sidebar-item <?php echo isActive('/admin/proyek') ?>">
+                            <a href="/admin/proyek" class="sidebar-link">
+                                <i class="bi bi-gear-wide-connected"></i>
+                                <span>Proyek</span>
+                            </a>
+                        </li>
+
                         <li class="sidebar-item                                                <?php echo isActive('/admin/users') ?>">
                             <a href="/admin/users" class="sidebar-link">
                                 <i class="bi bi-person-gear"></i>
@@ -373,26 +380,6 @@
                             </a>
                         </li>
 
-
-
-
-                        <li class="sidebar-item has-sub">
-                            <a href="#" class="sidebar-link">
-                                <i class="bi bi-gear-fill"></i>
-                                <span>Pengaturan</span>
-                            </a>
-                            <ul class="submenu">
-                                <li class="submenu-item">
-                                    <a href="#" class="submenu-link">Role</a>
-                                </li>
-                                <li class="submenu-item">
-                                    <a href="#" class="submenu-link">Hak Akses</a>
-                                </li>
-                                <li class="submenu-item">
-                                    <a href="#" class="submenu-link">Profil Aplikasi</a>
-                                </li>
-                            </ul>
-                        </li>
 
                        <li class="sidebar-item">
                             <a href="#" onclick="logoutConfirm(event)" class="sidebar-link">

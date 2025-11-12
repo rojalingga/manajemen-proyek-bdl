@@ -113,7 +113,7 @@ class UsersController extends Controller
 
         if ($errors) {
             http_response_code(422);
-            echo json_encode(['message' => 'The given data was invalid.', 'errors' => $errors]);
+            echo json_encode(['errors' => $errors]);
             return;
         }
 
@@ -122,8 +122,7 @@ class UsersController extends Controller
         if ($userModel->findByUsername($data['username'])) {
             http_response_code(422);
             echo json_encode([
-                'message' => 'The given data was invalid.',
-                'errors'  => ['username' => ['Username sudah digunakan.']],
+                'errors' => ['username' => ['Username sudah digunakan.']],
             ]);
             return;
         }
@@ -171,7 +170,7 @@ class UsersController extends Controller
 
         if ($errors) {
             http_response_code(422);
-            echo json_encode(['message' => 'The given data was invalid.', 'errors' => $errors]);
+            echo json_encode(['errors' => $errors]);
             return;
         }
 
@@ -179,8 +178,7 @@ class UsersController extends Controller
         if ($existingUsername && $existingUsername['id'] != $id) {
             http_response_code(422);
             echo json_encode([
-                'message' => 'The given data was invalid.',
-                'errors'  => ['username' => ['Username sudah digunakan.']],
+                'errors' => ['username' => ['Username sudah digunakan.']],
             ]);
             return;
         }
