@@ -1,4 +1,5 @@
 </div>
+</div>
     </div>
 
     <script src="/template_admin/assets/static/js/components/dark.js"></script>

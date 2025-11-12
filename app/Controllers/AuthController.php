@@ -48,7 +48,7 @@ class AuthController extends Controller
         }
 
         $userModel = new Users();
-        $user      = $userModel->findByUsername($username);
+        $user      = $userModel->findWithRole($username); 
 
         if (! $user) {
             http_response_code(422);
@@ -61,7 +61,7 @@ class AuthController extends Controller
             return;
         }
 
-        if ($user['is_active'] == 2) {
+        if ($user['status'] == 2) {
             http_response_code(422);
             echo json_encode([
                 'message' => 'The given data was invalid.',
@@ -84,9 +84,10 @@ class AuthController extends Controller
         }
 
         $_SESSION['user'] = [
-            'id'       => $user['id'],
-            'username' => $user['username'],
-            'role_id'  => $user['id_role'],
+            'id'        => $user['id'],
+            'username'  => $user['username'],
+            'role_id'   => $user['id_role'],
+            'nama_role' => $user['nama_role'],
         ];
 
         echo json_encode(['status' => 'success']);

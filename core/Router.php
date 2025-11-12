@@ -20,27 +20,27 @@ class Router {
     }
     
     public function dispatch($uri, $method) {
-        // Check for exact match
+        if ($method === 'POST' && isset($_POST['_method'])) {
+            $method = strtoupper($_POST['_method']);
+        }
+
         if (isset($this->routes[$method][$uri])) {
             return $this->executeAction($this->routes[$method][$uri]);
         }
         
-        // Check for parameter match
-        foreach ($this->routes[$method] as $route => $action) {
+        foreach ($this->routes[$method] ?? [] as $route => $action) {
             $pattern = $this->convertToRegex($route);
             if (preg_match($pattern, $uri, $matches)) {
-                array_shift($matches); // Remove full match
+                array_shift($matches);
                 return $this->executeAction($action, $matches);
             }
         }
         
-        // 404 Not Found
         http_response_code(404);
         echo "404 - Page Not Found";
     }
     
     private function convertToRegex($route) {
-        // Convert {id} to regex pattern
         $pattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '([a-zA-Z0-9_]+)', $route);
         return '#^' . $pattern . '$#';
     }

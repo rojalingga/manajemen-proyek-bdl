@@ -1,12 +1,12 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 
-if (!isset($_SESSION['user'])) {
-    header('Location: /admin/login');
-    exit;
-}
+    if (! isset($_SESSION['user'])) {
+        header('Location: /admin/login');
+        exit;
+    }
 ?>
 
 
@@ -247,7 +247,7 @@ if (!isset($_SESSION['user'])) {
 
 </head>
 
-<body class="<?php echo (isset($_SESSION['theme']) && $_SESSION['theme'] === 'dark') ? 'theme-dark' : ''; ?>">
+<body class="<?php echo(isset($_SESSION['theme']) && $_SESSION['theme'] === 'dark') ? 'theme-dark' : ''; ?>">
 
     <script src="/template_admin/assets/static/js/initTheme.js"></script>
     <div id="app">
@@ -300,73 +300,73 @@ if (!isset($_SESSION['user'])) {
                     <ul class="menu">
 
               <?php
-                    $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-                    $uri = rtrim($uri, '/');
+                  $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+                  $uri = rtrim($uri, '/');
 
-                    function isActive($route)
-                    {
-                        global $uri;
-                        $cleanRoute = rtrim($route, '/');
-                        return $uri === $cleanRoute ? 'active' : '';
-                    }
+                  function isActive($route)
+                  {
+                      global $uri;
+                      $cleanRoute = rtrim($route, '/');
+                      return $uri === $cleanRoute ? 'active' : '';
+                  }
 
-                    ?>
+              ?>
 
-                        <li class="sidebar-item <?= isActive('/admin/dashboard') ?>">
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/dashboard') ?>">
                             <a href="/admin/dashboard" class="sidebar-link">
                                 <i class="bi bi-speedometer2"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>
-                        <li class="sidebar-item <?= isActive('/admin/profil-web') ?>">
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/profil-web') ?>">
                             <a href="/admin/profil-web" class="sidebar-link">
                                 <i class="bi bi-globe2"></i>
                                 <span>Profil Web</span>
                             </a>
                         </li>
-                        <li class="sidebar-item <?= isActive('/admin/tim-kreatif') ?>">
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/tim-kreatif') ?>">
                             <a href="/admin/tim-kreatif" class="sidebar-link">
                                 <i class="bi bi-people-fill"></i>
                                 <span>Tim Kreatif</span>
                             </a>
                         </li>
-                        <li class="sidebar-item <?= isActive('/admin/partner-colabolator') ?>">
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/partner-colabolator') ?>">
                             <a href="/admin/partner-colabolator" class="sidebar-link">
                                 <i class="bi bi-link-45deg"></i>
                                 <span>Partner Colabolator</span>
                             </a>
                         </li>
-                        <li class="sidebar-item <?= isActive('/admin/artikel') ?>">
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/artikel') ?>">
                             <a href="/admin/artikel" class="sidebar-link">
                                 <i class="bi bi-file-earmark-text"></i>
                                 <span>Artikel</span>
                             </a>
                         </li>
-                        <li class="sidebar-item <?= isActive('/admin/berita') ?>">
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/berita') ?>">
                             <a href="/admin/berita" class="sidebar-link">
                                 <i class="bi bi-newspaper"></i>
                                 <span>Berita</span>
                             </a>
                         </li>
-                        <li class="sidebar-item <?= isActive('/admin/publikasi-ilmiah') ?>">
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/publikasi-ilmiah') ?>">
                             <a href="/admin/publikasi-ilmiah" class="sidebar-link">
                                 <i class="bi bi-journal-text"></i>
                                 <span>Publikasi Ilmiah</span>
                             </a>
                         </li>
-                        <li class="sidebar-item <?= isActive('/admin/event-highlight') ?>">
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/event-highlight') ?>">
                             <a href="/admin/event-highlight" class="sidebar-link">
                                 <i class="bi bi-calendar-event"></i>
                                 <span>Event Highlight</span>
                             </a>
                         </li>
-                        <li class="sidebar-item <?= isActive('/admin/media') ?>">
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/media') ?>">
                             <a href="/admin/media" class="sidebar-link">
                                 <i class="bi bi-camera-video"></i>
                                 <span>Media</span>
                             </a>
                         </li>
-                        <li class="sidebar-item <?= isActive('/admin/users') ?>">
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/users') ?>">
                             <a href="/admin/users" class="sidebar-link">
                                 <i class="bi bi-person-gear"></i>
                                 <span>Users</span>
@@ -406,12 +406,47 @@ if (!isset($_SESSION['user'])) {
                 </div>
             </div>
         </div>
-        <div id="main">
-            <header class="mb-3">
-                <a href="#" class="burger-btn d-block d-xl-none">
-                    <i class="bi bi-justify fs-3"></i>
-                </a>
-            </header>
+        <div id="main" class='layout-navbar navbar-fixed'>
+           <header>
+                <nav class="navbar navbar-expand navbar-light navbar-top">
+                    <div class="container-fluid">
+                        <a href="#" class="burger-btn d-block d-lg-none">
+                            <i class="bi bi-justify fs-3"></i>
+                        </a>
 
-            
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav ms-auto mb-lg-0">
+                            </ul>
+                            <div class="dropdown">
+                                <a data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div class="user-menu d-flex">
+                                       <?php
+                                           if (session_status() === PHP_SESSION_NONE) {
+                                               session_start();
+                                           }
+
+                                           $username  = $_SESSION['user']['username'] ?? '-';
+                                           $nama_role = $_SESSION['user']['nama_role'] ?? '-';
+                                       ?>
+
+                                        <div class="user-name text-end me-3">
+                                            <h6 class="mb-0 text-gray-600"><?php echo htmlspecialchars($username) ?></h6>
+                                            <p class="mb-0 text-sm text-gray-600"><?php echo htmlspecialchars($nama_role) ?></p>
+                                        </div>
+
+                                        <div class="user-img d-flex align-items-center">
+                                            <div class="avatar avatar-md">
+                                                <img src="/img/1.jpg">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </header>
+            <div id="main-content">
+
+
 
