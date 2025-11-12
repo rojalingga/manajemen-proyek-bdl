@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/Controller.php';
+require_once __DIR__ . '/ImageCompressorController.php';
 require_once __DIR__ . '/../models/Users.php';
 require_once __DIR__ . '/../models/Role.php';
 
@@ -111,6 +112,9 @@ class UsersController extends Controller
             $errors['status'][] = 'Status harus dipilih.';
         }
 
+        if (! isset($_FILES['foto']) || $_FILES['foto']['error'] !== UPLOAD_ERR_OK) {
+            $errors['foto'][] = 'Foto harus diupload.';
+        }
         if ($errors) {
             http_response_code(422);
             echo json_encode(['errors' => $errors]);
@@ -118,13 +122,44 @@ class UsersController extends Controller
         }
 
         $userModel = new Users();
-
         if ($userModel->findByUsername($data['username'])) {
             http_response_code(422);
-            echo json_encode([
-                'errors' => ['username' => ['Username sudah digunakan.']],
-            ]);
+            echo json_encode(['errors' => ['username' => ['Username sudah digunakan.']]]);
             return;
+        }
+
+        $filename = '';
+        if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+            $tmpFile = $_FILES['foto']['tmp_name'];
+            $ext     = strtolower(pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION));
+
+            if (! in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
+                http_response_code(422);
+                echo json_encode(['errors' => ['foto' => ['Format foto tidak valid.']]]);
+                return;
+            }
+
+            if (! file_exists($tmpFile)) {
+                http_response_code(400);
+                echo json_encode(['errors' => ['foto' => ['File upload tidak ditemukan.']]]);
+                return;
+            }
+
+            $filename  = uniqid('user_') . '.' . $ext;
+            $targetDir = __DIR__ . '/../../public/assets/foto_profil/';
+            if (! is_dir($targetDir)) {
+                mkdir($targetDir, 0777, true);
+            }
+
+            $filePath = $targetDir . $filename;
+
+            try {
+                ImageCompressorController::compress($tmpFile, $filePath, $ext);
+            } catch (Throwable $e) {
+                http_response_code(500);
+                echo json_encode(['error' => 'Gagal menyimpan foto: ' . $e->getMessage()]);
+                return;
+            }
         }
 
         $insertData = [
@@ -132,20 +167,23 @@ class UsersController extends Controller
             'password' => password_hash($data['password'], PASSWORD_BCRYPT),
             'id_role'  => $data['id_role'],
             'status'   => $data['status'],
+            'foto'     => $filename,
         ];
 
-        $userModel->create($insertData);
-
-        echo json_encode(['status' => 'success']);
+        try {
+            $userModel->create($insertData);
+            echo json_encode(['status' => 'success']);
+        } catch (Throwable $e) {
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
     }
 
     public function update($id)
     {
         header('Content-Type: application/json; charset=utf-8');
 
-        $method = $_SERVER['REQUEST_METHOD'];
-        $data   = $method === 'PUT' ? $_POST : $_POST;
-
+        $data      = $_POST;
         $userModel = new Users();
         $existing  = $userModel->findById($id);
 
@@ -159,11 +197,9 @@ class UsersController extends Controller
         if (empty($data['username'])) {
             $errors['username'][] = 'Username wajib diisi.';
         }
-
         if (empty($data['id_role'])) {
             $errors['id_role'][] = 'Role harus dipilih.';
         }
-
         if (empty($data['status'])) {
             $errors['status'][] = 'Status harus dipilih.';
         }
@@ -177,25 +213,67 @@ class UsersController extends Controller
         $existingUsername = $userModel->findByUsername($data['username']);
         if ($existingUsername && $existingUsername['id'] != $id) {
             http_response_code(422);
-            echo json_encode([
-                'errors' => ['username' => ['Username sudah digunakan.']],
-            ]);
+            echo json_encode(['errors' => ['username' => ['Username sudah digunakan.']]]);
             return;
+        }
+
+        $filename = $existing['foto'];
+
+        if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+            $tmpFile = $_FILES['foto']['tmp_name'];
+            $ext     = strtolower(pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION));
+
+            if (! in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
+                http_response_code(422);
+                echo json_encode(['errors' => ['foto' => ['Format foto tidak valid.']]]);
+                return;
+            }
+
+            if (! file_exists($tmpFile)) {
+                http_response_code(400);
+                echo json_encode(['errors' => ['foto' => ['File upload tidak ditemukan.']]]);
+                return;
+            }
+
+            $targetDir = __DIR__ . '/../../public/assets/foto_profil/';
+            if (! is_dir($targetDir)) {
+                mkdir($targetDir, 0777, true);
+            }
+
+            if (! empty($existing['foto']) && file_exists($targetDir . $existing['foto'])) {
+                unlink($targetDir . $existing['foto']);
+            }
+
+            $filename = uniqid('user_') . '.' . $ext;
+            $filePath = $targetDir . $filename;
+
+            try {
+                ImageCompressorController::compress($tmpFile, $filePath, $ext);
+            } catch (Throwable $e) {
+                http_response_code(500);
+                echo json_encode(['error' => 'Gagal menyimpan foto: ' . $e->getMessage()]);
+                return;
+            }
         }
 
         $updateData = [
             'username' => $data['username'],
             'id_role'  => $data['id_role'],
             'status'   => $data['status'],
+            'foto'     => $filename,
         ];
 
         if (! empty($data['password'])) {
             $updateData['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
         }
 
-        $userModel->updateData($id, $updateData);
-
-        echo json_encode(['status' => 'success']);
+        try {
+            $userModel->updateData($id, $updateData);
+            echo json_encode(['status' => 'success']);
+        } catch (Throwable $e) {
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
     }
 
     public function destroy($id)
@@ -204,12 +282,19 @@ class UsersController extends Controller
 
         try {
             $userModel = new Users();
+            $user      = $userModel->findById($id);
 
-            $user = $userModel->findById($id);
             if (! $user) {
                 http_response_code(404);
                 echo json_encode(['message' => 'User tidak ditemukan.']);
                 return;
+            }
+
+            if (! empty($user['foto'])) {
+                $filePath = __DIR__ . '/../../public/assets/foto_profil/' . $user['foto'];
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
             }
 
             $userModel->delete($id);

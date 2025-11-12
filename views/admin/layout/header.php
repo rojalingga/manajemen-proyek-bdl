@@ -406,27 +406,45 @@
                             </ul>
                             <div class="dropdown">
                                 <a data-bs-toggle="dropdown" aria-expanded="false">
-                                    <div class="user-menu d-flex">
-                                       <?php
-                                           if (session_status() === PHP_SESSION_NONE) {
-                                               session_start();
-                                           }
+                                <div class="user-menu d-flex">
+                                    <?php
+                                    if (session_status() === PHP_SESSION_NONE) {
+                                        session_start();
+                                    }
 
-                                           $username  = $_SESSION['user']['username'] ?? '-';
-                                           $nama_role = $_SESSION['user']['nama_role'] ?? '-';
-                                       ?>
+                                    require_once __DIR__ . '/../../../app/models/Users.php';
 
-                                        <div class="user-name text-end me-3">
-                                            <h6 class="mb-0 text-gray-600"><?php echo htmlspecialchars($username) ?></h6>
-                                            <p class="mb-0 text-sm text-gray-600"><?php echo htmlspecialchars($nama_role) ?></p>
-                                        </div>
+                                    $usernameSession = $_SESSION['user']['username'] ?? null;
+                                    $username = '-';
+                                    $nama_role = '-';
+                                    $fotoPath = '/img/1.jpg';
 
-                                        <div class="user-img d-flex align-items-center">
-                                            <div class="avatar avatar-md">
-                                                <img src="/img/1.jpg">
-                                            </div>
+                                    if ($usernameSession) {
+                                        $userModel = new Users();
+                                        $user = $userModel->findWithRole($usernameSession);
+
+                                        if ($user) {
+                                            $username = htmlspecialchars($user['username']);
+                                            $nama_role = htmlspecialchars($user['nama_role'] ?? '-');
+                                            if (!empty($user['foto']) && file_exists(__DIR__ . '/../../../public/assets/foto_profil/' . $user['foto'])) {
+                                                $fotoPath = '/assets/foto_profil/' . htmlspecialchars($user['foto']);
+                                            }
+                                        }
+                                    }
+                                    ?>
+
+                                    <div class="user-name text-end me-3">
+                                        <h6 class="mb-0 text-gray-600"><?php echo $username; ?></h6>
+                                        <p class="mb-0 text-sm text-gray-600"><?php echo $nama_role; ?></p>
+                                    </div>
+
+                                    <div class="user-img d-flex align-items-center">
+                                        <div class="avatar avatar-md">
+                                            <img src="<?php echo $fotoPath; ?>" alt="Foto Profil">
                                         </div>
                                     </div>
+                                </div>
+
                                 </a>
                             </div>
                         </div>

@@ -48,7 +48,7 @@ class AuthController extends Controller
         }
 
         $userModel = new Users();
-        $user      = $userModel->findWithRole($username); 
+        $user      = $userModel->findWithRole($username);
 
         if (! $user) {
             http_response_code(422);
@@ -86,6 +86,7 @@ class AuthController extends Controller
         $_SESSION['user'] = [
             'id'        => $user['id'],
             'username'  => $user['username'],
+            'foto'      => $user['foto'],
             'role_id'   => $user['id_role'],
             'nama_role' => $user['nama_role'],
         ];

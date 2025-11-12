@@ -51,8 +51,8 @@ class Users
 
     public function create($data)
     {
-        $query = "INSERT INTO users (username, password, id_role, status)
-              VALUES (:username, :password, :id_role, :status)";
+        $query = "INSERT INTO users (username, password, id_role, status, foto)
+              VALUES (:username, :password, :id_role, :status, :foto)";
         $stmt = $this->db->prepare($query);
         $stmt->execute($data);
     }
