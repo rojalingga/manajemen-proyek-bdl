@@ -128,8 +128,8 @@
                                     <a class="rd-nav-link" href="/detail-proyek">Proyek Digital</a>
                                   </li>
 
-                                  <li class="rd-nav-item                                                                       <?php echo isActive('/') ?>">
-                                    <a class="rd-nav-link" href="/">Publikasi Kegiatan</a>
+                                  <li class="rd-nav-item                                                                       <?php echo isActive('/publikasi-kegiatan') ?>">
+                                    <a class="rd-nav-link" href="/publikasi-kegiatan">Publikasi Kegiatan</a>
                                     <ul class="rd-menu rd-navbar-dropdown">
                                       <li class="rd-dropdown-item                                                              <?php echo isActive('/artikel-berita') ?>">
                                         <a class="rd-dropdown-link" href="/artikel-berita">Artikel dan Berita</a>
