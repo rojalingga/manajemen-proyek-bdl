@@ -3,9 +3,9 @@
 return [
     'pgsql' => [
         'host' => 'localhost',
-        'port' => '5432',
+        'port' => '5433',
         'database' => 'pbl_mmt',
         'username' => 'postgres',
-        'password' => '080106',
+        'password' => 'iak1246',
     ]
 ];

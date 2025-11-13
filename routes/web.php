@@ -16,7 +16,7 @@ $router->put('/admin/users/update/{id}', 'UsersController@update');
 $router->delete('/admin/users/delete/{id}', 'UsersController@destroy');
 
 $router->get('/artikel-berita', 'LandingPageController@getArtikelBerita');
-
 $router->get('/publikasi-ilmiah', 'LandingPageController@getPublikasiIlmiah');
-
 $router->get('/event-highlight', 'LandingPageController@getEventHighlight');
+
+$router->get('/detail-proyek', 'LandingPageController@getDetailProyek');

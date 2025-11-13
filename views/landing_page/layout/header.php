@@ -124,18 +124,25 @@
                                     </ul>
                                   </li>
 
-                                  <li class="rd-nav-item                                                          <?php echo isActive('/artikel-berita') ?>">
-                                    <a class="rd-nav-link" href="/artikel-berita">Artikel dan Berita</a>
+                                  <li class="rd-nav-item                                                                      <?php echo isActive('/detail-proyek') ?>">
+                                    <a class="rd-nav-link" href="/detail-proyek">Proyek Digital</a>
                                   </li>
 
-                                   <li class="rd-nav-item                                                           <?php echo isActive('/publikasi-ilmiah') ?>">
-                                    <a class="rd-nav-link" href="/publikasi-ilmiah">Publikasi Ilmiah</a>
+                                  <li class="rd-nav-item                                                                       <?php echo isActive('/') ?>">
+                                    <a class="rd-nav-link" href="/">Publikasi Kegiatan</a>
+                                    <ul class="rd-menu rd-navbar-dropdown">
+                                      <li class="rd-dropdown-item                                                              <?php echo isActive('/artikel-berita') ?>">
+                                        <a class="rd-dropdown-link" href="/artikel-berita">Artikel dan Berita</a>
+                                      </li>
+                                      <li class="rd-dropdown-item                                                              <?php echo isActive('/publikasi-ilmiah') ?>">
+                                        <a class="rd-dropdown-link" href="/publikasi-ilmiah">Publikasi Ilmiah</a>
+                                      </li>
+                                      <li class="rd-dropdown-item                                                              <?php echo isActive('/event-highlight') ?>">
+                                        <a class="rd-dropdown-link" href="/event-highlight">Event Highlight</a>
+                                      </li>
+                                    </ul>
                                   </li>
-
-                                   <li class="rd-nav-item                                                           <?php echo isActive('/event-highlight') ?>">
-                                    <a class="rd-nav-link" href="/event-highlight">Event Highlight</a>
-                                  </li>
-
+                                  
                                   <li class="rd-nav-item">
                                     <a class="rd-nav-link" href="/produk">Produk</a>
                                     <ul class="rd-menu rd-navbar-megamenu">

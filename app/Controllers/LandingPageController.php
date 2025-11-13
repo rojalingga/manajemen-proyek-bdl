@@ -24,4 +24,9 @@ class LandingPageController extends Controller
     {
         $this->view('landing_page/event_highlight');
     }
+
+    public function getDetailProyek()
+    {
+        $this->view('landing_page/detail_proyek');
+    }
 }
