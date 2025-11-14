@@ -10,6 +10,11 @@ class LandingPageController extends Controller
         $this->view('landing_page/index');
     }
 
+    public function getProfileLaboratorium()
+    {
+        $this->view('landing_page/profile_laboratorium/index');
+    }
+
     public function getArtikelBerita()
     {
         $this->view('landing_page/publikasi_kegiatan/artikel_berita/index');

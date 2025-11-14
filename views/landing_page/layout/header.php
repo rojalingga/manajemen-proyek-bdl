@@ -106,99 +106,28 @@
                                 ?>
 
                                   <li class="rd-nav-item                                                          <?php echo isActive('/') ?>">
-                                    <a class="rd-nav-link" href="/">Home</a>
+                                    <a class="rd-nav-link" href="/">Beranda</a>
                                   </li>
 
-                                  <li class="rd-nav-item">
-                                    <a class="rd-nav-link" href="/tentang">Tentang Kami</a>
-                                    <ul class="rd-menu rd-navbar-dropdown">
-                                      <li class="rd-dropdown-item">
-                                        <a class="rd-dropdown-link" href="/tentang/sejarah">Sejarah</a>
-                                      </li>
-                                      <li class="rd-dropdown-item">
-                                        <a class="rd-dropdown-link" href="/tentang/visi-misi">Visi & Misi</a>
-                                      </li>
-                                      <li class="rd-dropdown-item">
-                                        <a class="rd-dropdown-link" href="/tentang/tim">Tim Kami</a>
-                                      </li>
-                                    </ul>
+                                  <li class="rd-nav-item                                                                     <?php echo isActive('/profile-lab') ?>">
+                                    <a class="rd-nav-link" href="/profile-lab">Profile</a>                                   
                                   </li>
 
                                   <li class="rd-nav-item                                                                      <?php echo isActive('/proyek-digital') ?>">
-                                    <a class="rd-nav-link" href="/proyek-digital">Proyek Digital</a>
+                                    <a class="rd-nav-link" href="/proyek-digital">Proyek</a>
                                   </li>
 
                                   <li class="rd-nav-item                                                                       <?php echo isActive('/publikasi-kegiatan') ?>">
-                                    <a class="rd-nav-link">Publikasi Kegiatan</a>
-                                    <ul class="rd-menu rd-navbar-dropdown">
-                                      <li class="rd-dropdown-item                                                              <?php echo isActive('/artikel-berita') ?>">
-                                        <a class="rd-dropdown-link" href="/artikel-berita">Artikel dan Berita</a>
-                                      </li>
-                                      <li class="rd-dropdown-item                                                              <?php echo isActive('/publikasi-ilmiah') ?>">
-                                        <a class="rd-dropdown-link" href="/publikasi-ilmiah">Publikasi Ilmiah</a>
-                                      </li>
-                                      <li class="rd-dropdown-item                                                              <?php echo isActive('/event-highlight') ?>">
-                                        <a class="rd-dropdown-link" href="/event-highlight">Event Highlight</a>
-                                      </li>
-                                    </ul>
+                                    <a class="rd-nav-link" href="/publikasi-kegiatan">Berita</a>
                                   </li>
                                   
-                                  <li class="rd-nav-item">
-                                    <a class="rd-nav-link" href="/produk">Produk</a>
-                                    <ul class="rd-menu rd-navbar-megamenu">
-                                      <li class="rd-megamenu-item">
-                                        <div>
-                                          <h6 class="rd-megamenu-title">Elektronik</h6>
-                                          <ul class="rd-megamenu-list">
-                                            <li class="rd-megamenu-list-item">
-                                              <a class="rd-megamenu-list-link" href="/produk/elektronik/hp">Handphone</a>
-                                            </li>
-                                            <li class="rd-megamenu-list-item">
-                                              <a class="rd-megamenu-list-link" href="/produk/elektronik/laptop">Laptop</a>
-                                            </li>
-                                            <li class="rd-megamenu-list-item">
-                                              <a class="rd-megamenu-list-link" href="/produk/elektronik/tv">Televisi</a>
-                                            </li>
-                                          </ul>
-                                        </div>
-                                      </li>
-
-                                      <li class="rd-megamenu-item">
-                                        <div>
-                                          <h6 class="rd-megamenu-title">Pakaian</h6>
-                                          <ul class="rd-megamenu-list">
-                                            <li class="rd-megamenu-list-item">
-                                              <a class="rd-megamenu-list-link" href="/produk/pakaian/pria">Pria</a>
-                                            </li>
-                                            <li class="rd-megamenu-list-item">
-                                              <a class="rd-megamenu-list-link" href="/produk/pakaian/wanita">Wanita</a>
-                                            </li>
-                                            <li class="rd-megamenu-list-item">
-                                              <a class="rd-megamenu-list-link" href="/produk/pakaian/anak">Anak-anak</a>
-                                            </li>
-                                          </ul>
-                                        </div>
-                                      </li>
-
-                                      <li class="rd-megamenu-item">
-                                        <div>
-                                          <h6 class="rd-megamenu-title">Aksesoris</h6>
-                                          <ul class="rd-megamenu-list">
-                                            <li class="rd-megamenu-list-item">
-                                              <a class="rd-megamenu-list-link" href="/produk/aksesoris/jam">Jam Tangan</a>
-                                            </li>
-                                            <li class="rd-megamenu-list-item">
-                                              <a class="rd-megamenu-list-link" href="/produk/aksesoris/tas">Tas</a>
-                                            </li>
-                                            <li class="rd-megamenu-list-item">
-                                              <a class="rd-megamenu-list-link" href="/produk/aksesoris/topi">Topi</a>
-                                            </li>
-                                          </ul>
-                                        </div>
-                                      </li>
-                                    </ul>
+                                  <li class="rd-nav-item                                                                       <?php echo isActive('/galeri-multimedia') ?>">
+                                    <a class="rd-nav-link" href="/galeri-multimedia">Galeri</a>
                                   </li>
-                                  </ul>
+
+                                 <li class="rd-nav-item                                                                       <?php echo isActive('/kontak') ?>">
+                                    <a class="rd-nav-link" href="/kontak">Kontak</a>
+                                  </li> 
 
                             </div>
                         </div>
