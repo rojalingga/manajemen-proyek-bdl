@@ -1,17 +1,9 @@
-<?php include __DIR__ . '/layout/header.php'; ?>
-    <!-- Event Highlight-->
+<?php include __DIR__ . '/../../layout/header.php'; ?>
+<!--Artikel Berita-->
+      <h2 class="mt-5">Artikel Berita</h2>
+
       <section class="section section-xl bg-default text-center isotope-wrap">
         <div class="container">
-            <h2>Event Highlight</h2>
-          <div class="isotope-filters isotope-filters-horizontal">
-            <button class="isotope-filters-toggle button button-md button-icon button-icon-right button-black-outline button-wapasha" data-custom-toggle="#isotope-1" data-custom-toggle-hide-on-blur="true"><span class="icon fa fa-caret-down"></span>Filter</button>
-            <ul class="isotope-filters-list" id="isotope-1">
-              <li><a class="active" href="#" data-isotope-filter="*" data-isotope-group="gallery">All</a></li>
-              <li><a href="#" data-isotope-filter="Type 1" data-isotope-group="gallery">Seminar</a></li>
-              <li><a href="#" data-isotope-filter="Type 2" data-isotope-group="gallery">Lomba</a></li>
-              <li><a href="#" data-isotope-filter="Type 3" data-isotope-group="gallery">Bootcamp</a></li>
-            </ul>
-          </div>
           <div class="row row-50 isotope" data-isotope-layout="fitRows" data-isotope-group="gallery" data-lightgallery="group">
             <div class="col-md-6 col-lg-4 isotope-item" data-filter="Type 3">
               <!-- Thumbnail Modern-->
@@ -73,4 +65,4 @@
           </div>
         </div>
       </section>
-<?php include __DIR__ . '/layout/footer.php'; ?>
+<?php include __DIR__ . '/../../layout/footer.php'; ?>

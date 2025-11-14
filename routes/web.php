@@ -19,4 +19,5 @@ $router->get('/artikel-berita', 'LandingPageController@getArtikelBerita');
 $router->get('/publikasi-ilmiah', 'LandingPageController@getPublikasiIlmiah');
 $router->get('/event-highlight', 'LandingPageController@getEventHighlight');
 
-$router->get('/detail-proyek', 'LandingPageController@getDetailProyek');
+$router->get('/proyek-digital', 'LandingPageController@getProyekDigital');
+$router->get('/proyek-digital/{id}', 'LandingPageController@getDetailProyekDigital');

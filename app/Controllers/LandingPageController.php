@@ -12,21 +12,26 @@ class LandingPageController extends Controller
 
     public function getArtikelBerita()
     {
-        $this->view('landing_page/artikel_berita');
+        $this->view('landing_page/publikasi_kegiatan/artikel_berita/index');
     }
 
     public function getPublikasiIlmiah()
     {
-        $this->view('landing_page/publikasi_ilmiah');
+        $this->view('landing_page/publikasi_kegiatan/publikasi_ilmiah/index');
     }
 
     public function getEventHighlight()
     {
-        $this->view('landing_page/event_highlight');
+        $this->view('landing_page/publikasi_kegiatan/event_highlight/index');
     }
 
-    public function getDetailProyek()
+    public function getProyekDigital()
     {
-        $this->view('landing_page/detail_proyek');
+        $this->view('landing_page/proyek_digital/index');
+    }
+
+    public function getDetailProyekDigital($id)
+    {
+        $this->view('landing_page/proyek_digital/detail');
     }
 }

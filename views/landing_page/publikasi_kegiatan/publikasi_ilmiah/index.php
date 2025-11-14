@@ -1,8 +1,9 @@
-<?php include __DIR__ . '/layout/header.php'; ?>
+<?php include __DIR__ . '/../../layout/header.php'; ?>
+      <h2 class="mt-5">Publikasi Ilmiah</h2>
+
  <!--Publikasi Ilmiah-->
       <section class="section section-sm">
         <div class="container">
-          <h3>Publikasi Ilmiah</h3>
           <div class="row row-30">
             <div class="col-sm-6 col-lg-4">
               <article class="box-icon-classic">
@@ -85,4 +86,4 @@
           </div>
         </div>
       </section>
-<?php include __DIR__ . '/layout/footer.php'; ?>
+<?php include __DIR__ . '/../../layout/footer.php'; ?>
