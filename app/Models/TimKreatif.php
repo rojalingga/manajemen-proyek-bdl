@@ -11,7 +11,7 @@ class TimKreatif
 
     public function getAll()
     {
-        $query = "SELECT * FROM tim_kreatif ORDER BY desc ASC";
+        $query = "SELECT * FROM tim_kreatif ORDER BY id ASC";
 
         $stmt = $this->db->prepare($query);
         $stmt->execute();
