@@ -35,7 +35,7 @@ class LandingPageController extends Controller
 
     public function getDetailProyekDigital($id)
     {
-        $this->view('landing_page/proyek_digital/detail');
+        $this->view('landing_page/proyek_digital/detail_proyek');
     }
 
     public function getPublikasiKegiatan()
