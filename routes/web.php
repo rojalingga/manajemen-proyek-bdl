@@ -27,3 +27,5 @@ $router->get('/profile-lab/tim-kreatif/{id}', 'LandingPageController@getTimKreat
 
 $router->get('/proyek-digital', 'LandingPageController@getProyekDigital');
 $router->get('/proyek-digital/{id}', 'LandingPageController@getDetailProyekDigital');
+
+$router->get('/publikasi-kegiatan', 'LandingPageController@getPublikasiKegiatan');
