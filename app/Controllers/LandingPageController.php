@@ -27,20 +27,6 @@ class LandingPageController extends Controller
         $this->view('landing_page/profile_laboratorium/detail_tim_kreatif', $data);
     }
 
-    public function getArtikelBerita()
-    {
-        $this->view('landing_page/publikasi_kegiatan/artikel_berita/index');
-    }
-
-    public function getPublikasiIlmiah()
-    {
-        $this->view('landing_page/publikasi_kegiatan/publikasi_ilmiah/index');
-    }
-
-    public function getEventHighlight()
-    {
-        $this->view('landing_page/publikasi_kegiatan/event_highlight/index');
-    }
 
     public function getProyekDigital()
     {
