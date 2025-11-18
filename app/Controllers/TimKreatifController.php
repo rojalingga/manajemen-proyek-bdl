@@ -2,10 +2,9 @@
 
 require_once __DIR__ . '/Controller.php';
 require_once __DIR__ . '/ImageCompressorController.php';
-require_once __DIR__ . '/../models/Users.php';
-require_once __DIR__ . '/../models/Role.php';
+require_once __DIR__ . '/../models/TimKreatif.php';
 
-class UsersController extends Controller
+class TimKreatifController extends Controller
 {
     public function index()
     {
@@ -14,21 +13,15 @@ class UsersController extends Controller
             header('Content-Type: application/json; charset=utf-8');
 
             try {
-                $userModel = new Users();
-                $datatables      = $userModel->getAll();
+                $timKreatifModel = new TimKreatif();
+                $datatables      = $timKreatifModel->getAll();
 
                 $data  = [];
                 $index = 1;
 
                 foreach ($datatables as $row) {
-                    $status = match ((int) $row['status']) {
-                        1       => '<span class="badge bg-success">Aktif</span>',
-                        2       => '<span class="badge bg-danger">Blokir</span>',
-                        default => '<span class="badge bg-secondary">Unknown</span>',
-                    };
-
-                    $editUrl   = '/admin/users/' . $row['id'];
-                    $deleteUrl = '/admin/users/delete/' . $row['id'];
+                    $editUrl   = '/admin/tim-kreatif/' . $row['id'];
+                    $deleteUrl = '/admin/tim-kreatif/delete/' . $row['id'];
 
                     $action = '
                         <div class="d-flex justify-content-center">
@@ -42,9 +35,9 @@ class UsersController extends Controller
 
                     $data[] = [
                         'DT_RowIndex' => $index++,
-                        'username'    => htmlspecialchars($row['username']),
-                        'role'        => htmlspecialchars($row['nama_role'] ?? '-'),
-                        'status'      => $status,
+                        'nama'        => htmlspecialchars($row['nama']),
+                        'jabatan'     => htmlspecialchars($row['jabatan']),
+                        'keahlian'    => htmlspecialchars($row['keahlian']),
                         'action'      => $action,
                     ];
                 }
@@ -57,10 +50,7 @@ class UsersController extends Controller
             exit;
         }
 
-        $roleModel = new Role();
-        $roles     = $roleModel->getAll();
-
-        $this->view('admin/users/index', ['roles' => $roles]);
+        $this->view('admin/tim_kreatif/index');
     }
 
     public function edit($id)
@@ -69,8 +59,8 @@ class UsersController extends Controller
         header('Content-Type: application/json; charset=utf-8');
 
         try {
-            $userModel = new Users();
-            $data      = $userModel->findById($id);
+            $timKreatifModel = new TimKreatif();
+            $data            = $timKreatifModel->findById($id);
 
             if ($data) {
                 echo json_encode([
@@ -96,37 +86,29 @@ class UsersController extends Controller
         $data = $_POST;
 
         $errors = [];
-        if (empty($data['username'])) {
-            $errors['username'][] = 'Username wajib diisi.';
+        if (empty($data['nama'])) {
+            $errors['nama'][] = 'Nama wajib diisi.';
         }
 
-        if (empty($data['password'])) {
-            $errors['password'][] = 'Password wajib diisi.';
+        if (empty($data['jabatan'])) {
+            $errors['jabatan'][] = 'Jabatan wajib diisi.';
         }
 
-        if (empty($data['id_role'])) {
-            $errors['id_role'][] = 'Role harus dipilih.';
+        if (empty($data['keahlian'])) {
+            $errors['keahlian'][] = 'Keahlian wajib diisi.';
         }
 
-        if (empty($data['status'])) {
-            $errors['status'][] = 'Status harus dipilih.';
+        if (empty($data['portofolio_singkat'])) {
+            $errors['portofolio_singkat'][] = 'Portofolio singkat wajib diisi.';
         }
 
-        if (! isset($_FILES['foto']) || $_FILES['foto']['error'] !== UPLOAD_ERR_OK) {
-            $errors['foto'][] = 'Foto harus diupload.';
-        }
         if ($errors) {
             http_response_code(422);
             echo json_encode(['errors' => $errors]);
             return;
         }
 
-        $userModel = new Users();
-        if ($userModel->findByUsername($data['username'])) {
-            http_response_code(422);
-            echo json_encode(['errors' => ['username' => ['Username sudah digunakan.']]]);
-            return;
-        }
+        $timKreatifModel = new TimKreatif();
 
         $filename = '';
         if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
@@ -145,8 +127,8 @@ class UsersController extends Controller
                 return;
             }
 
-            $filename  = uniqid('user_') . '.' . $ext;
-            $targetDir = __DIR__ . '/../../public/assets/foto_profil/';
+            $filename  = uniqid('timkreatif_') . '.' . $ext;
+            $targetDir = __DIR__ . '/../../public/assets/tim_kreatif/';
             if (! is_dir($targetDir)) {
                 mkdir($targetDir, 0777, true);
             }
@@ -163,16 +145,17 @@ class UsersController extends Controller
         }
 
         $insertData = [
-            'username'   => $data['username'],
-            'password'   => password_hash($data['password'], PASSWORD_BCRYPT),
-            'id_role'    => $data['id_role'],
-            'status'     => $data['status'],
-            'foto'       => $filename,
-            'created_at' => date('Y-m-d H:i:s'),
+            'nama'               => $data['nama'],
+            'jabatan'            => $data['jabatan'],
+            'keahlian'           => $data['keahlian'],
+            'portofolio_singkat' => $data['portofolio_singkat'],
+            'linkedin'           => $data['linkedin'] ?? '',
+            'foto'               => $filename ?? '',
+            'created_at'         => date('Y-m-d H:i:s'),
         ];
 
         try {
-            $userModel->insert($insertData);
+            $timKreatifModel->insert($insertData);
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
             http_response_code(500);
@@ -184,9 +167,9 @@ class UsersController extends Controller
     {
         header('Content-Type: application/json; charset=utf-8');
 
-        $data      = $_POST;
-        $userModel = new Users();
-        $existing  = $userModel->findById($id);
+        $data            = $_POST;
+        $timKreatifModel = new TimKreatif();
+        $existing        = $timKreatifModel->findById($id);
 
         if (! $existing) {
             http_response_code(404);
@@ -195,26 +178,25 @@ class UsersController extends Controller
         }
 
         $errors = [];
-        if (empty($data['username'])) {
-            $errors['username'][] = 'Username wajib diisi.';
+        if (empty($data['nama'])) {
+            $errors['nama'][] = 'Nama wajib diisi.';
         }
-        if (empty($data['id_role'])) {
-            $errors['id_role'][] = 'Role harus dipilih.';
+
+        if (empty($data['jabatan'])) {
+            $errors['jabatan'][] = 'Jabatan wajib diisi.';
         }
-        if (empty($data['status'])) {
-            $errors['status'][] = 'Status harus dipilih.';
+
+        if (empty($data['keahlian'])) {
+            $errors['keahlian'][] = 'Keahlian wajib diisi.';
+        }
+
+        if (empty($data['portofolio_singkat'])) {
+            $errors['portofolio_singkat'][] = 'Portofolio singkat wajib diisi.';
         }
 
         if ($errors) {
             http_response_code(422);
             echo json_encode(['errors' => $errors]);
-            return;
-        }
-
-        $existingUsername = $userModel->findByUsername($data['username']);
-        if ($existingUsername && $existingUsername['id'] != $id) {
-            http_response_code(422);
-            echo json_encode(['errors' => ['username' => ['Username sudah digunakan.']]]);
             return;
         }
 
@@ -236,7 +218,7 @@ class UsersController extends Controller
                 return;
             }
 
-            $targetDir = __DIR__ . '/../../public/assets/foto_profil/';
+            $targetDir = __DIR__ . '/../../public/assets/tim_kreatif/';
             if (! is_dir($targetDir)) {
                 mkdir($targetDir, 0777, true);
             }
@@ -245,7 +227,7 @@ class UsersController extends Controller
                 unlink($targetDir . $existing['foto']);
             }
 
-            $filename = uniqid('user_') . '.' . $ext;
+            $filename = uniqid('timkreatif_') . '.' . $ext;
             $filePath = $targetDir . $filename;
 
             try {
@@ -258,10 +240,12 @@ class UsersController extends Controller
         }
 
         $updateData = [
-            'username' => $data['username'],
-            'id_role'  => $data['id_role'],
-            'status'   => $data['status'],
-            'foto'     => $filename,
+            'nama'               => $data['nama'],
+            'jabatan'            => $data['jabatan'],
+            'keahlian'           => $data['keahlian'],
+            'portofolio_singkat' => $data['portofolio_singkat'],
+            'linkedin'           => $data['linkedin'] ?? '',
+            'foto'               => $filename ?? '',
         ];
 
         if (! empty($data['password'])) {
@@ -269,7 +253,7 @@ class UsersController extends Controller
         }
 
         try {
-            $userModel->update($id, $updateData);
+            $timKreatifModel->update($id, $updateData);
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
             http_response_code(500);
@@ -282,8 +266,8 @@ class UsersController extends Controller
         header('Content-Type: application/json; charset=utf-8');
 
         try {
-            $userModel = new Users();
-            $user      = $userModel->findById($id);
+            $timKreatifModel = new TimKreatif();
+            $user            = $timKreatifModel->findById($id);
 
             if (! $user) {
                 http_response_code(404);
@@ -292,13 +276,13 @@ class UsersController extends Controller
             }
 
             if (! empty($user['foto'])) {
-                $filePath = __DIR__ . '/../../public/assets/foto_profil/' . $user['foto'];
+                $filePath = __DIR__ . '/../../public/assets/tim_kreatif/' . $user['foto'];
                 if (file_exists($filePath)) {
                     unlink($filePath);
                 }
             }
 
-            $userModel->delete($id);
+            $timKreatifModel->delete($id);
 
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {

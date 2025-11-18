@@ -27,7 +27,7 @@ class Users
         $query = "
             SELECT
                 u.id,
-                u.username,
+                u.username, 
                 u.status,
                 r.nama_role
             FROM users u
@@ -49,15 +49,15 @@ class Users
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function create($data)
+    public function insert($data)
     {
-        $query = "INSERT INTO users (username, password, id_role, status, foto)
-              VALUES (:username, :password, :id_role, :status, :foto)";
+        $query = "INSERT INTO users (username, password, id_role, status, foto, created_at)
+              VALUES (:username, :password, :id_role, :status, :foto, :created_at)";
         $stmt = $this->db->prepare($query);
         $stmt->execute($data);
     }
 
-    public function updateData($id, $data)
+    public function update($id, $data)
     {
         $fields = [];
         foreach ($data as $key => $value) {
