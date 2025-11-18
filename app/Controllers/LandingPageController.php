@@ -38,4 +38,5 @@ class LandingPageController extends Controller
         $this->view('landing_page/proyek_digital/detail');
     }
 
+
 }
