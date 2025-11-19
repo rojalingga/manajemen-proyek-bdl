@@ -19,6 +19,7 @@
                                 <tr>
                                     <th width="50px">No</th>
                                     <th>Judul</th>
+                                    <th>Penulis</th>
                                     <th>Tanggal Publish</th>
                                     <th>Deskripsi</th>
                                     <th width="100px" class="text-center">Action</th>
@@ -55,6 +56,12 @@
                             </div>
                         </div>
                         <div class="row mb-3 align-items-center">
+                            <label class="col-sm-3 col-form-label">Penulis</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="penulis" name="penulis">
+                            </div>
+                        </div>
+                        <div class="row mb-3 align-items-center">
                             <label class="col-sm-3 col-form-label">Tanggal Publish</label>
                             <div class="col-sm-9">
                                 <textarea name="tanggal_publish" id="tanggal_publish" class="form-control" rows="4"></textarea>
@@ -66,7 +73,12 @@
                                 <textarea name="deskripsi" id="deskripsi" class="form-control" rows="4"></textarea>
                             </div>
                         </div>
-
+                        <div class="row mb-3 align-items-center">
+                            <label class="col-sm-3 col-form-label">File</label>
+                            <div class="col-sm-9">
+                                <input type="file" class="form-control" id="file" name="file" accept=".docx, .pdf, .txt">
+                            </div>
+                        </div>
                         <div class="row mb-3 align-items-center">
                             <label class="col-sm-3 col-form-label">Thumbnail</label>
                             <div class="col-sm-9">
@@ -135,6 +147,7 @@
                 columns: [
                     { data: 'DT_RowIndex', className: 'text-center' },
                     { data: 'judul' },
+                    { data: 'penulis' },
                     { data: 'tanggal_publish' },
                     { data: 'deskripsi' },
                     { data: 'action', className: 'text-center' }

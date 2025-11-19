@@ -20,7 +20,7 @@ class ArtikelBerita
 
     public function getForLandingPage()
     {
-        $query = "SELECT id, nama, jabatan, foto FROM artikel_berita ORDER BY id ASC";
+        $query = "SELECT id, judul, penulis, thumbnail, file, tanggal_publish, deskripsi FROM artikel_berita ORDER BY id ASC";
         $stmt  = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -37,8 +37,8 @@ class ArtikelBerita
 
     public function insert($data)
     {
-        $query = "INSERT INTO artikel_berita (judul, thumbnail, tanggal_publish, deskripsi, created_at)
-              VALUES (:judul, :thumbnail, :tanggal_publish, :deskripsi, :created_at)";
+        $query = "INSERT INTO artikel_berita (judul, penulis, thumbnail, file tanggal_publish, deskripsi, created_at)
+              VALUES (:judul, :penulis, :thumbnail,:file :tanggal_publish, :deskripsi, :created_at)";
         $stmt = $this->db->prepare($query);
         $stmt->execute($data);
     }

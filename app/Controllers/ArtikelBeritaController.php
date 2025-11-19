@@ -14,7 +14,7 @@ class ArtikelBeritaController extends Controller
 
             try {
                 $timArtikelBerita = new ArtikelBerita();
-                $datatables      = $timArtikelBerita->getAll();
+                $datatables       = $timArtikelBerita->getAll();
 
                 $data  = [];
                 $index = 1;
@@ -34,11 +34,12 @@ class ArtikelBeritaController extends Controller
                     ';
 
                     $data[] = [
-                        'DT_RowIndex' => $index++,
-                        'judul'        => htmlspecialchars($row['judul']),
-                        'tanggal_publish'     => htmlspecialchars($row['tanggal_publish']),
-                        'deskripsi'    => htmlspecialchars($row['deskripsi']),
-                        'action'      => $action,
+                        'DT_RowIndex'     => $index++,
+                        'judul'           => htmlspecialchars($row['judul']),
+                        'penulis'         => htmlspecialchars($row['penulis']),
+                        'tanggal_publish' => htmlspecialchars($row['tanggal_publish']),
+                        'deskripsi'       => htmlspecialchars($row['deskripsi']),
+                        'action'          => $action,
                     ];
                 }
 
@@ -60,7 +61,7 @@ class ArtikelBeritaController extends Controller
 
         try {
             $timArtikelBerita = new ArtikelBerita();
-            $data            = $timArtikelBerita->findById($id);
+            $data             = $timArtikelBerita->findById($id);
 
             if ($data) {
                 echo json_encode([
@@ -90,6 +91,10 @@ class ArtikelBeritaController extends Controller
             $errors['judul'][] = 'Judul wajib diisi.';
         }
 
+        if (empty($data['penulis'])) {
+            $errors['penulis'][] = 'Penulis wajib diisi.';
+        }
+
         if (empty($data['tanggal_publish'])) {
             $errors['tanggal_publish'][] = 'Tanggal Publish wajib diisi.';
         }
@@ -98,6 +103,10 @@ class ArtikelBeritaController extends Controller
             $errors['deskripsi'][] = 'Deskripsi wajib diisi.';
         }
 
+        if (! isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
+            $errors['file'][] = 'File harus diupload.';
+        }
+        
         if (! isset($_FILES['thumbnail']) || $_FILES['thumbnail']['error'] !== UPLOAD_ERR_OK) {
             $errors['thumbnail'][] = 'Thumbnail harus diupload.';
         }
@@ -109,6 +118,40 @@ class ArtikelBeritaController extends Controller
         }
 
         $timArtikelBerita = new ArtikelBerita();
+
+        $filename = '';
+        if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+            $tmpFile = $_FILES['file']['tmp_name'];
+            $ext     = strtolower(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION));
+
+            if (! in_array($ext, ['docx', 'pdf', 'txt'])) {
+                http_response_code(422);
+                echo json_encode(['errors' => ['file' => ['Format file tidak valid.']]]);
+                return;
+            }
+
+            if (! file_exists($tmpFile)) {
+                http_response_code(400);
+                echo json_encode(['errors' => ['file' => ['File upload tidak ditemukan.']]]);
+                return;
+            }
+
+            $filename  = uniqid('artikelberita_') . '.' . $ext;
+            $targetDir = __DIR__ . '/../../public/assets/artikel_berita/';
+            if (! is_dir($targetDir)) {
+                mkdir($targetDir, 0777, true);
+            }
+
+            $filePath = $targetDir . $filename;
+
+            try {
+                ImageCompressorController::compress($tmpFile, $filePath, $ext);
+            } catch (Throwable $e) {
+                http_response_code(500);
+                echo json_encode(['error' => 'Gagal menyimpan file: ' . $e->getMessage()]);
+                return;
+            }
+        }
 
         $filename = '';
         if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] === UPLOAD_ERR_OK) {
@@ -145,11 +188,13 @@ class ArtikelBeritaController extends Controller
         }
 
         $insertData = [
-            'judul'               => $data['judul'],
-            'tanggal_publish'            => $data['tanggal_publish'],
-            'deskripsi'           => $data['deskripsi'],
-            'thumbnail'               => $filename ?? '',
-            'created_at'         => date('Y-m-d H:i:s'),
+            'judul'           => $data['judul'],
+            'penulis'         => $data['penulis'],
+            'tanggal_publish' => $data['tanggal_publish'],
+            'deskripsi'       => $data['deskripsi'],
+            'thumbnail'       => $filename ?? '',
+            'file'            => $filename ?? '',
+            'created_at'      => date('Y-m-d H:i:s'),
         ];
 
         try {
@@ -165,9 +210,9 @@ class ArtikelBeritaController extends Controller
     {
         header('Content-Type: application/json; charset=utf-8');
 
-        $data            = $_POST;
+        $data             = $_POST;
         $timArtikelBerita = new ArtikelBerita();
-        $existing        = $timArtikelBerita->findById($id);
+        $existing         = $timArtikelBerita->findById($id);
 
         if (! $existing) {
             http_response_code(404);
@@ -178,6 +223,10 @@ class ArtikelBeritaController extends Controller
         $errors = [];
         if (empty($data['judul'])) {
             $errors['judul'][] = 'Judul wajib diisi.';
+        }
+ 
+        if (empty($data['penulis'])) {
+            $errors['penulis'][] = 'Penulis wajib diisi.';
         }
 
         if (empty($data['tanggal_publish'])) {
@@ -192,10 +241,53 @@ class ArtikelBeritaController extends Controller
             $errors['thumbnail'][] = 'Thumbnail harus diupload.';
         }
 
+        if (! isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
+            $errors['file'][] = 'File harus diupload.';
+        }
+
         if ($errors) {
             http_response_code(422);
             echo json_encode(['errors' => $errors]);
             return;
+        }
+
+        $filename = $existing['file'];
+
+        if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+            $tmpFile = $_FILES['file']['tmp_name'];
+            $ext     = strtolower(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION));
+
+            if (! in_array($ext, ['docx', 'pdf', 'txt'])) {
+                http_response_code(422);
+                echo json_encode(['errors' => ['file' => ['Format file tidak valid.']]]);
+                return;
+            }
+
+            if (! file_exists($tmpFile)) {
+                http_response_code(400);
+                echo json_encode(['errors' => ['file' => ['File upload tidak ditemukan.']]]);
+                return;
+            }
+
+            $targetDir = __DIR__ . '/../../public/assets/artikel_berita/';
+            if (! is_dir($targetDir)) {
+                mkdir($targetDir, 0777, true);
+            }
+
+            if (! empty($existing['file']) && file_exists($targetDir . $existing['file'])) {
+                unlink($targetDir . $existing['file']);
+            }
+
+            $filename = uniqid('artikelberita_') . '.' . $ext;
+            $filePath = $targetDir . $filename;
+
+            try {
+                ImageCompressorController::compress($tmpFile, $filePath, $ext);
+            } catch (Throwable $e) {
+                http_response_code(500);
+                echo json_encode(['error' => 'Gagal menyimpan file: ' . $e->getMessage()]);
+                return;
+            }
         }
 
         $filename = $existing['thumbnail'];
@@ -238,10 +330,12 @@ class ArtikelBeritaController extends Controller
         }
 
         $updateData = [
-            'judul'               => $data['judul'],
-            'tanggal_publish'            => $data['tanggal_publish'],
-            'deskripsi'           => $data['deskripsi'],
-            'thumbnail'               => $filename ?? '',
+            'judul'           => $data['judul'],
+            'penulis'         => $data['penulis'],
+            'tanggal_publish' => $data['tanggal_publish'],
+            'deskripsi'       => $data['deskripsi'],
+            'thumbnail'       => $filename ?? '',
+            'file'            => $filename ?? '',
         ];
 
         if (! empty($data['password'])) {
@@ -263,7 +357,7 @@ class ArtikelBeritaController extends Controller
 
         try {
             $timArtikelBerita = new ArtikelBerita();
-            $user            = $timArtikelBerita->findById($id);
+            $user             = $timArtikelBerita->findById($id);
 
             if (! $user) {
                 http_response_code(404);
