@@ -336,18 +336,13 @@
                                 <span>Partner Kolabolator</span>
                             </a>
                         </li>
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/artikel') ?>">
-                            <a href="/admin/artikel" class="sidebar-link">
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/artikel-berita') ?>">
+                            <a href="/admin/artikel-berita" class="sidebar-link">
                                 <i class="bi bi-file-earmark-text"></i>
-                                <span>Artikel</span>
+                                <span>Artikel & Berita</span>
                             </a>
                         </li>
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/berita') ?>">
-                            <a href="/admin/berita" class="sidebar-link">
-                                <i class="bi bi-newspaper"></i>
-                                <span>Berita</span>
-                            </a>
-                        </li>
+
                         <li class="sidebar-item                                                <?php echo isActive('/admin/publikasi-ilmiah') ?>">
                             <a href="/admin/publikasi-ilmiah" class="sidebar-link">
                                 <i class="bi bi-journal-text"></i>

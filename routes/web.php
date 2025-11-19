@@ -21,6 +21,12 @@ $router->post('/admin/partner-kolaborator/store', 'PartnerKolaboratorController@
 $router->put('/admin/partner-kolaborator/update/{id}', 'PartnerKolaboratorController@update');
 $router->delete('/admin/partner-kolaborator/delete/{id}', 'PartnerKolaboratorController@destroy');
 
+$router->get('/admin/artikel-berita', 'ArtikelBeritaController@index');
+$router->get('/admin/artikel-berita/{id}', 'ArtikelBeritaController@edit');
+$router->post('/admin/artikel-berita/store', 'ArtikelBeritaController@store');
+$router->put('/admin/artikel-berita/update/{id}', 'ArtikelBeritaController@update');
+$router->delete('/admin/artikel-berita/delete/{id}', 'ArtikelBeritaController@destroy');
+
 $router->get('/admin/users', 'UsersController@index');
 $router->get('/admin/users/{id}', 'UsersController@edit');
 $router->post('/admin/users/store', 'UsersController@store');
