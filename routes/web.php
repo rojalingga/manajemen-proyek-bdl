@@ -9,6 +9,9 @@ $router->post('/admin/logout', 'AuthController@logout');
 $router->get('/test-koneksi', 'TestKoneksiController@test_koneksi');
 $router->get('/admin/dashboard', 'DashboardController@index');
 
+$router->get('/admin/profil-web', 'ProfilWebController@index');
+$router->post('/admin/profil-web/update', 'ProfilWebController@update');
+
 $router->get('/admin/tim-kreatif', 'TimKreatifController@index');
 $router->get('/admin/tim-kreatif/{id}', 'TimKreatifController@edit');
 $router->post('/admin/tim-kreatif/store', 'TimKreatifController@store');

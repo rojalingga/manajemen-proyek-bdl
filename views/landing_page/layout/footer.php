@@ -1,4 +1,10 @@
 
+           <?php
+    require_once __DIR__ . '/../../../app/models/ProfilWeb.php';
+    $profil = new ProfilWeb();
+    $dataProfil = $profil->getData();
+    ?>
+        
         <!-- Page Footer-->
         <footer class="section footer-corporate context-dark">
             <div class="footer-corporate-inset">
@@ -33,58 +39,45 @@
                             <div class="oh-desktop">
                                 <div class="wow slideInRight" data-wow-delay="0s">
                                     <h6 class="text-spacing-100 text-uppercase">Kontak Kami</h6>
-                                    <ul class="footer-contacts d-inline-block d-sm-block">
+                                    <ul class="footer-contacts">
                                         <li>
-  <div class="unit">
-    <div class="unit-left">
-      <span class="icon fa fa-location-arrow"></span>
-    </div>
-    <div class="unit-body">
-      <a class="link-location" href="#">
-        Jl. Soekarno Hatta No.9, Kota Malang Jawa Timur 
-      </a>
-    </div>
-  </div>
-</li>
+                                          <div class="unit">
+                                            <div class="unit-left">
+                                              <span class="icon fa fa-location-arrow"></span>
+                                            </div>
+                                            <div class="unit-body">
+                                              <a class="link-location" href="#">
+                                                <?= $dataProfil['alamat'] ?> 
+                                              </a>
+                                            </div>
+                                          </div>
+                                        </li>
 
-<li>
-  <div class="unit">
-    <div class="unit-left">
-      <span class="icon fa fa-phone"></span>
-    </div>
-    <div class="unit-body">
-      <a class="link-phone" href="tel:+623412345678">
-        +62 341 234 5678
-      </a>
-    </div>
-  </div>
-</li>
+                                        <li>
+                                          <div class="unit">
+                                            <div class="unit-left">
+                                              <span class="icon fa fa-phone"></span>
+                                            </div>
+                                            <div class="unit-body">
+                                              <a class="link-phone" href="tel:+623412345678">
+                                                <?= $dataProfil['no_telp'] ?>
+                                              </a>
+                                            </div>
+                                          </div>
+                                        </li>
 
-<li>
-  <div class="unit">
-    <div class="unit-left">
-      <span class="icon fa fa-envelope"></span>
-    </div>
-    <div class="unit-body">
-      <a class="link-email">
-        labmmt@mail.com
-      </a>
-    </div>
-  </div>
-</li>
-
-<li>
-  <div class="unit">
-    <div class="unit-left">
-      <span class="icon fa fa-fax"></span>
-    </div>
-    <div class="unit-body">
-      <a class="link-fax" href="tel:+623415555555">
-        +62 341 555 5555
-      </a>
-    </div>
-  </div>
-</li>
+                                        <li>
+                                          <div class="unit">
+                                            <div class="unit-left">
+                                              <span class="icon fa fa-envelope"></span>
+                                            </div>
+                                            <div class="unit-body">
+                                              <a class="link-email">
+                                                <?= $dataProfil['email'] ?>
+                                              </a>
+                                            </div>
+                                          </div>
+                                        </li>
 
                                     </ul>
                                 </div>
@@ -97,21 +90,13 @@
                 <div class="container">
                     <div class="row justfy-content-xl-space-berween row-10 align-items-md-center2">
                         <div class="col-sm-6 col-md-4 text-sm-end text-md-center">
-                            <div>
-                                <ul class="list-inline list-inline-sm footer-social-list-2">
-                                    <li><a class="icon fa fa-facebook" href="#"></a></li>
-                                    <li><a class="icon fa fa-twitter" href="#"></a></li>
-                                    <li><a class="icon fa fa-google-plus" href="#"></a></li>
-                                    <li><a class="icon fa fa-instagram" href="#"></a></li>
-                                </ul>
-                            </div>
                         </div>
-                        <div class="col-sm-6 col-md-4 order-sm-first">
+                        <div class="col-sm-6 col-md-6 order-sm-first">
                             <!-- Rights-->
-                            <p class="rights"><span>Copyright © 2019 Lab MMT</span>
+                            <p class="rights"><span>Copyright © 2025 <?= $dataProfil['nama'] ?></span>
                             </p>
                         </div>
-                        <div class="col-sm-6 col-md-4 text-md-end">
+                        <div class="col-sm-6 col-md-2 text-md-end">
                             <p class="rights"><a href="privacy-policy.html">Privacy Policy</a></p>
                         </div>
                     </div>
