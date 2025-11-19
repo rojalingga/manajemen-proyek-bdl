@@ -116,35 +116,42 @@
         <div class="container">
           <h3>Partner Kolabolator</h3>
           <div class="row row-xxl row-70 justify-content-center">
-            <div class="col-sm-10 col-md-6 col-lg-5 col-xl-4 wow fadeInRight">
-              <!-- Partner 1-->
-              <article class="quote-creative"><a class="quote-creative-figure" href="#"><img class="img-circles" src="images/user-5-87x87.jpg" alt="" width="87" height="87"/></a>
-                <div class="quote-creative-text">
-                  <p class="q">Just wanted to say many, many thanks for helping me set up an amazing Costa Rican adventure! My nephew and I had a great time! All of the accommodations were perfect, thank you!</p>
+            <?php 
+            // Inisialisasi counter untuk animasi delay
+            $i = 0; 
+            ?>
+
+            <?php foreach ($partner as $row): ?>
+                <div class="col-sm-10 col-md-6 col-lg-5 col-xl-4 wow fadeInRight" data-wow-delay="<?php echo $i * 0.1; ?>s">
+                    
+                    <article class="quote-creative">
+                        
+                        <a class="quote-creative-figure" href="/profile-lab/partner-kolaborator/<?php echo $row['id']; ?>">
+                            <img 
+                                class="img-circles" 
+                                src="/assets/partner_kolaborator/<?php echo htmlspecialchars($row['logo']); ?>" 
+                                alt="<?php echo htmlspecialchars($row['nama_partner']); ?>" 
+                                width="87" 
+                                height="87"
+                                style="object-fit: cover;" 
+                            />
+                        </a>
+
+                        <h5 class="quote-creative-cite">
+                            <a href="/profile-lab/partner-kolaborator/<?php echo $row['id']; ?>">
+                                <?php echo htmlspecialchars($row['nama_partner']); ?>
+                                <?php echo " "; ?>
+                            </a>
+                        </h5>
+
+                    </article>
                 </div>
-                <h5 class="quote-creative-cite"><a href="#">partner 1</a></h5>
-              </article>
-            </div>
-            <div class="col-sm-10 col-md-6 col-lg-5 col-xl-4 wow fadeInRight" data-wow-delay=".1s">
-              <!-- Partner 2-->
-              <article class="quote-creative"><a class="quote-creative-figure" href="#"><img class="img-circles" src="images/user-6-87x87.jpg" alt="" width="87" height="87"/></a>
-                <div class="quote-creative-text">
-                  <p class="q">I wanted to thank you very much for planning the trip to France for my sister and me. It was amazing and exceeded my expectations! We had a wonderful time and were very pleased.</p>
-                </div>
-                <h5 class="quote-creative-cite"><a href="#">partner 2</a></h5>
-              </article>
-            </div>
-            <div class="col-sm-10 col-md-6 col-lg-5 col-xl-4 wow fadeInRight" data-wow-delay=".2s">
-              <!-- Partner 3-->
-              <article class="quote-creative"><a class="quote-creative-figure" href="#"><img class="img-circles" src="images/user-7-87x87.jpg" alt="" width="87" height="87"/></a>
-                <div class="quote-creative-text">
-                  <p class="q">We had a marvelous time in our travels to Madagascar, Zimbabwe, and Botswana, we had just wonderful experiences. Your service was amazing and everyone was very attentive!</p>
-                </div>
-                <h5 class="quote-creative-cite"><a href="#">partner 3</a></h5>
-              </article>
-            </div>
-          </div>
-        </div>
+
+                <?php 
+                // Tambah counter setiap perulangan agar delay animasi bertambah (0.1s, 0.2s, dst)
+                $i++; 
+                ?>
+            <?php endforeach; ?>
     </section>
 
 <?php include __DIR__ . '/../layout/footer.php'; ?>

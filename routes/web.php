@@ -35,6 +35,7 @@ $router->delete('/admin/users/delete/{id}', 'UsersController@destroy');
 
 $router->get('/profile-lab', 'LandingPageController@getProfileLaboratorium');
 $router->get('/profile-lab/tim-kreatif/{id}', 'LandingPageController@getTimKreatifDetail');
+$router->get('/profile-lab/partner-kolaborator/{id}', 'LandingPageController@getPartnerKolaboratorDetail');
 
 $router->get('/proyek-digital', 'LandingPageController@getProyekDigital');
 $router->get('/proyek-digital/detail-proyek/{id}', 'LandingPageController@getDetailProyekDigital');

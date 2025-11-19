@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/Controller.php';
 require_once __DIR__ . '/../models/TimKreatif.php';
+require_once __DIR__ . '/../models/PartnerKolaborator.php';
 
 class LandingPageController extends Controller
 {
@@ -15,6 +16,9 @@ class LandingPageController extends Controller
     {
         $model       = new TimKreatif();
         $data['tim'] = $model->getForLandingPage();
+        
+        $modelPartner    = new PartnerKolaborator();
+        $data['partner'] = $modelPartner->getForLandingPage();
 
         $this->view('landing_page/profile_laboratorium/index', $data);
     }
@@ -25,6 +29,14 @@ class LandingPageController extends Controller
         $data            = $timKreatifModel->findById($id);
 
         $this->view('landing_page/profile_laboratorium/detail_tim_kreatif', $data);
+    }
+
+    public function getPartnerKolaboratorDetail($id)
+    {
+        $partnerKolaboratorModel = new PartnerKolaborator();
+        $data                    = $partnerKolaboratorModel->findById($id);
+
+        $this->view('landing_page/profile_laboratorium/detail_partner_kolaborator', $data);
     }
 
 

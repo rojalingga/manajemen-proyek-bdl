@@ -20,7 +20,7 @@ class PartnerKolaborator
 
     public function getForLandingPage()
     {
-        $query = "SELECT id, nama, jabatan, foto FROM partner_kolaborator ORDER BY id ASC";
+        $query = "SELECT id, nama_partner, deskripsi, logo FROM partner_kolaborator ORDER BY id ASC";
         $stmt  = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll();
