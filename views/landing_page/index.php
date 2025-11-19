@@ -113,95 +113,7 @@
                     </div>
                 </div>
             </div>
-            <h3>LAYANAN INFORMASI PUBLIK</h3>
-            <!-- Layanan -->
-            <div class="row">
-                <div class="col-6 col-md-3">
-                    <article class="box-icon-classic">
-                        <div class="unit box-icon-classic-body d-flex justify-content-center">
-                            <div class="unit-body">
-                                <a href="{{ route('pemohon') }}">
-                                    <img src="https://ppid.balikpapan.go.id/assets/bpnyaman/images/clients/client1.png"
-                                        alt="PPID Kota Balikpapan" style="max-width: 80%; height: auto;">
-                                </a>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <article class="box-icon-classic">
-                        <div class="unit box-icon-classic-body d-flex justify-content-center">
-                            <div class="unit-body">
-                                <a href="{{ route('keberatan') }}">
-                                    <img src="https://ppid.balikpapan.go.id/assets/bpnyaman/images/clients/client2.png"
-                                        alt="PPID Kota Balikpapan" style="max-width: 80%; height: auto;">
-                                </a>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <article class="box-icon-classic">
-                        <div class="unit box-icon-classic-body d-flex justify-content-center">
-                            <div class="unit-body">
-                                <a href="https://www.lapor.go.id/">
-                                    <img src="https://ppid.balikpapan.go.id/assets/bpnyaman/images/clients/client3.png"
-                                        alt="PPID Kota Balikpapan" style="max-width: 80%; height: auto;">
-                                </a>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-
-                <div class="col-6 col-md-3">
-                    <article class="box-icon-classic">
-                        <div class="unit box-icon-classic-body d-flex justify-content-center">
-                            <div class="unit-body">
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#modalTracking">
-                                    <img src="https://ppid.balikpapan.go.id/assets/bpnyaman/images/clients/client4.png"
-                                        alt="PPID Kota Balikpapan" style="max-width: 80%; height: auto;">
-                                </a>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-            </div>
-
         </div>
-    </section>
-    <!-- modal -->
-    <div class="modal fade" id="modalTracking" tabindex="-1" role="dialog" aria-labelledby="modalTrackingLabel"
-        aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-md" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h6 class="modal-title text-muted fw-semibold" id="modalTrackingLabel">Lacak Status
-                        Permohonan Informasi</h6>
-                </div>
-                <form id="formData">
-                    <div class="modal-body">
-                        <div class="form-group row mb-3">
-                            <label class="col-md-4 col-form-label text-muted fw-semibold">No.
-                                Permohonan</label>
-                            <div class="col-sm-8">
-                                <input type="text" id="no_tracking" class="form-control" name="no_tracking">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn"
-                            style="background-color: red; color: white; border-radius: 3px;"
-                            data-bs-dismiss="modal">BATAL</button>
-                        <button type="button" id="btnSubmitTracking" class="btn btn-primary">Lacak</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <!-- Proyek-->
     <h3 class = "mt-5">PROYEK</h3>
       <section class="section section-sm bg-default">
@@ -375,6 +287,4 @@
           </div>
         </div>
       </section>
-    
-
 <?php include __DIR__ . '/layout/footer.php'; ?>
