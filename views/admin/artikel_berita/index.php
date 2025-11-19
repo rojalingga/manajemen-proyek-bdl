@@ -161,14 +161,27 @@
                 if (response.status === 'success') {
                     $('#primary_id').val(response.data.id);
                     $('#judul').val(response.data.judul);
+                    $('#penulis').val(response.data.penulis);
+                    $('#tanggal_publish').val(response.data.tanggal_publish);
                     $('#deskripsi').val(response.data.deskripsi);
 
                     let thumbnail = response.data.thumbnail;
-                    let preview = $('#previewthumbnail');
+                    let previewthumbnail = $('#previewthumbnail');
                     if (thumbnail) {
                         let imageUrl = '/assets/artikel_berita/' + thumbnail;
-                        preview.html(
-                            `<img src="${imageUrl}" alt="Foto" style="max-height: 100%; max-width: 100%;">`
+                        previewthumbnail.html(
+                            `<img src="${imageUrl}" alt="Thumbnail" style="max-height: 100%; max-width: 100%;">`
+                        );
+                    } else {
+                        preview.html(`<span style="color: #6c757d;">Tidak ada thumbnail</span>`);
+                    }
+
+                    let file = response.data.file;
+                    let previewfile = $('#previewfile');
+                    if (file) {
+                        let fileUrl = '/assets/artikel_berita/' + file;
+                        previewfile.html(
+                            `<img src="${fileUrl}" alt="Thumbnail" style="max-height: 100%; max-width: 100%;">`
                         );
                     } else {
                         preview.html(`<span style="color: #6c757d;">Tidak ada thumbnail</span>`);

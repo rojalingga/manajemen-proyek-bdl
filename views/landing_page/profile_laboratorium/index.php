@@ -152,6 +152,9 @@
                 $i++; 
                 ?>
             <?php endforeach; ?>
+          </div>
+        </div>
+        
     </section>
 
 <?php include __DIR__ . '/../layout/footer.php'; ?>
