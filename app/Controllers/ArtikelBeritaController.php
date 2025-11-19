@@ -119,7 +119,7 @@ class ArtikelBeritaController extends Controller
 
         $timArtikelBerita = new ArtikelBerita();
 
-        $filename = '';
+        $filename_dokumen = '';
         if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
             $tmpFile = $_FILES['file']['tmp_name'];
             $ext     = strtolower(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION));
@@ -136,13 +136,13 @@ class ArtikelBeritaController extends Controller
                 return;
             }
 
-            $filename  = uniqid('artikelberita_') . '.' . $ext;
+            $filename_dokumen  = uniqid('artikelberita_') . '.' . $ext;
             $targetDir = __DIR__ . '/../../public/assets/artikel_berita/';
             if (! is_dir($targetDir)) {
                 mkdir($targetDir, 0777, true);
             }
 
-            $filePath = $targetDir . $filename;
+            $filePath = $targetDir . $filename_dokumen;
 
             try {
                 ImageCompressorController::compress($tmpFile, $filePath, $ext);
@@ -153,7 +153,7 @@ class ArtikelBeritaController extends Controller
             }
         }
 
-        $filename = '';
+        $filename_thumbnail = '';
         if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] === UPLOAD_ERR_OK) {
             $tmpFile = $_FILES['thumbnail']['tmp_name'];
             $ext     = strtolower(pathinfo($_FILES['thumbnail']['name'], PATHINFO_EXTENSION));
@@ -170,13 +170,13 @@ class ArtikelBeritaController extends Controller
                 return;
             }
 
-            $filename  = uniqid('artikelberita_') . '.' . $ext;
+            $filename_thumbnail  = uniqid('artikelberita_') . '.' . $ext;
             $targetDir = __DIR__ . '/../../public/assets/artikel_berita/';
             if (! is_dir($targetDir)) {
                 mkdir($targetDir, 0777, true);
             }
 
-            $filePath = $targetDir . $filename;
+            $filePath = $targetDir . $filename_thumbnail;
 
             try {
                 ImageCompressorController::compress($tmpFile, $filePath, $ext);
@@ -192,8 +192,8 @@ class ArtikelBeritaController extends Controller
             'penulis'         => $data['penulis'],
             'tanggal_publish' => $data['tanggal_publish'],
             'deskripsi'       => $data['deskripsi'],
-            'thumbnail'       => $filename ?? '',
-            'file'            => $filename ?? '',
+            'thumbnail'       => $filename_thumbnail ?? '',
+            'file'            => $filename_dokumen ?? '',
             'created_at'      => date('Y-m-d H:i:s'),
         ];
 
