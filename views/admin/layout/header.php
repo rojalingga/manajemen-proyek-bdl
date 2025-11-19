@@ -330,7 +330,7 @@
                                 <span>Tim Kreatif</span>
                             </a>
                         </li>
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/partner-colabolator') ?>">
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/partner-kolaborator') ?>">
                             <a href="/admin/partner-kolaborator" class="sidebar-link">
                                 <i class="bi bi-link-45deg"></i>
                                 <span>Partner Kolabolator</span>
