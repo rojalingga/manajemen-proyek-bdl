@@ -331,9 +331,9 @@
                             </a>
                         </li>
                         <li class="sidebar-item                                                <?php echo isActive('/admin/partner-colabolator') ?>">
-                            <a href="/admin/partner-colabolator" class="sidebar-link">
+                            <a href="/admin/partner-kolaborator" class="sidebar-link">
                                 <i class="bi bi-link-45deg"></i>
-                                <span>Partner Colabolator</span>
+                                <span>Partner Kolabolator</span>
                             </a>
                         </li>
                         <li class="sidebar-item                                                <?php echo isActive('/admin/artikel') ?>">

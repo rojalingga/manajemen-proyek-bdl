@@ -15,6 +15,12 @@ $router->post('/admin/tim-kreatif/store', 'TimKreatifController@store');
 $router->put('/admin/tim-kreatif/update/{id}', 'TimKreatifController@update');
 $router->delete('/admin/tim-kreatif/delete/{id}', 'TimKreatifController@destroy');
 
+$router->get('/admin/partner-kolaborator', 'PartnerKolaboratorController@index');
+$router->get('/admin/partner-kolaborator/{id}', 'PartnerKolaboratorController@edit');
+$router->post('/admin/partner-kolaborator/store', 'PartnerKolaboratorController@store');
+$router->put('/admin/partner-kolaborator/update/{id}', 'PartnerKolaboratorController@update');
+$router->delete('/admin/partner-kolaborator/delete/{id}', 'PartnerKolaboratorController@destroy');
+
 $router->get('/admin/users', 'UsersController@index');
 $router->get('/admin/users/{id}', 'UsersController@edit');
 $router->post('/admin/users/store', 'UsersController@store');
