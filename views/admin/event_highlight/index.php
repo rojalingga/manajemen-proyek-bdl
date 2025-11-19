@@ -4,10 +4,10 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-content-center justify-content-between">
-                        <h3 class="font-weight-bold text-xl">Partner Kolaborator</h3>
+                        <h3 class="font-weight-bold text-xl">Event Highlight</h3>
                         <div class="d-flex align-items-center">
                             <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalForm">
-                                <i class="bi bi-plus-lg"></i> Tambah Partner
+                                <i class="bi bi-plus-lg"></i> Tambah Event
                             </button>
                         </div>
                     </div>
@@ -18,8 +18,10 @@
                             <thead>
                                 <tr>
                                     <th width="50px">No</th>
-                                    <th>Nama Partner</th>
+                                    <th>Nama Event</th>
                                     <th>Deskripsi</th>
+                                    <th>Tanggal Event</th>
+                                    <th>Lokasi</th>
                                     <th width="100px" class="text-center">Action</th>
                                 </tr>
                             </thead>
@@ -37,7 +39,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
-                    <h5 class="modal-title white" id="myModalLabel160">Form Data Partner Kolaborator
+                    <h5 class="modal-title white" id="myModalLabel160">Form Data Event Highlight
                     </h5>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <i data-feather="x"></i>
@@ -48,9 +50,9 @@
                         <input type="hidden" id="primary_id" name="primary_id">
 
                         <div class="row mb-3 align-items-center">
-                            <label class="col-sm-3 col-form-label">Nama Partner</label>
+                            <label class="col-sm-3 col-form-label">Nama Event</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nama_partner" name="nama_partner">
+                                <input type="text" class="form-control" id="nama_event" name="nama_event">
                             </div>
                         </div>
                         <div class="row mb-3 align-items-center">
@@ -59,11 +61,23 @@
                                 <textarea name="deskripsi" id="deskripsi" class="form-control" rows="4"></textarea>
                             </div>
                         </div>
+                        <div class="row mb-3 align-items-center">
+                            <label class="col-sm-3 col-form-label">Tanggal Event</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="tanggal_event" name="tanggal_event">
+                            </div>
+                        </div>
+                        <div class="row mb-3 align-items-center">
+                            <label class="col-sm-3 col-form-label">Lokasi</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="lokasi" name="lokasi">
+                            </div>
+                        </div>
 
                         <div class="row mb-3 align-items-center">
-                            <label class="col-sm-3 col-form-label">Logo</label>
+                            <label class="col-sm-3 col-form-label">Banner</label>
                             <div class="col-sm-9">
-                                <input type="file" class="form-control" id="logo" name="logo" accept=".jpg, .jpeg, .png">
+                                <input type="file" class="form-control" id="banner" name="banner" accept=".jpg, .jpeg, .png, .webp">
                             </div>
                         </div>
 
@@ -71,9 +85,9 @@
                             <label class="col-sm-3 col-form-label"></label>
                             <div class="col-sm-8">
                                 <div class="img-thumbnail mb-2 d-flex align-items-center justify-content-center"
-                                    id="previewLogo"
+                                    id="previewBanner"
                                     style="max-width: 140px; height: 150px; background-color: #f8f9fa; border: 1px solid #dee2e6; overflow: hidden;">
-                                    <span style="color: #6c757d;">Tidak ada logo</span>
+                                    <span style="color: #6c757d;">Tidak ada banner</span>
                                 </div>
                             </div>
                         </div>
@@ -101,9 +115,9 @@
 
     var audio = new Audio("/audio/notification.ogg");
 
-    $('#logo').on('change', function() {
+    $('#banner').on('change', function() {
         const file = this.files[0];
-        const previewDiv = $('#previewLogo');
+        const previewDiv = $('#previewBanner');
 
         if (file && file.type.startsWith('image/')) {
             const reader = new FileReader();
@@ -113,7 +127,7 @@
             };
             reader.readAsDataURL(file);
         } else {
-            previewDiv.html('<span style="color: #6c757d;">Tidak ada logo</span>');
+            previewDiv.html('<span style="color: #6c757d;">Tidak ada banner</span>');
         }
     });
 
@@ -124,11 +138,13 @@
                 serverSide: false,
                 ordering: false,
                 responsive: true,
-                ajax: '/admin/partner-kolaborator?ajax=1',
+                ajax: '/admin/event-highlight?ajax=1',
                 columns: [
                     { data: 'DT_RowIndex', className: 'text-center' },
-                    { data: 'nama_partner' },
+                    { data: 'nama_event' },
                     { data: 'deskripsi' },
+                    { data: 'tanggal_event' },
+                    { data: 'lokasi' },
                     { data: 'action', className: 'text-center' }
                 ]
             });
@@ -139,18 +155,20 @@
             $.get(url, function(response) {
                 if (response.status === 'success') {
                     $('#primary_id').val(response.data.id);
-                    $('#nama_partner').val(response.data.nama_partner);
+                    $('#nama_event').val(response.data.nama_event);
                     $('#deskripsi').val(response.data.deskripsi);
+                    $('#tanggal_event').val(response.data.tanggal_event);
+                    $('#lokasi').val(response.data.lokasi);
 
-                    let logo = response.data.logo;
-                    let preview = $('#previewLogo');
-                    if (logo) {
-                        let imageUrl = '/assets/partner_kolaborator/' + logo;
+                    let banner = response.data.banner;
+                    let preview = $('#previewBanner');
+                    if (banner) {
+                        let imageUrl = '/assets/event_highlight/' + banner;
                         preview.html(
                             `<img src="${imageUrl}" alt="Foto" style="max-height: 100%; max-width: 100%;">`
                         );
                     } else {
-                        preview.html(`<span style="color: #6c757d;">Tidak ada logo</span>`);
+                        preview.html(`<span style="color: #6c757d;">Tidak ada banner</span>`);
                     }
 
                     $('#modalForm').modal('show');
@@ -172,7 +190,7 @@
             btnText.text('Simpan');
             submitBtn.prop('disabled', false);
 
-            $('#previewLogo').html('<span style="color: #6c757d;">Tidak ada logo</span>');
+            $('#previewBanner').html('<span style="color: #6c757d;">Tidak ada banner</span>');
 
         });
 
@@ -188,7 +206,7 @@
             submitBtn.prop('disabled', true);
 
             let id = $('#primary_id').val();
-            let url = id ? '/admin/partner-kolaborator/update/' + id : '/admin/partner-kolaborator/store';
+            let url = id ? '/admin/event-highlight/update/' + id : '/admin/event-highlight/store';
             let method = id ? 'PUT' : 'POST';
 
             $('.is-invalid').removeClass('is-invalid');
@@ -206,7 +224,7 @@
                 success: function(response) {
                      $('#modalForm').modal('hide');
                     audio.play();
-                    let msg = id ? "Partner kolaborator berhasil diupdate!" : "Partner kolaborator berhasil ditambahkan!";
+                    let msg = id ? "Event highlight berhasil diupdate!" : "Event highlight berhasil ditambahkan!";
                     toastr.success(msg, "BERHASIL", {
                         progressBar: true,
                         timeOut: 3500,
@@ -250,7 +268,7 @@
 
             Swal.fire({
                 title: 'Apakah Anda yakin?',
-                text: 'Partner Kolaborator ini akan dihapus secara permanen!',
+                text: 'Event highlight ini akan dihapus secara permanen!',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: '<span class="swal-btn-text">Ya, Hapus</span>',
@@ -275,7 +293,7 @@
                             method: 'DELETE',
                             success: function() {
                                 audio.play();
-                                toastr.success("Partner Kolaborator telah dihapus!", "BERHASIL", {
+                                toastr.success("Event highlight telah dihapus!", "BERHASIL", {
                                     progressBar: true,
                                     timeOut: 3500,
                                     positionClass: "toast-bottom-right"
@@ -287,7 +305,7 @@
                             error: function(xhr) {
                                 audio.play();
                                 toastr.error(
-                                    "Gagal menghapus Partner Kolaborator.",
+                                    "Gagal menghapus Event highlight.",
                                     "GAGAL!",
                                     {
                                         progressBar: true,
@@ -306,5 +324,4 @@
         });
 
     });
-    
 </script>

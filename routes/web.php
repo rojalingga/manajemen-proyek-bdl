@@ -30,6 +30,12 @@ $router->post('/admin/artikel-berita/store', 'ArtikelBeritaController@store');
 $router->put('/admin/artikel-berita/update/{id}', 'ArtikelBeritaController@update');
 $router->delete('/admin/artikel-berita/delete/{id}', 'ArtikelBeritaController@destroy');
 
+$router->get('/admin/event-highlight', 'EventHighlightController@index');
+$router->get('/admin/event-highlight/{id}', 'EventHighlightController@edit');
+$router->post('/admin/event-highlight/store', 'EventHighlightController@store');
+$router->put('/admin/event-highlight/update/{id}', 'EventHighlightController@update');
+$router->delete('/admin/event-highlight/delete/{id}', 'EventHighlightController@destroy');
+
 $router->get('/admin/users', 'UsersController@index');
 $router->get('/admin/users/{id}', 'UsersController@edit');
 $router->post('/admin/users/store', 'UsersController@store');
