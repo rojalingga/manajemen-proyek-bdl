@@ -97,23 +97,6 @@
         <!-- Swiper Pagination-->
         <div class="swiper-pagination"></div>
     </section>
-    <!--	Our Services-->
-    <section class="section section-sm section-top-1">
-        <div class="container offset-negative-1">
-            <div class="box-categories cta-box-wrap">
-                <div class="box-categories-content">
-                    <div class="row justify-content-center mb-4">
-                        <div class="col-md-4 wow fadeInDown col-9" data-wow-delay=".2s">
-                            <div class="box text-center"
-                                style="background-color: #484848; border-radius: 8px; padding: 20px;">
-                                <h5 class="box-title text-white" style="font-size: 20px; font-weight: bold;">
-                                    WEB LAB MMT</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     <!-- Proyek-->
     <h3 class = "mt-5">PROYEK</h3>
       <section class="section section-sm bg-default">
