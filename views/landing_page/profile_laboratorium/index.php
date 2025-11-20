@@ -1,54 +1,62 @@
 <?php include __DIR__ . '/../layout/header.php'; ?>
-    <!-- Profile Laboratorium-->
-      <section class="section section-sm section-first bg-default">
-        <div class="container">
-          <h3>Profile Laboratorium</h3>
-          <div class="row row-50 row-sm">
+<!-- <h3 class="mt-5">Profile Laboratorium</h3> -->
+<section class="section section-sm bg-default">
+    <div class="container">
+       <h3 class="title-block find-car oh">
+            <span class="d-inline-block">Profil Laboratorium</span>
+        </h3>
+        <div class="row row-50 row-sm">
             <div class="col-md-6">
-              <!-- Visi-->
-              <article class="quote-lisa">
-                <div class="unit unit-spacing-md align-items-center">
-                  <div class="unit-left"></div>
-                  <div class="unit-body">
-                    <h5 class="team-modern-status">Visi</h5>
-                  </div>
-                </div>
-                <div class="quote-modern-text">
-                  <p class="q">Ut venenatis tellus in metus. Sed odio morbi quis commodo odio aenean. Ut ornare lectus sit amet est. Tellus orci ac auctor augue mauris augue neque gravida ullamcorper a lacus.</p>
-                </div>
-              </article>
+                <article class="quote-lisa">
+                    <div class="unit unit-spacing-md align-items-center">
+                        <div class="unit-left"></div>
+                        <div class="unit-body">
+                            <h4 class="team-modern-status">Sejarah</h4>
+                        </div>
+                    </div>
+                    <div class="quote-modern-text">
+                        <p class="q"><?= nl2br($profil_web['sejarah']) ?></p>
+                    </div>
+                </article>
+
+                <article class="quote-lisa mt-4">
+                    <div class="unit unit-spacing-md align-items-center">
+                        <div class="unit-left"></div>
+                        <div class="unit-body">
+                            <h4 class="team-modern-status">Visi</h4>
+                        </div>
+                    </div>
+                    <div class="quote-modern-text">
+                        <p class="q"><?= nl2br($profil_web['visi']) ?></p>
+                    </div>
+                </article>
+
             </div>
+
             <div class="col-md-6">
-              <!-- Misi-->
-              <article class="quote-lisa">
-                <div class="unit unit-spacing-md align-items-center">
-                  <div class="unit-left"></div>
-                  <div class="unit-body">
-                    <h5 class="team-modern-status">Misi</h5>
-                  </div>
-                </div>
-                <div class="quote-modern-text">
-                  <p class="q">Fermentum dui faucibus in ornare quam viverra. Tincidunt nunc pulvinar sapien et ligula ullamcorper malesuada proin libero. Cursus in hac habitasse platea dictumst quisque.</p>
-                </div>
-              </article>
+                <article class="quote-lisa">
+                    <div class="unit unit-spacing-md align-items-center">
+                        <div class="unit-left"></div>
+                        <div class="unit-body">
+                            <h4 class="team-modern-status">Misi</h4>
+                        </div>
+                    </div>
+                    <div class="quote-modern-text">
+                        <p class="q"><?= nl2br($profil_web['misi']) ?></p>
+                    </div>
+                </article>
             </div>
-          </div>
+
         </div>
-    </section>
-    <!-- Sejarah Laboratorium-->
-    <section class="section section-sm section-last bg-default">
-        <div class="container">
-          <div class="owl-carousel owl-modern" data-items="1" data-stage-padding="15" data-margin="30" data-dots="true" data-animation-in="fadeIn" data-animation-out="fadeOut" data-autoplay="true">
-            <article class="quote-lisa">
-                <div class="unit-body">
-                    <h5 class="team-modern-status">Sejarah</h5>
-                </div>
-                <div class="quote-modern-text">
-                  <p class="q">Pharetra vel turpis nunc eget lorem dolor sed viverra ipsum. Diam phasellus vestibulum lorem sed risus ultricies. Aenean et tortor at risus viverra adipiscing. Aliquet enim tortor at auctor urna. Tortor aliquam nulla facilisi cras fermentum. Malesuada pellentesque elit eget gravida cum sociis natoque.</p>
-                </div>
-            </article>
-        </div>
-    </section>
+        <style>
+            .quote-lisa .quote-modern-text .q {
+                text-align: left !important;
+            }
+        </style>
+
+    </div>
+</section>
+
 
     <!-- Tim Kreatif-->
 <section class="section section-sm bg-default">

@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/Controller.php';
 require_once __DIR__ . '/../models/TimKreatif.php';
+require_once __DIR__ . '/../models/ProfilWeb.php';
 require_once __DIR__ . '/../models/PartnerKolaborator.php';
 
 class LandingPageController extends Controller
@@ -14,6 +15,9 @@ class LandingPageController extends Controller
 
     public function getProfileLaboratorium()
     {
+        $model       = new ProfilWeb();
+        $data['profil_web'] = $model->getForLandingPage();
+
         $model       = new TimKreatif();
         $data['tim'] = $model->getForLandingPage();
         

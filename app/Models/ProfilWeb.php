@@ -19,10 +19,10 @@ class ProfilWeb
 
     public function getForLandingPage()
     {
-        $query = "SELECT id, nama, jabatan, foto FROM tim_kreatif ORDER BY id ASC";
+        $query = "SELECT * FROM profil_web LIMIT 1";
         $stmt  = $this->db->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->fetch();
     }
 
     public function update($id, $data)

@@ -26,7 +26,25 @@
     <link rel="stylesheet" href="/template_landing_page/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="/template_landing_page/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+
     <style>
+        .select2-container--default .select2-selection--single {
+            height: 38px !important;
+            padding: 6px 12px !important;
+            border: 1px solid #ccc !important;
+            border-radius: 4px !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 28px !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 36px !important;
+        }
+
         .search-container {
             position: relative;
             margin-left: 15px;
