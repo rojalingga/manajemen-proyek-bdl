@@ -17,16 +17,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <?php
-    require_once __DIR__ . '/../../../app/models/ProfilWeb.php';
-    $profil = new ProfilWeb();
-    $dataProfil = $profil->getData();
-    ?>
+    <title>LAB MMT</title>
 
-    <title><?= $dataProfil['nama'] ?></title>
-
-    <link rel="shortcut icon" href="/assets/logo_web/<?= $dataProfil['logo'] ?>" type="image/x-icon">
-    <link rel="shortcut icon" href="/assets/logo_web/<?= $dataProfil['logo'] ?>" type="image/png">
+    <link rel="shortcut icon" href="/img/logo.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="/img/logo.svg" type="image/png">
 
     <link rel="stylesheet" href="/template_admin/assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="/template_admin/assets/extensions/choices.js/public/assets/styles/choices.css">
@@ -262,7 +256,7 @@
                 <div class="sidebar-header position-relative">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="logo">
-                            <a><img src="/assets/logo_web/<?= $dataProfil['logo'] ?>" alt="Logo"
+                            <a><img src="/img/logo.svg" alt="Logo"
                                     style="width:80px; height:auto;">
                             </a>
                         </div>
@@ -304,18 +298,19 @@
                 </div>
                 <div class="sidebar-menu">
                     <ul class="menu">
-                        <?php
-                            $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-                            $uri = rtrim($uri, '/');
 
-                            function isActive($route)
-                            {
-                                global $uri;
-                                $cleanRoute = rtrim($route, '/');
-                                return $uri === $cleanRoute ? 'active' : '';
-                            }
+              <?php
+                  $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+                  $uri = rtrim($uri, '/');
 
-                        ?>
+                  function isActive($route)
+                  {
+                      global $uri;
+                      $cleanRoute = rtrim($route, '/');
+                      return $uri === $cleanRoute ? 'active' : '';
+                  }
+
+              ?>
 
                         <li class="sidebar-item                                                <?php echo isActive('/admin/dashboard') ?>">
                             <a href="/admin/dashboard" class="sidebar-link">
@@ -381,73 +376,73 @@
                         </li>
 
 
-                        <li class="sidebar-item">
-                                <a href="#" onclick="logoutConfirm(event)" class="sidebar-link">
-                                    <i class="bi bi-box-arrow-right"></i>
-                                    <span>Logout</span>
-                                </a>
-                                <form id="logout-form" action="/admin/logout" method="POST" style="display: none;"></form>
-                            </li>
+                       <li class="sidebar-item">
+                            <a href="#" onclick="logoutConfirm(event)" class="sidebar-link">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Logout</span>
+                            </a>
+                            <form id="logout-form" action="/admin/logout" method="POST" style="display: none;"></form>
+                        </li>
 
-                        </ul>
-                    </div>
+                    </ul>
                 </div>
             </div>
-            <div id="main" class='layout-navbar navbar-fixed'>
-            <header>
-                    <nav class="navbar navbar-expand navbar-light navbar-top">
-                        <div class="container-fluid">
-                            <a href="#" class="burger-btn d-block d-lg-none">
-                                <i class="bi bi-justify fs-3"></i>
-                            </a>
+        </div>
+        <div id="main" class='layout-navbar navbar-fixed'>
+           <header>
+                <nav class="navbar navbar-expand navbar-light navbar-top">
+                    <div class="container-fluid">
+                        <a href="#" class="burger-btn d-block d-lg-none">
+                            <i class="bi bi-justify fs-3"></i>
+                        </a>
 
-                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                                <ul class="navbar-nav ms-auto mb-lg-0">
-                                </ul>
-                                <div class="dropdown">
-                                    <a data-bs-toggle="dropdown" aria-expanded="false">
-                                    <div class="user-menu d-flex">
-                                        <?php
-                                        if (session_status() === PHP_SESSION_NONE) {
-                                            session_start();
-                                        }
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav ms-auto mb-lg-0">
+                            </ul>
+                            <div class="dropdown">
+                                <a data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="user-menu d-flex">
+                                    <?php
+                                    if (session_status() === PHP_SESSION_NONE) {
+                                        session_start();
+                                    }
 
-                                        require_once __DIR__ . '/../../../app/models/Users.php';
+                                    require_once __DIR__ . '/../../../app/models/Users.php';
 
-                                        $usernameSession = $_SESSION['user']['username'] ?? null;
-                                        $username = '-';
-                                        $nama_role = '-';
-                                        $fotoPath = '/img/1.jpg';
+                                    $usernameSession = $_SESSION['user']['username'] ?? null;
+                                    $username = '-';
+                                    $nama_role = '-';
+                                    $fotoPath = '/img/1.jpg';
 
-                                        if ($usernameSession) {
-                                            $userModel = new Users();
-                                            $user = $userModel->findWithRole($usernameSession);
+                                    if ($usernameSession) {
+                                        $userModel = new Users();
+                                        $user = $userModel->findWithRole($usernameSession);
 
-                                            if ($user) {
-                                                $username = htmlspecialchars($user['username']);
-                                                $nama_role = htmlspecialchars($user['nama_role'] ?? '-');
-                                                if (!empty($user['foto']) && file_exists(__DIR__ . '/../../../public/assets/foto_profil/' . $user['foto'])) {
-                                                    $fotoPath = '/assets/foto_profil/' . htmlspecialchars($user['foto']);
-                                                }
+                                        if ($user) {
+                                            $username = htmlspecialchars($user['username']);
+                                            $nama_role = htmlspecialchars($user['nama_role'] ?? '-');
+                                            if (!empty($user['foto']) && file_exists(__DIR__ . '/../../../public/assets/foto_profil/' . $user['foto'])) {
+                                                $fotoPath = '/assets/foto_profil/' . htmlspecialchars($user['foto']);
                                             }
                                         }
-                                        ?>
+                                    }
+                                    ?>
 
-                                        <div class="user-name text-end me-3">
-                                            <h6 class="mb-0 text-gray-600"><?php echo $username; ?></h6>
-                                            <p class="mb-0 text-sm text-gray-600"><?php echo $nama_role; ?></p>
-                                        </div>
-
-                                        <div class="user-img d-flex align-items-center">
-                                            <div class="avatar avatar-md">
-                                                <img src="<?php echo $fotoPath; ?>" alt="Foto Profil">
-                                            </div>
-                                        </div>
+                                    <div class="user-name text-end me-3">
+                                        <h6 class="mb-0 text-gray-600"><?php echo $username; ?></h6>
+                                        <p class="mb-0 text-sm text-gray-600"><?php echo $nama_role; ?></p>
                                     </div>
 
-                                    </a>
+                                    <div class="user-img d-flex align-items-center">
+                                        <div class="avatar avatar-md">
+                                            <img src="<?php echo $fotoPath; ?>" alt="Foto Profil">
+                                        </div>
+                                    </div>
                                 </div>
+
+                                </a>
                             </div>
+                        </div>
                     </div>
                 </nav>
             </header>

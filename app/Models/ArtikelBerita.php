@@ -37,8 +37,8 @@ class ArtikelBerita
 
     public function insert($data)
     {
-        $query = "INSERT INTO artikel_berita (judul, penulis, thumbnail, file tanggal_publish, deskripsi, created_at)
-              VALUES (:judul, :penulis, :thumbnail,:file :tanggal_publish, :deskripsi, :created_at)";
+        $query = "INSERT INTO artikel_berita (judul, penulis, thumbnail, file, tanggal_publish, deskripsi, created_at)
+              VALUES (:judul, :penulis, :thumbnail, :file, :tanggal_publish, :deskripsi, :created_at)";
         $stmt = $this->db->prepare($query);
         $stmt->execute($data);
     }
