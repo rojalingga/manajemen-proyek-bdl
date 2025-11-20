@@ -64,7 +64,7 @@
                         <div class="row mb-3 align-items-center">
                             <label class="col-sm-3 col-form-label">Tanggal Publish</label>
                             <div class="col-sm-9">
-                                <textarea name="tanggal_publish" id="tanggal_publish" class="form-control" rows="4"></textarea>
+                                <input type="date" class="form-control" id="tanggal_publish" name="tanggal_publish">
                             </div>
                         </div>
                         <div class="row mb-3 align-items-center">

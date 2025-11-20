@@ -64,7 +64,7 @@
                         <div class="row mb-3 align-items-center">
                             <label class="col-sm-3 col-form-label">Tanggal Event</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="tanggal_event" name="tanggal_event">
+                                <input type="date" class="form-control" id="tanggal_event" name="tanggal_event">
                             </div>
                         </div>
                         <div class="row mb-3 align-items-center">
