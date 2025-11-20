@@ -6,6 +6,13 @@ require_once __DIR__ . '/../models/EventHighlight.php';
 
 class EventHighlightController extends Controller
 {
+    private $eventHighlightModel;
+
+    public function __construct()
+    {
+        $this->eventHighlightModel = new EventHighlight();
+    }
+
     public function index()
     {
         if (isset($_GET['ajax'])) {
@@ -13,8 +20,7 @@ class EventHighlightController extends Controller
             header('Content-Type: application/json; charset=utf-8');
 
             try {
-                $timEventHighlight = new EventHighlight();
-                $datatables       = $timEventHighlight->getAll();
+                $datatables = $this->eventHighlightModel->getAll();
 
                 $data  = [];
                 $index = 1;
@@ -34,12 +40,12 @@ class EventHighlightController extends Controller
                     ';
 
                     $data[] = [
-                        'DT_RowIndex'     => $index++,
-                        'nama_event'      => htmlspecialchars($row['nama_event']),
-                        'deskripsi'       => htmlspecialchars($row['deskripsi']),
-                        'tanggal_event'   => htmlspecialchars($row['tanggal_event']),
-                        'lokasi'          => htmlspecialchars($row['lokasi']),
-                        'action'          => $action,
+                        'DT_RowIndex'   => $index++,
+                        'nama_event'    => htmlspecialchars($row['nama_event']),
+                        'deskripsi'     => htmlspecialchars($row['deskripsi']),
+                        'tanggal_event' => htmlspecialchars($row['tanggal_event']),
+                        'lokasi'        => htmlspecialchars($row['lokasi']),
+                        'action'        => $action,
                     ];
                 }
 
@@ -60,8 +66,7 @@ class EventHighlightController extends Controller
         header('Content-Type: application/json; charset=utf-8');
 
         try {
-            $timEventHighlight = new EventHighlight();
-            $data             = $timEventHighlight->findById($id);
+            $data = $this->eventHighlightModel->findById($id);
 
             if ($data) {
                 echo json_encode([
@@ -113,8 +118,6 @@ class EventHighlightController extends Controller
             return;
         }
 
-        $timEventHighlight = new EventHighlight();
-
         $filename_banner = '';
         if (isset($_FILES['banner']) && $_FILES['banner']['error'] === UPLOAD_ERR_OK) {
             $tmpFile = $_FILES['banner']['tmp_name'];
@@ -132,7 +135,7 @@ class EventHighlightController extends Controller
                 return;
             }
 
-            $filename_banner  = uniqid('eventhighlight_') . '.' . $ext;
+            $filename_banner = uniqid('eventhighlight_') . '.' . $ext;
             $targetDir = __DIR__ . '/../../public/assets/event_highlight/';
             if (! is_dir($targetDir)) {
                 mkdir($targetDir, 0777, true);
@@ -150,16 +153,16 @@ class EventHighlightController extends Controller
         }
 
         $insertData = [
-            'nama_event'        => $data['nama_event'],
-            'deskripsi'         => $data['deskripsi'],
-            'tanggal_event'     => $data['tanggal_event'],
-            'lokasi'            => $data['lokasi'],
-            'banner'            => $filename_banner ?? '',
-            'created_at'        => date('Y-m-d H:i:s'),
+            'nama_event'    => $data['nama_event'],
+            'deskripsi'     => $data['deskripsi'],
+            'tanggal_event' => $data['tanggal_event'],
+            'lokasi'        => $data['lokasi'],
+            'banner'        => $filename_banner ?? '',
+            'created_at'    => date('Y-m-d H:i:s'),
         ];
 
         try {
-            $timEventHighlight->insert($insertData);
+            $this->eventHighlightModel->insert($insertData);
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
             http_response_code(500);
@@ -171,9 +174,8 @@ class EventHighlightController extends Controller
     {
         header('Content-Type: application/json; charset=utf-8');
 
-        $data             = $_POST;
-        $timEventHighlight = new EventHighlight();
-        $existing         = $timEventHighlight->findById($id);
+        $data     = $_POST;
+        $existing = $this->eventHighlightModel->findById($id);
 
         if (! $existing) {
             http_response_code(404);
@@ -244,11 +246,11 @@ class EventHighlightController extends Controller
         }
 
         $updateData = [
-            'nama_event'      => $data['nama_event'],
-            'deskripsi'         => $data['deskripsi'],
+            'nama_event'    => $data['nama_event'],
+            'deskripsi'     => $data['deskripsi'],
             'tanggal_event' => $data['tanggal_event'],
-            'lokasi'       => $data['lokasi'],
-            'banner'          => $filename ?? '',
+            'lokasi'        => $data['lokasi'],
+            'banner'        => $filename ?? '',
         ];
 
         if (! empty($data['password'])) {
@@ -256,7 +258,7 @@ class EventHighlightController extends Controller
         }
 
         try {
-            $timEventHighlight->update($id, $updateData);
+            $this->eventHighlightModel->update($id, $updateData);
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
             http_response_code(500);
@@ -269,8 +271,7 @@ class EventHighlightController extends Controller
         header('Content-Type: application/json; charset=utf-8');
 
         try {
-            $timEventHighlight = new EventHighlight();
-            $user             = $timEventHighlight->findById($id);
+            $user = $this->eventHighlightModel->findById($id);
 
             if (! $user) {
                 http_response_code(404);
@@ -285,7 +286,7 @@ class EventHighlightController extends Controller
                 }
             }
 
-            $timEventHighlight->delete($id);
+            $this->eventHighlightModel->delete($id);
 
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
@@ -293,5 +294,4 @@ class EventHighlightController extends Controller
             echo json_encode(['error' => $e->getMessage()]);
         }
     }
-
 }

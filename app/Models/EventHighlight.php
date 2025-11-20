@@ -3,6 +3,7 @@
 class EventHighlight
 {
     private $db;
+    private $table = 'event_highlight';
 
     public function __construct()
     {
@@ -11,7 +12,7 @@ class EventHighlight
 
     public function getAll()
     {
-        $query = "SELECT * FROM event_highlight ORDER BY id ASC";
+        $query = "SELECT * FROM {$this->table} ORDER BY id ASC";
 
         $stmt = $this->db->prepare($query);
         $stmt->execute();
@@ -20,7 +21,7 @@ class EventHighlight
 
     public function getForLandingPage()
     {
-        $query = "SELECT id, nama_event, deskripsi, tanggal_event, lokasi, banner FROM event_highlight ORDER BY id ASC";
+        $query = "SELECT id, nama_event, deskripsi, tanggal_event, lokasi, banner FROM {$this->table} ORDER BY id ASC";
         $stmt  = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -28,7 +29,7 @@ class EventHighlight
 
     public function findById($id)
     {
-        $query = "SELECT * FROM event_highlight WHERE id = :id LIMIT 1";
+        $query = "SELECT * FROM {$this->table} WHERE id = :id LIMIT 1";
         $stmt  = $this->db->prepare($query);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -37,7 +38,7 @@ class EventHighlight
 
     public function insert($data)
     {
-        $query = "INSERT INTO event_highlight (nama_event, deskripsi, tanggal_event, lokasi, banner, created_at)
+        $query = "INSERT INTO {$this->table} (nama_event, deskripsi, tanggal_event, lokasi, banner, created_at)
               VALUES (:nama_event, :deskripsi, :tanggal_event, :lokasi, :banner, :created_at)";
         $stmt = $this->db->prepare($query);
         $stmt->execute($data);
@@ -50,7 +51,7 @@ class EventHighlight
             $fields[] = "$key = :$key";
         }
 
-        $query      = "UPDATE event_highlight SET " . implode(',', $fields) . " WHERE id = :id";
+        $query      = "UPDATE {$this->table} SET " . implode(',', $fields) . " WHERE id = :id";
         $stmt       = $this->db->prepare($query);
         $data['id'] = $id;
         $stmt->execute($data);
@@ -58,7 +59,7 @@ class EventHighlight
 
     public function delete($id)
     {
-        $stmt = $this->db->prepare("DELETE FROM event_highlight WHERE id = :id");
+        $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id = :id");
         $stmt->bindValue(':id', $id);
         $stmt->execute();
     }

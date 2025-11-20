@@ -6,6 +6,13 @@ require_once __DIR__ . '/../models/ArtikelBerita.php';
 
 class ArtikelBeritaController extends Controller
 {
+    private $artikelBeritaModel;
+
+    public function __construct()
+    {
+        $this->artikelBeritaModel = new ArtikelBerita();
+    }
+
     public function index()
     {
         if (isset($_GET['ajax'])) {
@@ -13,8 +20,7 @@ class ArtikelBeritaController extends Controller
             header('Content-Type: application/json; charset=utf-8');
 
             try {
-                $timArtikelBerita = new ArtikelBerita();
-                $datatables       = $timArtikelBerita->getAll();
+                $datatables = $this->artikelBeritaModel->getAll();
 
                 $data  = [];
                 $index = 1;
@@ -60,8 +66,7 @@ class ArtikelBeritaController extends Controller
         header('Content-Type: application/json; charset=utf-8');
 
         try {
-            $timArtikelBerita = new ArtikelBerita();
-            $data             = $timArtikelBerita->findById($id);
+            $data = $this->artikelBeritaModel->findById($id);
 
             if ($data) {
                 echo json_encode([
@@ -117,8 +122,6 @@ class ArtikelBeritaController extends Controller
             return;
         }
 
-        $timArtikelBerita = new ArtikelBerita();
-
         $filename_dokumen = '';
         if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
             $tmpFile = $_FILES['file']['tmp_name'];
@@ -136,7 +139,7 @@ class ArtikelBeritaController extends Controller
                 return;
             }
 
-            $filename_dokumen  = uniqid('artikelberita_') . '.' . $ext;
+            $filename_dokumen = uniqid('artikelberita_') . '.' . $ext;
             $targetDir = __DIR__ . '/../../public/assets/artikel_berita/';
             if (! is_dir($targetDir)) {
                 mkdir($targetDir, 0777, true);
@@ -170,7 +173,7 @@ class ArtikelBeritaController extends Controller
                 return;
             }
 
-            $filename_thumbnail  = uniqid('artikelberita_') . '.' . $ext;
+            $filename_thumbnail = uniqid('artikelberita_') . '.' . $ext;
             $targetDir = __DIR__ . '/../../public/assets/artikel_berita/';
             if (! is_dir($targetDir)) {
                 mkdir($targetDir, 0777, true);
@@ -198,7 +201,7 @@ class ArtikelBeritaController extends Controller
         ];
 
         try {
-            $timArtikelBerita->insert($insertData);
+            $this->artikelBeritaModel->insert($insertData);
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
             http_response_code(500);
@@ -210,9 +213,8 @@ class ArtikelBeritaController extends Controller
     {
         header('Content-Type: application/json; charset=utf-8');
 
-        $data             = $_POST;
-        $timArtikelBerita = new ArtikelBerita();
-        $existing         = $timArtikelBerita->findById($id);
+        $data     = $_POST;
+        $existing = $this->artikelBeritaModel->findById($id);
 
         if (! $existing) {
             http_response_code(404);
@@ -237,21 +239,13 @@ class ArtikelBeritaController extends Controller
             $errors['deskripsi'][] = 'Deskripsi wajib diisi.';
         }
 
-        if (! isset($_FILES['thumbnail']) || $_FILES['thumbnail']['error'] !== UPLOAD_ERR_OK) {
-            $errors['thumbnail'][] = 'Thumbnail harus diupload.';
-        }
-
-        if (! isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
-            $errors['file'][] = 'File harus diupload.';
-        }
-
         if ($errors) {
             http_response_code(422);
             echo json_encode(['errors' => $errors]);
             return;
         }
 
-        $filename = $existing['file'];
+        $filename_dokumen = $existing['file'];
 
         if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
             $tmpFile = $_FILES['file']['tmp_name'];
@@ -278,8 +272,8 @@ class ArtikelBeritaController extends Controller
                 unlink($targetDir . $existing['file']);
             }
 
-            $filename = uniqid('artikelberita_') . '.' . $ext;
-            $filePath = $targetDir . $filename;
+            $filename_dokumen = uniqid('artikelberita_') . '.' . $ext;
+            $filePath = $targetDir . $filename_dokumen;
 
             try {
                 ImageCompressorController::compress($tmpFile, $filePath, $ext);
@@ -290,7 +284,7 @@ class ArtikelBeritaController extends Controller
             }
         }
 
-        $filename = $existing['thumbnail'];
+        $filename_thumbnail = $existing['thumbnail'];
 
         if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] === UPLOAD_ERR_OK) {
             $tmpFile = $_FILES['thumbnail']['tmp_name'];
@@ -317,8 +311,8 @@ class ArtikelBeritaController extends Controller
                 unlink($targetDir . $existing['thumbnail']);
             }
 
-            $filename = uniqid('artikelberita_') . '.' . $ext;
-            $filePath = $targetDir . $filename;
+            $filename_thumbnail = uniqid('artikelberita_') . '.' . $ext;
+            $filePath = $targetDir . $filename_thumbnail;
 
             try {
                 ImageCompressorController::compress($tmpFile, $filePath, $ext);
@@ -334,8 +328,8 @@ class ArtikelBeritaController extends Controller
             'penulis'         => $data['penulis'],
             'tanggal_publish' => $data['tanggal_publish'],
             'deskripsi'       => $data['deskripsi'],
-            'thumbnail'       => $filename ?? '',
-            'file'            => $filename ?? '',
+            'thumbnail'       => $filename_thumbnail ?? '',
+            'file'            => $filename_dokumen ?? '',
         ];
 
         if (! empty($data['password'])) {
@@ -343,7 +337,7 @@ class ArtikelBeritaController extends Controller
         }
 
         try {
-            $timArtikelBerita->update($id, $updateData);
+            $this->artikelBeritaModel->update($id, $updateData);
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
             http_response_code(500);
@@ -356,8 +350,7 @@ class ArtikelBeritaController extends Controller
         header('Content-Type: application/json; charset=utf-8');
 
         try {
-            $timArtikelBerita = new ArtikelBerita();
-            $user             = $timArtikelBerita->findById($id);
+            $user = $this->artikelBeritaModel->findById($id);
 
             if (! $user) {
                 http_response_code(404);
@@ -372,7 +365,7 @@ class ArtikelBeritaController extends Controller
                 }
             }
 
-            $timArtikelBerita->delete($id);
+            $this->artikelBeritaModel->delete($id);
 
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
@@ -380,5 +373,4 @@ class ArtikelBeritaController extends Controller
             echo json_encode(['error' => $e->getMessage()]);
         }
     }
-
 }

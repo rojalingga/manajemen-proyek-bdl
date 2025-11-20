@@ -6,6 +6,13 @@ require_once __DIR__ . '/../models/TimKreatif.php';
 
 class TimKreatifController extends Controller
 {
+    private $timKreatifModel;
+
+    public function __construct()
+    {
+        $this->timKreatifModel = new TimKreatif();
+    }
+
     public function index()
     {
         if (isset($_GET['ajax'])) {
@@ -13,8 +20,7 @@ class TimKreatifController extends Controller
             header('Content-Type: application/json; charset=utf-8');
 
             try {
-                $timKreatifModel = new TimKreatif();
-                $datatables      = $timKreatifModel->getAll();
+                $datatables = $this->timKreatifModel->getAll();
 
                 $data  = [];
                 $index = 1;
@@ -59,8 +65,7 @@ class TimKreatifController extends Controller
         header('Content-Type: application/json; charset=utf-8');
 
         try {
-            $timKreatifModel = new TimKreatif();
-            $data            = $timKreatifModel->findById($id);
+            $data = $this->timKreatifModel->findById($id);
 
             if ($data) {
                 echo json_encode([
@@ -108,8 +113,6 @@ class TimKreatifController extends Controller
             return;
         }
 
-        $timKreatifModel = new TimKreatif();
-
         $filename = '';
         if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
             $tmpFile = $_FILES['foto']['tmp_name'];
@@ -155,7 +158,7 @@ class TimKreatifController extends Controller
         ];
 
         try {
-            $timKreatifModel->insert($insertData);
+            $this->timKreatifModel->insert($insertData);
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
             http_response_code(500);
@@ -167,9 +170,8 @@ class TimKreatifController extends Controller
     {
         header('Content-Type: application/json; charset=utf-8');
 
-        $data            = $_POST;
-        $timKreatifModel = new TimKreatif();
-        $existing        = $timKreatifModel->findById($id);
+        $data     = $_POST;
+        $existing = $this->timKreatifModel->findById($id);
 
         if (! $existing) {
             http_response_code(404);
@@ -253,7 +255,7 @@ class TimKreatifController extends Controller
         }
 
         try {
-            $timKreatifModel->update($id, $updateData);
+            $this->timKreatifModel->update($id, $updateData);
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
             http_response_code(500);
@@ -266,8 +268,7 @@ class TimKreatifController extends Controller
         header('Content-Type: application/json; charset=utf-8');
 
         try {
-            $timKreatifModel = new TimKreatif();
-            $user            = $timKreatifModel->findById($id);
+            $user = $this->timKreatifModel->findById($id);
 
             if (! $user) {
                 http_response_code(404);
@@ -282,7 +283,7 @@ class TimKreatifController extends Controller
                 }
             }
 
-            $timKreatifModel->delete($id);
+            $this->timKreatifModel->delete($id);
 
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
@@ -290,5 +291,4 @@ class TimKreatifController extends Controller
             echo json_encode(['error' => $e->getMessage()]);
         }
     }
-
 }

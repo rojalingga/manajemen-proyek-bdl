@@ -3,6 +3,7 @@
 class PartnerKolaborator
 {
     private $db;
+    private $table = 'partner_kolaborator';
 
     public function __construct()
     {
@@ -11,7 +12,7 @@ class PartnerKolaborator
 
     public function getAll()
     {
-        $query = "SELECT * FROM partner_kolaborator ORDER BY id ASC";
+        $query = "SELECT * FROM {$this->table} ORDER BY id ASC";
 
         $stmt = $this->db->prepare($query);
         $stmt->execute();
@@ -20,7 +21,7 @@ class PartnerKolaborator
 
     public function getForLandingPage()
     {
-        $query = "SELECT id, nama_partner, deskripsi, logo FROM partner_kolaborator ORDER BY id ASC";
+        $query = "SELECT id, nama_partner, deskripsi, logo FROM {$this->table} ORDER BY id ASC";
         $stmt  = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -28,7 +29,7 @@ class PartnerKolaborator
 
     public function findById($id)
     {
-        $query = "SELECT * FROM partner_kolaborator WHERE id = :id LIMIT 1";
+        $query = "SELECT * FROM {$this->table} WHERE id = :id LIMIT 1";
         $stmt  = $this->db->prepare($query);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -37,7 +38,7 @@ class PartnerKolaborator
 
     public function insert($data)
     {
-        $query = "INSERT INTO partner_kolaborator (nama_partner, logo, deskripsi, created_at)
+        $query = "INSERT INTO {$this->table} (nama_partner, logo, deskripsi, created_at)
               VALUES (:nama_partner, :logo, :deskripsi, :created_at)";
         $stmt = $this->db->prepare($query);
         $stmt->execute($data);
@@ -50,7 +51,7 @@ class PartnerKolaborator
             $fields[] = "$key = :$key";
         }
 
-        $query      = "UPDATE partner_kolaborator SET " . implode(',', $fields) . " WHERE id = :id";
+        $query      = "UPDATE {$this->table} SET " . implode(',', $fields) . " WHERE id = :id";
         $stmt       = $this->db->prepare($query);
         $data['id'] = $id;
         $stmt->execute($data);
@@ -58,7 +59,7 @@ class PartnerKolaborator
 
     public function delete($id)
     {
-        $stmt = $this->db->prepare("DELETE FROM partner_kolaborator WHERE id = :id");
+        $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id = :id");
         $stmt->bindValue(':id', $id);
         $stmt->execute();
     }

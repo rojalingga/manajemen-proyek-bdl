@@ -5,6 +5,12 @@ require_once __DIR__ . '/../models/Users.php';
 
 class AuthController extends Controller
 {
+    private $userModel;
+
+    public function __construct()
+    {
+        $this->userModel = new Users();
+    }
 
     public function getLogin()
     {
@@ -47,8 +53,7 @@ class AuthController extends Controller
             return;
         }
 
-        $userModel = new Users();
-        $user      = $userModel->findWithRole($username);
+        $user = $this->userModel->findWithRole($username);
 
         if (! $user) {
             http_response_code(422);
@@ -106,5 +111,4 @@ class AuthController extends Controller
         header('Location: /admin/login');
         exit;
     }
-
 }

@@ -6,10 +6,16 @@ require_once __DIR__ . '/../models/ProfilWeb.php';
 
 class ProfilWebController extends Controller
 {
+    private $profilWebModel;
+
+    public function __construct()
+    {
+        $this->profilWebModel = new ProfilWeb();
+    }
+
     public function index()
     {
-        $profilWebModel = new ProfilWeb();
-        $data           = $profilWebModel->getData();
+        $data = $this->profilWebModel->getData();
 
         $this->view('admin/profil_web/index', ['data' => $data]);
     }
@@ -18,9 +24,8 @@ class ProfilWebController extends Controller
     {
         header('Content-Type: application/json; charset=utf-8');
 
-        $data           = $_POST;
-        $profilWebModel = new ProfilWeb();
-        $existing       = $profilWebModel->getData();
+        $data     = $_POST;
+        $existing = $this->profilWebModel->getData();
 
         if (! $existing) {
             http_response_code(404);
@@ -103,12 +108,11 @@ class ProfilWebController extends Controller
         ];
 
         try {
-            $profilWebModel->update(1, $updateData);
+            $this->profilWebModel->update(1, $updateData);
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
             http_response_code(500);
             echo json_encode(['error' => $e->getMessage()]);
         }
     }
-
 }

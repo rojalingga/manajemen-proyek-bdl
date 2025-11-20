@@ -6,6 +6,13 @@ require_once __DIR__ . '/../models/PartnerKolaborator.php';
 
 class PartnerKolaboratorController extends Controller
 {
+    private $partnerKolaboratorModel;
+
+    public function __construct()
+    {
+        $this->partnerKolaboratorModel = new PartnerKolaborator();
+    }
+
     public function index()
     {
         if (isset($_GET['ajax'])) {
@@ -13,8 +20,7 @@ class PartnerKolaboratorController extends Controller
             header('Content-Type: application/json; charset=utf-8');
 
             try {
-                $partnerKolaboratorModel = new PartnerKolaborator();
-                $datatables              = $partnerKolaboratorModel->getAll();
+                $datatables = $this->partnerKolaboratorModel->getAll();
 
                 $data  = [];
                 $index = 1;
@@ -58,8 +64,7 @@ class PartnerKolaboratorController extends Controller
         header('Content-Type: application/json; charset=utf-8');
 
         try {
-            $partnerKolaboratorModel = new PartnerKolaborator();
-            $data                    = $partnerKolaboratorModel->findById($id);
+            $data = $this->partnerKolaboratorModel->findById($id);
 
             if ($data) {
                 echo json_encode([
@@ -103,8 +108,6 @@ class PartnerKolaboratorController extends Controller
             return;
         }
 
-        $partnerKolaboratorModel = new PartnerKolaborator();
-
         $filename = '';
         if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
             $tmpFile = $_FILES['logo']['tmp_name'];
@@ -147,7 +150,7 @@ class PartnerKolaboratorController extends Controller
         ];
 
         try {
-            $partnerKolaboratorModel->insert($insertData);
+            $this->partnerKolaboratorModel->insert($insertData);
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
             http_response_code(500);
@@ -159,9 +162,8 @@ class PartnerKolaboratorController extends Controller
     {
         header('Content-Type: application/json; charset=utf-8');
 
-        $data                    = $_POST;
-        $partnerKolaboratorModel = new PartnerKolaborator();
-        $existing                = $partnerKolaboratorModel->findById($id);
+        $data     = $_POST;
+        $existing = $this->partnerKolaboratorModel->findById($id);
 
         if (! $existing) {
             http_response_code(404);
@@ -230,7 +232,7 @@ class PartnerKolaboratorController extends Controller
         ];
 
         try {
-            $partnerKolaboratorModel->update($id, $updateData);
+            $this->partnerKolaboratorModel->update($id, $updateData);
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
             http_response_code(500);
@@ -243,8 +245,7 @@ class PartnerKolaboratorController extends Controller
         header('Content-Type: application/json; charset=utf-8');
 
         try {
-            $partnerKolaboratorModel = new PartnerKolaborator();
-            $user                    = $partnerKolaboratorModel->findById($id);
+            $user = $this->partnerKolaboratorModel->findById($id);
 
             if (! $user) {
                 http_response_code(404);
@@ -259,7 +260,7 @@ class PartnerKolaboratorController extends Controller
                 }
             }
 
-            $partnerKolaboratorModel->delete($id);
+            $this->partnerKolaboratorModel->delete($id);
 
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
@@ -267,5 +268,4 @@ class PartnerKolaboratorController extends Controller
             echo json_encode(['error' => $e->getMessage()]);
         }
     }
-
 }
