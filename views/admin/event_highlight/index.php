@@ -143,7 +143,17 @@
                     { data: 'DT_RowIndex', className: 'text-center' },
                     { data: 'nama_event' },
                     { data: 'deskripsi' },
-                    { data: 'tanggal_event' },
+                    { data : 'tanggal_event', 
+                        render: function(data) {
+                            if (!data) return '-';
+                            let d = new Date(data);
+                            return d.toLocaleDateString('id-ID', {
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric'
+                            });
+                        }
+                    },
                     { data: 'lokasi' },
                     { data: 'action', className: 'text-center' }
                 ]
