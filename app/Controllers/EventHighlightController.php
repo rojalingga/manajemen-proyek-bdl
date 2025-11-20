@@ -150,12 +150,12 @@ class EventHighlightController extends Controller
         }
 
         $insertData = [
-            'nama_event'      => $data['nama_event'],
+            'nama_event'        => $data['nama_event'],
             'deskripsi'         => $data['deskripsi'],
-            'tanggal_event' => $data['tanggal_event'],
-            'lokasi'       => $data['lokasi'],
-            'banner'       => $filename_banner ?? '',
-            'created_at'      => date('Y-m-d H:i:s'),
+            'tanggal_event'     => $data['tanggal_event'],
+            'lokasi'            => $data['lokasi'],
+            'banner'            => $filename_banner ?? '',
+            'created_at'        => date('Y-m-d H:i:s'),
         ];
 
         try {
@@ -196,10 +196,6 @@ class EventHighlightController extends Controller
 
         if (empty($data['lokasi'])) {
             $errors['lokasi'][] = 'Lokasi wajib diisi.';
-        }
-
-        if (! isset($_FILES['banner']) || $_FILES['banner']['error'] !== UPLOAD_ERR_OK) {
-            $errors['banner'][] = 'Banner harus diupload.';
         }
 
         if ($errors) {
