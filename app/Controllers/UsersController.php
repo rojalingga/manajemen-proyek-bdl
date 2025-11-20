@@ -7,6 +7,13 @@ require_once __DIR__ . '/../models/Role.php';
 
 class UsersController extends Controller
 {
+    private $usersModel;
+
+    public function __construct()
+    {
+        $this->usersModel = new Users();
+    }
+
     public function index()
     {
         if (isset($_GET['ajax'])) {
@@ -14,8 +21,7 @@ class UsersController extends Controller
             header('Content-Type: application/json; charset=utf-8');
 
             try {
-                $userModel = new Users();
-                $datatables      = $userModel->getAll();
+                $datatables      = $this->usersModel->getAll();
 
                 $data  = [];
                 $index = 1;
@@ -69,8 +75,7 @@ class UsersController extends Controller
         header('Content-Type: application/json; charset=utf-8');
 
         try {
-            $userModel = new Users();
-            $data      = $userModel->findById($id);
+            $data      = $this->usersModel->findById($id);
 
             if ($data) {
                 echo json_encode([
@@ -121,8 +126,7 @@ class UsersController extends Controller
             return;
         }
 
-        $userModel = new Users();
-        if ($userModel->findByUsername($data['username'])) {
+        if ($this->usersModel->findByUsername($data['username'])) {
             http_response_code(422);
             echo json_encode(['errors' => ['username' => ['Username sudah digunakan.']]]);
             return;
@@ -172,7 +176,7 @@ class UsersController extends Controller
         ];
 
         try {
-            $userModel->insert($insertData);
+            $this->usersModel->insert($insertData);
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
             http_response_code(500);
@@ -185,8 +189,7 @@ class UsersController extends Controller
         header('Content-Type: application/json; charset=utf-8');
 
         $data      = $_POST;
-        $userModel = new Users();
-        $existing  = $userModel->findById($id);
+        $existing  = $this->usersModel->findById($id);
 
         if (! $existing) {
             http_response_code(404);
@@ -211,7 +214,7 @@ class UsersController extends Controller
             return;
         }
 
-        $existingUsername = $userModel->findByUsername($data['username']);
+        $existingUsername = $this->usersModel->findByUsername($data['username']);
         if ($existingUsername && $existingUsername['id'] != $id) {
             http_response_code(422);
             echo json_encode(['errors' => ['username' => ['Username sudah digunakan.']]]);
@@ -269,7 +272,7 @@ class UsersController extends Controller
         }
 
         try {
-            $userModel->update($id, $updateData);
+            $this->usersModel->update($id, $updateData);
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
             http_response_code(500);
@@ -282,8 +285,7 @@ class UsersController extends Controller
         header('Content-Type: application/json; charset=utf-8');
 
         try {
-            $userModel = new Users();
-            $user      = $userModel->findById($id);
+            $user      = $this->usersModel->findById($id);
 
             if (! $user) {
                 http_response_code(404);
@@ -298,7 +300,7 @@ class UsersController extends Controller
                 }
             }
 
-            $userModel->delete($id);
+            $this->usersModel->delete($id);
 
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {

@@ -3,6 +3,7 @@
 class Users
 {
     private $db;
+    private $table = 'users';
 
     public function __construct()
     {
@@ -11,10 +12,13 @@ class Users
 
     public function findWithRole($username)
     {
-        $query = "SELECT u.*, r.nama_role FROM users u
-                INNER JOIN roles r ON r.id = u.id_role
-                WHERE u.username = :username
-                LIMIT 1";
+        $query = "
+            SELECT u.*, r.nama_role
+            FROM {$this->table} u
+            INNER JOIN roles r ON r.id = u.id_role
+            WHERE u.username = :username
+            LIMIT 1
+        ";
 
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':username', $username);
@@ -27,10 +31,10 @@ class Users
         $query = "
             SELECT
                 u.id,
-                u.username, 
+                u.username,
                 u.status,
                 r.nama_role
-            FROM users u
+            FROM {$this->table} u
             INNER JOIN roles r ON u.id_role = r.id
             ORDER BY u.id DESC
         ";
@@ -42,8 +46,9 @@ class Users
 
     public function findById($id)
     {
-        $query = "SELECT * FROM users WHERE id = :id LIMIT 1";
-        $stmt  = $this->db->prepare($query);
+        $query = "SELECT * FROM {$this->table} WHERE id = :id LIMIT 1";
+
+        $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -51,8 +56,11 @@ class Users
 
     public function insert($data)
     {
-        $query = "INSERT INTO users (username, password, id_role, status, foto, created_at)
-              VALUES (:username, :password, :id_role, :status, :foto, :created_at)";
+        $query = "
+            INSERT INTO {$this->table} (username, password, id_role, status, foto, created_at)
+            VALUES (:username, :password, :id_role, :status, :foto, :created_at)
+        ";
+
         $stmt = $this->db->prepare($query);
         $stmt->execute($data);
     }
@@ -64,7 +72,12 @@ class Users
             $fields[] = "$key = :$key";
         }
 
-        $query      = "UPDATE users SET " . implode(',', $fields) . " WHERE id = :id";
+        $query = "
+            UPDATE {$this->table}
+            SET " . implode(',', $fields) . "
+            WHERE id = :id
+        ";
+
         $stmt       = $this->db->prepare($query);
         $data['id'] = $id;
         $stmt->execute($data);
@@ -72,8 +85,9 @@ class Users
 
     public function findByUsername($username)
     {
-        $query = "SELECT * FROM users WHERE username = :username LIMIT 1";
-        $stmt  = $this->db->prepare($query);
+        $query = "SELECT * FROM {$this->table} WHERE username = :username LIMIT 1";
+
+        $stmt = $this->db->prepare($query);
         $stmt->bindValue(':username', $username);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -81,7 +95,9 @@ class Users
 
     public function delete($id)
     {
-        $stmt = $this->db->prepare("DELETE FROM users WHERE id = :id");
+        $query = "DELETE FROM {$this->table} WHERE id = :id";
+
+        $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $id);
         $stmt->execute();
     }
