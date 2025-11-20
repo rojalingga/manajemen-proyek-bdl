@@ -36,6 +36,12 @@ $router->post('/admin/event-highlight/store', 'EventHighlightController@store');
 $router->put('/admin/event-highlight/update/{id}', 'EventHighlightController@update');
 $router->delete('/admin/event-highlight/delete/{id}', 'EventHighlightController@destroy');
 
+$router->get('/admin/publikasi-ilmiah', 'PublikasiIlmiahController@index');
+$router->get('/admin/publikasi-ilmiah/{id}', 'PublikasiIlmiahController@edit');
+$router->post('/admin/publikasi-ilmiah/store', 'PublikasiIlmiahController@store');
+$router->put('/admin/publikasi-ilmiah/update/{id}', 'PublikasiIlmiahController@update');
+$router->delete('/admin/publikasi-ilmiah/delete/{id}', 'PublikasiIlmiahController@destroy');
+
 $router->get('/admin/users', 'UsersController@index');
 $router->get('/admin/users/{id}', 'UsersController@edit');
 $router->post('/admin/users/store', 'UsersController@store');
