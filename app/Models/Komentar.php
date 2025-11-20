@@ -1,9 +1,9 @@
 <?php
 
-class PartnerKolaborator
+class Komentar
 {
     private $db;
-    private $table = 'partner_kolaborator';
+    private $table = 'komentar';
 
     public function __construct()
     {
@@ -21,14 +21,14 @@ class PartnerKolaborator
 
     public function getForLandingPage()
     {
-        $query = "SELECT id, nama_partner, logo FROM {$this->table} ORDER BY id ASC";
+        $query = "SELECT id, komentar FROM {$this->table} ORDER BY id ASC";
         $stmt  = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll();
     }
 
     public function findById($id)
-    {
+    {   
         $query = "SELECT * FROM {$this->table} WHERE id = :id LIMIT 1";
         $stmt  = $this->db->prepare($query);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
@@ -38,8 +38,8 @@ class PartnerKolaborator
 
     public function insert($data)
     {
-        $query = "INSERT INTO {$this->table} (nama_partner, logo, deskripsi, created_at)
-              VALUES (:nama_partner, :logo, :deskripsi, :created_at)";
+        $query = "INSERT INTO {$this->table} (komentar, id_proyek_digital, created_at)
+              VALUES (:komentar, :id_proyek_digital, :created_at)";
         $stmt = $this->db->prepare($query);
         $stmt->execute($data);
     }

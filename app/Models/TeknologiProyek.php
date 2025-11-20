@@ -1,9 +1,9 @@
 <?php
 
-class PartnerKolaborator
+class TeknologiProyek
 {
     private $db;
-    private $table = 'partner_kolaborator';
+    private $table = 'teknologi';
 
     public function __construct()
     {
@@ -21,7 +21,7 @@ class PartnerKolaborator
 
     public function getForLandingPage()
     {
-        $query = "SELECT id, nama_partner, logo FROM {$this->table} ORDER BY id ASC";
+        $query = "SELECT id, nama_teknologi FROM {$this->table} ORDER BY id ASC";
         $stmt  = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -38,8 +38,8 @@ class PartnerKolaborator
 
     public function insert($data)
     {
-        $query = "INSERT INTO {$this->table} (nama_partner, logo, deskripsi, created_at)
-              VALUES (:nama_partner, :logo, :deskripsi, :created_at)";
+        $query = "INSERT INTO {$this->table} (nama_teknologi, created_at)
+              VALUES (:nama_teknologi, :created_at)";
         $stmt = $this->db->prepare($query);
         $stmt->execute($data);
     }
