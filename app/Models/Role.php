@@ -11,7 +11,7 @@ class Role
 
     public function getAll()
     {
-        $query = "SELECT * FROM roles ORDER BY id DESC";
+        $query = "SELECT * FROM role ORDER BY id DESC";
 
         $stmt = $this->db->prepare($query);
         $stmt->execute();

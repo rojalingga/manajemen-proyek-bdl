@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>LAB MMT</title>
+    <title>Manajemen Proyek</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="shortcut icon" href="/img/logo.svg" type="image/x-icon">
@@ -62,7 +62,7 @@
                 <div class="card shadow-sm rounded-4">
                     <div class="card-body p-4">
                         <img src="/img/logo.svg" alt="Logo" class="login-icon mb-3">
-                        <h4 class="text-center mb-4">LAB MMT</h4>
+                        <h4 class="text-center mb-4">Proyek</h4>
 
                         <form id="formLogin" method="POST" action="javascript:void(0);">
 

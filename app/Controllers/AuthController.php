@@ -66,17 +66,6 @@ class AuthController extends Controller
             return;
         }
 
-        if ($user['status'] == 2) {
-            http_response_code(422);
-            echo json_encode([
-                'message' => 'The given data was invalid.',
-                'errors'  => [
-                    'username' => ['Akun anda telah diblokir.'],
-                ],
-            ]);
-            return;
-        }
-
         if (! password_verify($password, $user['password'])) {
             http_response_code(422);
             echo json_encode([
@@ -91,7 +80,6 @@ class AuthController extends Controller
         $_SESSION['user'] = [
             'id'        => $user['id'],
             'username'  => $user['username'],
-            'foto'      => $user['foto'],
             'role_id'   => $user['id_role'],
             'nama_role' => $user['nama_role'],
         ];

@@ -16,15 +16,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <?php
-    require_once __DIR__ . '/../../../app/models/ProfilWeb.php';
-    $profil = new ProfilWeb();
-    $dataProfil = $profil->getData();
-    ?>
-    <title><?= $dataProfil['nama'] ?></title>
+    <title>Manajemen Proyek</title>
 
-    <link rel="shortcut icon" href="/assets/logo_web/<?= $dataProfil['logo'] ?>" type="image/x-icon">
-    <link rel="shortcut icon" href="/assets/logo_web/<?= $dataProfil['logo'] ?>" type="image/png">
+    <link rel="shortcut icon" href="/img/logo.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="/img/logo.svg" type="image/png">
 
     <link rel="stylesheet" href="/template_admin/assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="/template_admin/assets/extensions/choices.js/public/assets/styles/choices.css">
@@ -260,7 +255,7 @@
                 <div class="sidebar-header position-relative">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="logo">
-                            <a><img src="/assets/logo_web/<?= $dataProfil['logo'] ?>" alt="Logo"
+                            <a><img src="/img/logo.svg" alt="Logo"
                                     style="width:80px; height:auto;">
                             </a>
                         </div>
@@ -322,56 +317,12 @@
                                 <span>Dashboard</span>
                             </a>
                         </li>
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/profil-web') ?>">
-                            <a href="/admin/profil-web" class="sidebar-link">
-                                <i class="bi bi-globe2"></i>
-                                <span>Profil Web</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/tim-kreatif') ?>">
-                            <a href="/admin/tim-kreatif" class="sidebar-link">
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/klien') ?>">
+                            <a href="/admin/klien" class="sidebar-link">
                                 <i class="bi bi-people-fill"></i>
-                                <span>Tim Kreatif</span>
+                                <span>Klien</span>
                             </a>
                         </li>
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/partner-kolaborator') ?>">
-                            <a href="/admin/partner-kolaborator" class="sidebar-link">
-                                <i class="bi bi-link-45deg"></i>
-                                <span>Partner Kolabolator</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/artikel-berita') ?>">
-                            <a href="/admin/artikel-berita" class="sidebar-link">
-                                <i class="bi bi-file-earmark-text"></i>
-                                <span>Artikel & Berita</span>
-                            </a>
-                        </li>
-
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/publikasi-ilmiah') ?>">
-                            <a href="/admin/publikasi-ilmiah" class="sidebar-link">
-                                <i class="bi bi-journal-text"></i>
-                                <span>Publikasi Ilmiah</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/event-highlight') ?>">
-                            <a href="/admin/event-highlight" class="sidebar-link">
-                                <i class="bi bi-calendar-event"></i>
-                                <span>Event Highlight</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/media') ?>">
-                            <a href="/admin/media" class="sidebar-link">
-                                <i class="bi bi-camera-video"></i>
-                                <span>Media</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item <?php echo isActive('/admin/proyek') ?>">
-                            <a href="/admin/proyek" class="sidebar-link">
-                                <i class="bi bi-gear-wide-connected"></i>
-                                <span>Proyek</span>
-                            </a>
-                        </li>
-
                         <li class="sidebar-item                                                <?php echo isActive('/admin/users') ?>">
                             <a href="/admin/users" class="sidebar-link">
                                 <i class="bi bi-person-gear"></i>
@@ -425,9 +376,6 @@
                                         if ($user) {
                                             $username = htmlspecialchars($user['username']);
                                             $nama_role = htmlspecialchars($user['nama_role'] ?? '-');
-                                            if (!empty($user['foto']) && file_exists(__DIR__ . '/../../../public/assets/foto_profil/' . $user['foto'])) {
-                                                $fotoPath = '/assets/foto_profil/' . htmlspecialchars($user['foto']);
-                                            }
                                         }
                                     }
                                     ?>

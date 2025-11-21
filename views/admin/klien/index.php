@@ -4,10 +4,10 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-content-center justify-content-between">
-                        <h3 class="font-weight-bold text-xl">Tim Kreatif</h3>
+                        <h3 class="font-weight-bold text-xl">Klien</h3>
                         <div class="d-flex align-items-center">
                             <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalForm">
-                                <i class="bi bi-plus-lg"></i> Tambah Anggota
+                                <i class="bi bi-plus-lg"></i> Tambah Klien
                             </button>
                         </div>
                     </div>
@@ -18,9 +18,9 @@
                             <thead>
                                 <tr>
                                     <th width="50px">No</th>
-                                    <th>Nama</th>
-                                    <th>Jabatan</th>
-                                    <th>Keahlian</th>
+                                    <th>Nama Klien</th>
+                                    <th>Telp Klien</th>
+                                    <th>Email Klien</th>
                                     <th width="100px" class="text-center">Action</th>
                                 </tr>
                             </thead>
@@ -35,10 +35,10 @@
     <div class="modal fade text-left" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel"
         aria-hidden="true" data-backdrop="static" data-keyboard="false" data-focus="false">
 
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
-                    <h5 class="modal-title white" id="myModalLabel160">Form Data Tim Kreatif
+                    <h5 class="modal-title white" id="myModalLabel160">Form Data Klien
                     </h5>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <i data-feather="x"></i>
@@ -49,54 +49,23 @@
                         <input type="hidden" id="primary_id" name="primary_id">
 
                         <div class="row mb-3 align-items-center">
-                            <label class="col-sm-3 col-form-label">Nama</label>
+                            <label class="col-sm-3 col-form-label">Nama Klien</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nama" name="nama">
+                                <input type="text" class="form-control" id="nama_klien" name="nama_klien">
                             </div>
                         </div>
                         <div class="row mb-3 align-items-center">
-                            <label class="col-sm-3 col-form-label">Jabatan</label>
+                            <label class="col-sm-3 col-form-label">Telp Klien</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="jabatan" name="jabatan">
+                                <input type="text" class="form-control" id="telp_klien" name="telp_klien">
                             </div>
                         </div>
                         <div class="row mb-3 align-items-center">
-                            <label class="col-sm-3 col-form-label">Keahlian</label>
+                            <label class="col-sm-3 col-form-label">Email Klien</label>
                             <div class="col-sm-9">
-                                <textarea name="keahlian" id="keahlian" class="form-control" rows="4"></textarea>
+                                <input type="text" class="form-control" id="email_klien" name="email_klien">
                             </div>
                         </div>
-                        <div class="row mb-3 align-items-center">
-                            <label class="col-sm-3 col-form-label">Portofolio Singkat</label>
-                            <div class="col-sm-9">
-                                <textarea name="portofolio_singkat" id="portofolio_singkat" class="form-control" rows="4"></textarea>
-                            </div>
-                        </div>
-                        <div class="row mb-3 align-items-center">
-                            <label class="col-sm-3 col-form-label">LinkedIn</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="linkedin" name="linkedin">
-                            </div>
-                        </div>
-
-                        <div class="row mb-3 align-items-center">
-                            <label class="col-sm-3 col-form-label">Foto</label>
-                            <div class="col-sm-9">
-                                <input type="file" class="form-control" id="foto" name="foto" accept=".jpg, .jpeg, .png">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label"></label>
-                            <div class="col-sm-8">
-                                <div class="img-thumbnail mb-2 d-flex align-items-center justify-content-center"
-                                    id="previewFoto"
-                                    style="max-width: 140px; height: 150px; background-color: #f8f9fa; border: 1px solid #dee2e6; overflow: hidden;">
-                                    <span style="color: #6c757d;">Tidak ada foto</span>
-                                </div>
-                            </div>
-                        </div>
-
                 </div>
 
                 <div class="modal-footer">
@@ -120,22 +89,6 @@
 
     var audio = new Audio("/audio/notification.ogg");
 
-    $('#foto').on('change', function() {
-        const file = this.files[0];
-        const previewDiv = $('#previewFoto');
-
-        if (file && file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                previewDiv.html(
-                    `<img src="${e.target.result}" style="max-width: 100%; max-height: 100%;">`);
-            };
-            reader.readAsDataURL(file);
-        } else {
-            previewDiv.html('<span style="color: #6c757d;">Tidak ada foto</span>');
-        }
-    });
-
     $(document).ready(function() {
         $(function() {
             $('.data-table').DataTable({
@@ -143,12 +96,12 @@
                 serverSide: false,
                 ordering: false,
                 responsive: true,
-                ajax: '/admin/tim-kreatif?ajax=1',
+                ajax: '/admin/klien?ajax=1',
                 columns: [
                     { data: 'DT_RowIndex', className: 'text-center' },
-                    { data: 'nama' },
-                    { data: 'jabatan' },
-                    { data: 'keahlian' },
+                    { data: 'nama_klien' },
+                    { data: 'telp_klien' },
+                    { data: 'email_klien' },
                     { data: 'action', className: 'text-center' }
                 ]
             });
@@ -158,23 +111,10 @@
             var url = $(this).data('url');
             $.get(url, function(response) {
                 if (response.status === 'success') {
-                    $('#primary_id').val(response.data.id);
-                    $('#nama').val(response.data.nama);
-                    $('#jabatan').val(response.data.jabatan);
-                    $('#keahlian').val(response.data.keahlian);
-                    $('#portofolio_singkat').val(response.data.portofolio_singkat);
-                    $('#linkedin').val(response.data.linkedin);
-
-                    let foto = response.data.foto;
-                    let preview = $('#previewFoto');
-                    if (foto) {
-                        let imageUrl = '/assets/tim_kreatif/' + foto;
-                        preview.html(
-                            `<img src="${imageUrl}" alt="Foto" style="max-height: 100%; max-width: 100%;">`
-                        );
-                    } else {
-                        preview.html(`<span style="color: #6c757d;">Tidak ada foto</span>`);
-                    }
+                    $('#primary_id').val(response.data.id_klien);
+                    $('#nama_klien').val(response.data.nama_klien);
+                    $('#telp_klien').val(response.data.telp_klien);
+                    $('#email_klien').val(response.data.email_klien);
 
                     $('#modalForm').modal('show');
                 }
@@ -194,9 +134,6 @@
             spinner.addClass('d-none');
             btnText.text('Simpan');
             submitBtn.prop('disabled', false);
-
-            $('#previewFoto').html('<span style="color: #6c757d;">Tidak ada foto</span>');
-
         });
 
         $('#formData').on('submit', function(e) {
@@ -211,7 +148,7 @@
             submitBtn.prop('disabled', true);
 
             let id = $('#primary_id').val();
-            let url = id ? '/admin/tim-kreatif/update/' + id : '/admin/tim-kreatif/store';
+            let url = id ? '/admin/klien/update/' + id : '/admin/klien/store';
             let method = id ? 'PUT' : 'POST';
 
             $('.is-invalid').removeClass('is-invalid');
@@ -229,7 +166,7 @@
                 success: function(response) {
                      $('#modalForm').modal('hide');
                     audio.play();
-                    let msg = id ? "Tim Kreatif berhasil diupdate!" : "Tim Kreatif berhasil ditambahkan!";
+                    let msg = id ? "Klien berhasil diupdate!" : "Klien berhasil ditambahkan!";
                     toastr.success(msg, "BERHASIL", {
                         progressBar: true,
                         timeOut: 3500,
@@ -273,7 +210,7 @@
 
             Swal.fire({
                 title: 'Apakah Anda yakin?',
-                text: 'Tim Kreatif ini akan dihapus secara permanen!',
+                text: 'Klien ini akan dihapus secara permanen!',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: '<span class="swal-btn-text">Ya, Hapus</span>',
@@ -298,7 +235,7 @@
                             method: 'DELETE',
                             success: function() {
                                 audio.play();
-                                toastr.success("Tim Kreatif telah dihapus!", "BERHASIL", {
+                                toastr.success("Klien telah dihapus!", "BERHASIL", {
                                     progressBar: true,
                                     timeOut: 3500,
                                     positionClass: "toast-bottom-right"
@@ -310,7 +247,7 @@
                             error: function(xhr) {
                                 audio.play();
                                 toastr.error(
-                                    "Gagal menghapus Tim Kreatif.",
+                                    "Gagal menghapus Klien.",
                                     "GAGAL!",
                                     {
                                         progressBar: true,

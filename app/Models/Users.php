@@ -15,7 +15,7 @@ class Users
         $query = "
             SELECT u.*, r.nama_role
             FROM {$this->table} u
-            INNER JOIN roles r ON r.id = u.id_role
+            INNER JOIN role r ON r.id = u.id_role
             WHERE u.username = :username
             LIMIT 1
         ";
@@ -35,7 +35,7 @@ class Users
                 u.status,
                 r.nama_role
             FROM {$this->table} u
-            INNER JOIN roles r ON u.id_role = r.id
+            INNER JOIN role r ON u.id_role = r.id
             ORDER BY u.id DESC
         ";
 
