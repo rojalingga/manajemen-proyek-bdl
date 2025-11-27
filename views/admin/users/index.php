@@ -18,9 +18,9 @@
                             <thead>
                                 <tr>
                                     <th width="50px">No</th>
+                                    <th>Nama</th>
                                     <th>Username</th>
                                     <th class="text-center">Role</th>
-                                    <th class="text-center">Status</th>
                                     <th width="100px" class="text-center">Action</th>
                                 </tr>
                             </thead>
@@ -49,6 +49,12 @@
                         <input type="hidden" id="primary_id" name="primary_id">
 
                         <div class="row mb-3 align-items-center">
+                            <label class="col-sm-3 col-form-label">Nama</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="nama" name="nama">
+                            </div>
+                        </div>
+                        <div class="row mb-3 align-items-center">
                             <label class="col-sm-3 col-form-label">Username</label>
                             <div class="col-sm-9">
                                 <input type="text" class="form-control" id="username" name="username">
@@ -62,24 +68,6 @@
                         </div>
 
                         <div class="row mb-3 align-items-center">
-                            <label class="col-sm-3 col-form-label">Foto Profil</label>
-                            <div class="col-sm-9">
-                                <input type="file" class="form-control" id="foto" name="foto" accept=".jpg, .jpeg, .png">
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label"></label>
-                            <div class="col-sm-8">
-                                <div class="img-thumbnail mb-2 d-flex align-items-center justify-content-center"
-                                    id="previewFoto"
-                                    style="max-width: 140px; height: 150px; background-color: #f8f9fa; border: 1px solid #dee2e6; overflow: hidden;">
-                                    <span style="color: #6c757d;">Tidak ada foto</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3 align-items-center">
                             <label class="col-sm-3 col-form-label">Role</label>
                             <div class="col-sm-9">
                                 <select class="form-select select-role" id="id_role" name="id_role">
@@ -87,16 +75,6 @@
                                     <?php foreach ($roles as $role): ?>
                                         <option value="<?php echo $role['id'];?>"><?php echo htmlspecialchars($role['nama_role']);?></option>
                                     <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row mb-3 align-items-center">
-                            <label for="status" class="col-sm-3 col-form-label">Status</label>
-                            <div class="col-sm-9">
-                                <select class="form-select select-status" id="status" name="status">
-                                    <option value=""></option>
-                                    <option value="1">AKTIF</option>
-                                    <option value="2">BLOKIR</option>
                                 </select>
                             </div>
                         </div>
@@ -124,35 +102,12 @@
 
     var audio = new Audio("/audio/notification.ogg");
 
-    $('#foto').on('change', function() {
-        const file = this.files[0];
-        const previewDiv = $('#previewFoto');
-
-        if (file && file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                previewDiv.html(
-                    `<img src="${e.target.result}" style="max-width: 100%; max-height: 100%;">`);
-            };
-            reader.readAsDataURL(file);
-        } else {
-            previewDiv.html('<span style="color: #6c757d;">Tidak ada foto</span>');
-        }
-    });
-
     $(document).ready(function() {
         $('.select-role').select2({
             dropdownParent: $('#modalForm'),
             width: '100%',
             placeholder: 'Pilih Role',
             allowClear: true,
-        });
-        $('.select-status').select2({
-            dropdownParent: $('#modalForm'),
-            width: '100%',
-            placeholder: 'Pilih Status',
-            allowClear: true,
-            minimumResultsForSearch: Infinity,
         });
 
         if ($('body').hasClass('dark')) {
@@ -168,9 +123,9 @@
                 ajax: '/admin/users?ajax=1',
                 columns: [
                     { data: 'DT_RowIndex', className: 'text-center' },
+                    { data: 'nama' },
                     { data: 'username' },
                     { data: 'role', className: 'text-center' },
-                    { data: 'status', className: 'text-center' },
                     { data: 'action', className: 'text-center' }
                 ]
             });
@@ -181,20 +136,9 @@
             $.get(url, function(response) {
                 if (response.status === 'success') {
                     $('#primary_id').val(response.data.id);
+                    $('#nama').val(response.data.nama);
                     $('#username').val(response.data.username);
                     $('#id_role').val(response.data.id_role).trigger('change');
-                    $('#status').val(response.data.status).trigger('change');
-
-                    let foto = response.data.foto;
-                    let preview = $('#previewFoto');
-                    if (foto) {
-                        let imageUrl = '/assets/foto_profil/' + foto;
-                        preview.html(
-                            `<img src="${imageUrl}" alt="Foto" style="max-height: 100%; max-width: 100%;">`
-                        );
-                    } else {
-                        preview.html(`<span style="color: #6c757d;">Tidak ada foto</span>`);
-                    }
 
                     $('#modalForm').modal('show');
                 }
@@ -205,7 +149,6 @@
             $('#formData')[0].reset();
             $('#primary_id').val('');
             $('#id_role').val('').trigger('change');
-            $('#status').val('').trigger('change');
             $('#password').val('');
 
             $('.is-invalid').removeClass('is-invalid');
@@ -217,8 +160,6 @@
             spinner.addClass('d-none');
             btnText.text('Simpan');
             submitBtn.prop('disabled', false);
-
-            $('#previewFoto').html('<span style="color: #6c757d;">Tidak ada foto</span>');
 
         });
 

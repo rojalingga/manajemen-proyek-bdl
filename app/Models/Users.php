@@ -31,8 +31,8 @@ class Users
         $query = "
             SELECT
                 u.id,
+                u.nama,
                 u.username,
-                u.status,
                 r.nama_role
             FROM {$this->table} u
             INNER JOIN role r ON u.id_role = r.id
@@ -57,8 +57,8 @@ class Users
     public function insert($data)
     {
         $query = "
-            INSERT INTO {$this->table} (username, password, id_role, status, foto, created_at)
-            VALUES (:username, :password, :id_role, :status, :foto, :created_at)
+            INSERT INTO {$this->table} (nama, username, password, id_role, status, foto, created_at)
+            VALUES ( :nama, :username, :password, :id_role)
         ";
 
         $stmt = $this->db->prepare($query);
