@@ -41,7 +41,8 @@ class AnggotaTimController extends Controller
                     $result[] = [
                         'DT_RowIndex' => $no++,
                         'nama_pegawai' => htmlspecialchars($row['nama_pegawai'] ?? 'Pegawai dihapus'),
-                        'jabatan'      => htmlspecialchars($row['jabatan'] ?? '-'),
+                        // PERBAIKAN: Hapus baris jabatan ini
+                        // 'jabatan' => htmlspecialchars($row['jabatan'] ?? '-'), 
                         'nama_tim'     => htmlspecialchars($row['nama_tim'] ?? 'Tim dihapus'),
                         'action'       => $action
                     ];
@@ -51,7 +52,6 @@ class AnggotaTimController extends Controller
             exit;
         }
 
-        // Ambil data untuk Dropdown
         $listPegawai = $this->pegawaiModel->getAll();
         $listTim     = $this->timModel->getAll();
 

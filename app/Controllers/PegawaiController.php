@@ -16,7 +16,7 @@ class PegawaiController extends Controller
     {
         if (isset($_GET['ajax'])) {
             ob_clean();
-            header('Content-Type: application/json');
+            header('Content-Type: application/json; charset=utf-8');
             try {
                 $data = $this->pegawaiModel->getAll();
                 $result = [];
@@ -35,8 +35,8 @@ class PegawaiController extends Controller
                     $result[] = [
                         'DT_RowIndex' => $no++,
                         'nama_pegawai' => htmlspecialchars($row['nama_pegawai']),
-                        'jabatan' => htmlspecialchars($row['jabatan']),
                         'telp_pegawai' => htmlspecialchars($row['telp_pegawai']),
+                        'email_pegawai' => htmlspecialchars($row['email_pegawai'] ?? '-'),
                         'action' => $action
                     ];
                 }
@@ -49,27 +49,32 @@ class PegawaiController extends Controller
 
     public function store()
     {
-        header('Content-Type: application/json');
+        header('Content-Type: application/json; charset=utf-8');
         $data = $_POST;
+        
         if(empty($data['nama_pegawai'])) {
              http_response_code(422);
              echo json_encode(['errors' => ['msg' => ['Nama Pegawai wajib diisi']]]);
              exit;
         }
 
-        $this->pegawaiModel->insert([
-            'nama_pegawai' => $data['nama_pegawai'],
-            'telp_pegawai' => $data['telp_pegawai'],
-            'email_pegawai' => $data['email_pegawai'],
-            'jabatan' => $data['jabatan']
-        ]);
-        echo json_encode(['status' => 'success']);
+        try {
+            $this->pegawaiModel->insert([
+                'nama_pegawai'  => $data['nama_pegawai'],
+                'telp_pegawai'  => $data['telp_pegawai'],
+                'email_pegawai' => $data['email_pegawai']
+            ]);
+            echo json_encode(['status' => 'success']);
+        } catch (Throwable $e) {
+            http_response_code(500);
+            echo json_encode(['errors' => ['msg' => [$e->getMessage()]]]); 
+        }
     }
 
     public function edit($id)
     {
         ob_clean();
-        header('Content-Type: application/json');
+        header('Content-Type: application/json; charset=utf-8');
         $data = $this->pegawaiModel->findById($id);
         echo json_encode(['status' => 'success', 'data' => $data]);
         exit;
@@ -77,21 +82,31 @@ class PegawaiController extends Controller
 
     public function update($id)
     {
-        header('Content-Type: application/json');
+        header('Content-Type: application/json; charset=utf-8');
         $data = $_POST;
-        $this->pegawaiModel->update($id, [
-            'nama_pegawai' => $data['nama_pegawai'],
-            'telp_pegawai' => $data['telp_pegawai'],
-            'email_pegawai' => $data['email_pegawai'],
-            'jabatan' => $data['jabatan']
-        ]);
-        echo json_encode(['status' => 'success']);
+        
+        try {
+            $this->pegawaiModel->update($id, [
+                'nama_pegawai'  => $data['nama_pegawai'],
+                'telp_pegawai'  => $data['telp_pegawai'],
+                'email_pegawai' => $data['email_pegawai']
+            ]);
+            echo json_encode(['status' => 'success']);
+        } catch (Throwable $e) {
+            http_response_code(500);
+            echo json_encode(['errors' => ['msg' => [$e->getMessage()]]]);
+        }
     }
 
     public function destroy($id)
     {
-        header('Content-Type: application/json');
-        $this->pegawaiModel->delete($id);
-        echo json_encode(['status' => 'success']);
+        header('Content-Type: application/json; charset=utf-8');
+        try {
+            $this->pegawaiModel->delete($id);
+            echo json_encode(['status' => 'success']);
+        } catch (Throwable $e) {
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
     }
 }

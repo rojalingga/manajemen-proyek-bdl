@@ -71,7 +71,7 @@
     </div>
 </div>
 
-<?php include __DIR__ . '../layout/footer.php'; ?>
+<?php include __DIR__ . '/../layout/footer.php'; ?>
 
 <script>
     $(document).ready(function () {

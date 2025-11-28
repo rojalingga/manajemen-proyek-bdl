@@ -29,8 +29,8 @@ class Pegawai
 
     public function insert($data)
     {
-        $query = "INSERT INTO {$this->table} (nama_pegawai, telp_pegawai, email_pegawai, jabatan) 
-                  VALUES (:nama_pegawai, :telp_pegawai, :email_pegawai, :jabatan)";
+        $query = "INSERT INTO {$this->table} (nama_pegawai, telp_pegawai, email_pegawai) 
+                  VALUES (:nama_pegawai, :telp_pegawai, :email_pegawai)";
         $stmt = $this->db->prepare($query);
         $stmt->execute($data);
     }
@@ -40,8 +40,7 @@ class Pegawai
         $query = "UPDATE {$this->table} SET 
                   nama_pegawai = :nama_pegawai, 
                   telp_pegawai = :telp_pegawai, 
-                  email_pegawai = :email_pegawai,
-                  jabatan = :jabatan
+                  email_pegawai = :email_pegawai
                   WHERE id_pegawai = :id";
         $data['id'] = $id;
         $stmt = $this->db->prepare($query);

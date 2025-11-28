@@ -9,7 +9,12 @@
             <div class="card-body">
                 <table class="table data-table table-bordered table-striped w-100">
                     <thead>
-                        <tr><th>No</th><th>Nama Pegawai</th><th>Jabatan</th><th>Masuk di Tim</th><th>Action</th></tr>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Pegawai</th>
+                            <th>Masuk di Tim</th>
+                            <th>Action</th>
+                        </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
@@ -31,7 +36,7 @@
                         <select class="form-select" id="id_pegawai" name="id_pegawai" required>
                             <option value="">-- Pilih Pegawai --</option>
                             <?php foreach ($listPegawai as $p): ?>
-                                <option value="<?= $p['id_pegawai'] ?>"><?= $p['nama_pegawai'] ?> (<?= $p['jabatan'] ?>)</option>
+                                <option value="<?= $p['id_pegawai'] ?>"><?= $p['nama_pegawai'] ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -59,7 +64,10 @@ $(document).ready(function() {
     var table = $('.data-table').DataTable({
         ajax: '/admin/anggota_tim?ajax=1',
         columns: [
-            {data:'DT_RowIndex'}, {data:'nama_pegawai'}, {data:'jabatan'}, {data:'nama_tim'}, {data:'action'}
+            {data:'DT_RowIndex'}, 
+            {data:'nama_pegawai'}, 
+            {data:'nama_tim'}, 
+            {data:'action'}
         ]
     });
 

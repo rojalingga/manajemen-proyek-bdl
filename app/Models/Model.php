@@ -5,8 +5,6 @@ class Model {
     protected $table;
     
     public function __construct() {
-        // Uncomment this line when you want to use database
-        // $this->db = Database::getInstance()->getConnection();
     }
     
     public function all() {

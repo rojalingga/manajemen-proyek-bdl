@@ -56,11 +56,10 @@
     </div>
 </div>
 
-<?php include __DIR__ . '/../../layout/footer.php'; ?>
+<?php include __DIR__ . '/../layout/footer.php'; ?>
 
 <script>
     $(document).ready(function () {
-        // 1. Setup DataTable (Sesuaikan URL jika pakai base url manual)
         var table = $('.data-table').DataTable({
             processing: false,
             serverSide: false,
@@ -79,7 +78,6 @@
             ]
         });
 
-        // 2. Tombol Edit Click
         $(document).on('click', '.edit-button', function () {
             var url = $(this).data('url');
             $.get(url, function (res) {
@@ -91,19 +89,16 @@
             });
         });
 
-        // 3. Reset Modal saat close
         $('#modalForm').on('hidden.bs.modal', function () {
             $('#formData')[0].reset();
             $('#primary_id').val('');
-            $('.is-invalid').removeClass('is-invalid'); // Hapus pesan error jika ada
+            $('.is-invalid').removeClass('is-invalid');
         });
 
-        // 4. Submit Form
         $('#formData').on('submit', function (e) {
             e.preventDefault();
             var id = $('#primary_id').val();
 
-            // Sesuaikan URL jika pakai $baseUrl di routes
             var url = id ? '/admin/status/update/' + id : '/admin/status/store';
 
             $.ajax({
@@ -118,7 +113,6 @@
                 error: function (xhr) {
                     if (xhr.status === 422) {
                         toastr.error('Ada inputan yang salah');
-                        // Logika menampilkan error merah di input (opsional, sudah ada di contoh KlienController sebelumnya)
                     } else {
                         toastr.error('Gagal menyimpan data');
                     }
@@ -126,11 +120,9 @@
             });
         });
 
-        // 5. Delete
         $(document).on('click', '.delete-button', function () {
             var url = $(this).data('url');
 
-            // Gunakan SweetAlert jika mau, atau confirm biasa
             Swal.fire({
                 title: 'Yakin hapus status ini?',
                 icon: 'warning',

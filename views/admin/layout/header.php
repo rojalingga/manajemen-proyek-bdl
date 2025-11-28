@@ -21,7 +21,8 @@
     <link rel="shortcut icon" href="/img/logo.png" type="image/x-icon">
     <link rel="shortcut icon" href="/img/logo.png" type="image/png">
 
-    <link rel="stylesheet" href="/template_admin/assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet"
+        href="/template_admin/assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="/template_admin/assets/extensions/choices.js/public/assets/styles/choices.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         integrity="sha512-pbFz1cAQYz4sVxqV5D8Zyx/+D5z+wec3s+sqXwVxLqS2Cj0Yw5Dfdd1q+o5hVH6UgM0G3jqm+DQ2nRrGnx1pRw=="
@@ -255,9 +256,7 @@
                 <div class="sidebar-header position-relative">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="logo">
-                            <a><img src="/img/logo.png" alt="Logo"
-                                    style="width:80px; height:auto;">
-                            </a>
+                            <a><img src="/img/logo.png" alt="Logo" style="width:80px; height:auto;"></a>
                         </div>
                         <div class="theme-toggle d-flex gap-2 align-items-center mt-2">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -282,105 +281,116 @@
                                 <label class="form-check-label"></label>
                             </div>
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                aria-hidden="true" role="img" class="iconify iconify--mdi" width="20"
-                                height="20" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
+                                aria-hidden="true" role="img" class="iconify iconify--mdi" width="20" height="20"
+                                preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
                                 <path fill="currentColor"
                                     d="m17.75 4.09l-2.53 1.94l.91 3.06l-2.63-1.81l-2.63 1.81l.91-3.06l-2.53-1.94L12.44 4l1.06-3l1.06 3l3.19.09m3.5 6.91l-1.64 1.25l.59 1.98l-1.7-1.17l-1.7 1.17l.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95l2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85c-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14c.4-.4.82-.76 1.27-1.08c.75-.53 1.93.36 1.85 1.19c-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82c-2.81 3.14-2.7 7.96.31 10.98c3.02 3.01 7.84 3.12 10.98.31Z">
                                 </path>
                             </svg>
                         </div>
                         <div class="sidebar-toggler x">
-                            <a href="#" class="sidebar-hide d-xl-none d-block"><i
-                                    class="bi bi-x bi-middle"></i></a>
+                            <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
                         </div>
                     </div>
                 </div>
+
                 <div class="sidebar-menu">
                     <ul class="menu">
+                        <?php
+                    $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+                    $uri = rtrim($uri, '/');
+                    function isActive($route) {
+                        global $uri;
+                        $cleanRoute = rtrim($route, '/');
+                        return $uri === $cleanRoute ? 'active' : '';
+                    }
+                ?>
 
-              <?php
-                  $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-                  $uri = rtrim($uri, '/');
-
-                  function isActive($route)
-                  {
-                      global $uri;
-                      $cleanRoute = rtrim($route, '/');
-                      return $uri === $cleanRoute ? 'active' : '';
-                  }
-
-              ?>
-
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/dashboard') ?>">
+                        <li class="sidebar-item <?php echo isActive('/admin/dashboard') ?>">
                             <a href="/admin/dashboard" class="sidebar-link">
                                 <i class="bi bi-speedometer2"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/klien') ?>">
+
+                        <li class="sidebar-title">Data Master</li>
+
+                        <li class="sidebar-item <?php echo isActive('/admin/klien') ?>">
                             <a href="/admin/klien" class="sidebar-link">
-                                <i class="bi bi-people-fill"></i>
+                                <i class="bi bi-person-rolodex"></i>
                                 <span>Klien</span>
                             </a>
                         </li>
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/tugas') ?>">
-                            <a href="/admin/tugas" class="sidebar-link">
-                                <i class="bi bi-people-fill"></i>
-                                <span>Tugas</span>
+
+                        <li class="sidebar-item <?php echo isActive('/admin/pegawai') ?>">
+                            <a href="/admin/pegawai" class="sidebar-link">
+                                <i class="bi bi-person-badge-fill"></i>
+                                <span>Pegawai</span>
                             </a>
                         </li>
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/status') ?>">
-                            <a href="/admin/status" class="sidebar-link">
-                                <i class="bi bi-people-fill"></i>
-                                <span>Status</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/tim') ?>">
+
+                        <li class="sidebar-item <?php echo isActive('/admin/tim') ?>">
                             <a href="/admin/tim" class="sidebar-link">
                                 <i class="bi bi-people-fill"></i>
                                 <span>Tim</span>
                             </a>
                         </li>
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/pegawai') ?>">
-                            <a href="/admin/pegawai" class="sidebar-link">
-                                <i class="bi bi-people-fill"></i>
-                                <span>Pegawai</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/proyek') ?>">
+
+                        <li class="sidebar-title">Manajemen Proyek</li>
+
+                        <li class="sidebar-item <?php echo isActive('/admin/proyek') ?>">
                             <a href="/admin/proyek" class="sidebar-link">
-                                <i class="bi bi-people-fill"></i>
+                                <i class="bi bi-kanban"></i>
                                 <span>Proyek</span>
                             </a>
                         </li>
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/proyek_tim') ?>">
+
+                        <li class="sidebar-item <?php echo isActive('/admin/tugas') ?>">
+                            <a href="/admin/tugas" class="sidebar-link">
+                                <i class="bi bi-list-check"></i>
+                                <span>Tugas</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item <?php echo isActive('/admin/status') ?>">
+                            <a href="/admin/status" class="sidebar-link">
+                                <i class="bi bi-flag-fill"></i>
+                                <span>Status</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-title">Relasi & Pengaturan</li>
+
+                        <li class="sidebar-item <?php echo isActive('/admin/proyek_tim') ?>">
                             <a href="/admin/proyek_tim" class="sidebar-link">
-                                <i class="bi bi-people-fill"></i>
+                                <i class="bi bi-diagram-3-fill"></i>
                                 <span>Proyek Tim</span>
                             </a>
                         </li>
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/proyek_klien') ?>">
+
+                        <li class="sidebar-item <?php echo isActive('/admin/proyek_klien') ?>">
                             <a href="/admin/proyek_klien" class="sidebar-link">
-                                <i class="bi bi-people-fill"></i>
+                                <i class="bi bi-briefcase-fill"></i>
                                 <span>Proyek Klien</span>
                             </a>
                         </li>
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/anggota_tim') ?>">
+
+                        <li class="sidebar-item <?php echo isActive('/admin/anggota_tim') ?>">
                             <a href="/admin/anggota_tim" class="sidebar-link">
-                                <i class="bi bi-people-fill"></i>
+                                <i class="bi bi-person-plus-fill"></i>
                                 <span>Anggota Tim</span>
                             </a>
                         </li>
-                        <li class="sidebar-item                                                <?php echo isActive('/admin/users') ?>">
+
+                        <li class="sidebar-item <?php echo isActive('/admin/users') ?>">
                             <a href="/admin/users" class="sidebar-link">
-                                <i class="bi bi-person-gear"></i>
+                                <i class="bi bi-shield-lock-fill"></i>
                                 <span>Users</span>
                             </a>
                         </li>
 
-
-                       <li class="sidebar-item">
-                            <a href="#" onclick="logoutConfirm(event)" class="sidebar-link">
+                        <li class="sidebar-item mt-3">
+                            <a href="#" onclick="logoutConfirm(event)" class="sidebar-link text-danger">
                                 <i class="bi bi-box-arrow-right"></i>
                                 <span>Logout</span>
                             </a>
@@ -392,7 +402,7 @@
             </div>
         </div>
         <div id="main" class='layout-navbar navbar-fixed'>
-           <header>
+            <header>
                 <nav class="navbar navbar-expand navbar-light navbar-top">
                     <div class="container-fluid">
                         <a href="#" class="burger-btn d-block d-lg-none">
@@ -404,8 +414,8 @@
                             </ul>
                             <div class="dropdown">
                                 <a data-bs-toggle="dropdown" aria-expanded="false">
-                                <div class="user-menu d-flex">
-                                    <?php
+                                    <div class="user-menu d-flex">
+                                        <?php
                                     if (session_status() === PHP_SESSION_NONE) {
                                         session_start();
                                     }
@@ -428,17 +438,17 @@
                                     }
                                     ?>
 
-                                    <div class="user-name text-end me-3">
-                                        <h6 class="mb-0 text-gray-600"><?php echo $username; ?></h6>
-                                        <p class="mb-0 text-sm text-gray-600"><?php echo $nama_role; ?></p>
-                                    </div>
+                                        <div class="user-name text-end me-3">
+                                            <h6 class="mb-0 text-gray-600"><?php echo $username; ?></h6>
+                                            <p class="mb-0 text-sm text-gray-600"><?php echo $nama_role; ?></p>
+                                        </div>
 
-                                    <div class="user-img d-flex align-items-center">
-                                        <div class="avatar avatar-md">
-                                            <img src="<?php echo $fotoPath; ?>" alt="Foto Profil">
+                                        <div class="user-img d-flex align-items-center">
+                                            <div class="avatar avatar-md">
+                                                <img src="<?php echo $fotoPath; ?>" alt="Foto Profil">
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
                                 </a>
                             </div>
@@ -447,6 +457,3 @@
                 </nav>
             </header>
             <div id="main-content">
-
-
-

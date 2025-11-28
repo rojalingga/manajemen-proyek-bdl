@@ -12,11 +12,12 @@ class AnggotaTim
 
     public function getAll()
     {
-        $query = "SELECT at.*, p.nama_pegawai, p.jabatan, t.nama_tim 
+        $query = "SELECT at.*, p.nama_pegawai, t.nama_tim 
                   FROM {$this->table} at
                   LEFT JOIN pegawai p ON at.id_pegawai = p.id_pegawai
                   LEFT JOIN tim t ON at.id_tim = t.id_tim
                   ORDER BY at.id_anggota_tim DESC";
+                  
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll();
