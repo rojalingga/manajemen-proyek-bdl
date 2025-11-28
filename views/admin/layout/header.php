@@ -323,6 +323,54 @@
                                 <span>Klien</span>
                             </a>
                         </li>
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/tugas') ?>">
+                            <a href="/admin/tugas" class="sidebar-link">
+                                <i class="bi bi-people-fill"></i>
+                                <span>Tugas</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/status') ?>">
+                            <a href="/admin/status" class="sidebar-link">
+                                <i class="bi bi-people-fill"></i>
+                                <span>Status</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/tim') ?>">
+                            <a href="/admin/tim" class="sidebar-link">
+                                <i class="bi bi-people-fill"></i>
+                                <span>Tim</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/pegawai') ?>">
+                            <a href="/admin/pegawai" class="sidebar-link">
+                                <i class="bi bi-people-fill"></i>
+                                <span>Pegawai</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/proyek') ?>">
+                            <a href="/admin/proyek" class="sidebar-link">
+                                <i class="bi bi-people-fill"></i>
+                                <span>Proyek</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/proyek_tim') ?>">
+                            <a href="/admin/proyek_tim" class="sidebar-link">
+                                <i class="bi bi-people-fill"></i>
+                                <span>Proyek Tim</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/proyek_klien') ?>">
+                            <a href="/admin/proyek_klien" class="sidebar-link">
+                                <i class="bi bi-people-fill"></i>
+                                <span>Proyek Klien</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item                                                <?php echo isActive('/admin/anggota_tim') ?>">
+                            <a href="/admin/anggota_tim" class="sidebar-link">
+                                <i class="bi bi-people-fill"></i>
+                                <span>Anggota Tim</span>
+                            </a>
+                        </li>
                         <li class="sidebar-item                                                <?php echo isActive('/admin/users') ?>">
                             <a href="/admin/users" class="sidebar-link">
                                 <i class="bi bi-person-gear"></i>
