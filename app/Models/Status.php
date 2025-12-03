@@ -12,7 +12,8 @@ class Status
 
     public function getAll()
     {
-        $query = "SELECT * FROM {$this->table} ORDER BY id_status DESC";
+        $query = "SELECT * FROM {$this->table} ORDER BY id_status ASC";
+
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -29,7 +30,8 @@ class Status
 
     public function insert($data)
     {
-        $query = "INSERT INTO {$this->table} (nama_status) VALUES (:nama_status)";
+        $query = "INSERT INTO {$this->table} (nama_status)
+              VALUES (:nama_status)";
         $stmt = $this->db->prepare($query);
         $stmt->execute($data);
     }
@@ -40,9 +42,10 @@ class Status
         foreach ($data as $key => $value) {
             $fields[] = "$key = :$key";
         }
-        $query = "UPDATE {$this->table} SET " . implode(',', $fields) . " WHERE id_status = :id_status";
+
+        $query      = "UPDATE {$this->table} SET " . implode(',', $fields) . " WHERE id_status = :id_status";
+        $stmt       = $this->db->prepare($query);
         $data['id_status'] = $id_status;
-        $stmt = $this->db->prepare($query);
         $stmt->execute($data);
     }
 

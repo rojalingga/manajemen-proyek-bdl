@@ -14,56 +14,39 @@ $router->post('/admin/klien/store', 'KlienController@store');
 $router->put('/admin/klien/update/{id_klien}', 'KlienController@update');
 $router->delete('/admin/klien/delete/{id_klien}', 'KlienController@destroy');
 
+$router->get('/admin/pegawai', 'PegawaiController@index');
+$router->get('/admin/pegawai/{id_pegawai}', 'PegawaiController@edit');
+$router->post('/admin/pegawai/store', 'PegawaiController@store');
+$router->put('/admin/pegawai/update/{id_pegawai}', 'PegawaiController@update');
+$router->delete('/admin/pegawai/delete/{id_pegawai}', 'PegawaiController@destroy');
+
+$router->get('/admin/tim', 'TimController@index');
+$router->get('/admin/tim/{id_tim}', 'TimController@edit');
+$router->post('/admin/tim/store', 'TimController@store');
+$router->put('/admin/tim/update/{id_tim}', 'TimController@update');
+$router->delete('/admin/tim/delete/{id_tim}', 'TimController@destroy');
+
+$router->get('/admin/status', 'StatusController@index');
+$router->get('/admin/status/{id_status}', 'StatusController@edit');
+$router->post('/admin/status/store', 'StatusController@store');
+$router->put('/admin/status/update/{id_status}', 'StatusController@update');
+$router->delete('/admin/status/delete/{id_status}', 'StatusController@destroy');
+
+$router->get('/admin/proyek', 'ProyekController@index');
+$router->get('/admin/proyek/{id_proyek}', 'ProyekController@edit');
+$router->post('/admin/proyek/store', 'ProyekController@store');
+$router->put('/admin/proyek/update/{id_proyek}', 'ProyekController@update');
+$router->delete('/admin/proyek/delete/{id_proyek}', 'ProyekController@destroy');
+
+$router->get('/admin/tugas', 'TugasController@index');
+$router->get('/admin/tugas/{id_tugas}', 'TugasController@edit');
+$router->post('/admin/tugas/store', 'TugasController@store');
+$router->put('/admin/tugas/update/{id_tugas}', 'TugasController@update');
+$router->delete('/admin/tugas/delete/{id_tugas}', 'TugasController@destroy');
+$router->get('/admin/tugas/get-tim-by-proyek/{id_proyek}', 'TugasController@getTimByProyek');
+
 $router->get('/admin/users', 'UsersController@index');
 $router->get('/admin/users/{id}', 'UsersController@edit');
 $router->post('/admin/users/store', 'UsersController@store');
 $router->put('/admin/users/update/{id}', 'UsersController@update');
 $router->delete('/admin/users/delete/{id}', 'UsersController@destroy');
-
-$router->get('/admin/tugas', 'TugasController@index');
-$router->post('/admin/tugas/store', 'TugasController@store');
-$router->get('/admin/tugas/edit/{id}', 'TugasController@edit');
-$router->post('/admin/tugas/update/{id}', 'TugasController@update');
-$router->delete('/admin/tugas/delete/{id}', 'TugasController@destroy');
-
-$router->get('/admin/status', 'StatusController@index');
-$router->post('/admin/status/store', 'StatusController@store');
-$router->get('/admin/status/edit/{id}', 'StatusController@edit');
-$router->post('/admin/status/update/{id}', 'StatusController@update');
-$router->delete('/admin/status/delete/{id}', 'StatusController@destroy');
-
-$router->get('/admin/tim', 'TimController@index');
-$router->post('/admin/tim/store', 'TimController@store');
-$router->get('/admin/tim/edit/{id}', 'TimController@edit');
-$router->post('/admin/tim/update/{id}', 'TimController@update');
-$router->delete('/admin/tim/delete/{id}', 'TimController@destroy');
-
-$router->get('/admin/pegawai', 'PegawaiController@index');
-$router->post('/admin/pegawai/store', 'PegawaiController@store');
-$router->get('/admin/pegawai/edit/{id}', 'PegawaiController@edit');
-$router->post('/admin/pegawai/update/{id}', 'PegawaiController@update');
-$router->delete('/admin/pegawai/delete/{id}', 'PegawaiController@destroy');
-
-$router->get('/admin/proyek', 'ProyekController@index');
-$router->post('/admin/proyek/store', 'ProyekController@store');
-$router->get('/admin/proyek/edit/{id}', 'ProyekController@edit');
-$router->post('/admin/proyek/update/{id}', 'ProyekController@update');
-$router->delete('/admin/proyek/delete/{id}', 'ProyekController@destroy');
-
-$router->get('/admin/proyek_tim', 'ProyekTimController@index');
-$router->post('/admin/proyek_tim/store', 'ProyekTimController@store');
-$router->get('/admin/proyek_tim/edit/{id}', 'ProyekTimController@edit');
-$router->post('/admin/proyek_tim/update/{id}', 'ProyekTimController@update');
-$router->delete('/admin/proyek_tim/delete/{id}', 'ProyekTimController@destroy');
-
-$router->get('/admin/proyek_klien', 'ProyekKlienController@index');
-$router->post('/admin/proyek_klien/store', 'ProyekKlienController@store');
-$router->get('/admin/proyek_klien/edit/{id}', 'ProyekKlienController@edit');
-$router->post('/admin/proyek_klien/update/{id}', 'ProyekKlienController@update');
-$router->delete('/admin/proyek_klien/delete/{id}', 'ProyekKlienController@destroy');
-
-$router->get('/admin/anggota_tim', 'AnggotaTimController@index');
-$router->post('/admin/anggota_tim/store', 'AnggotaTimController@store');
-$router->get('/admin/anggota_tim/edit/{id}', 'AnggotaTimController@edit');
-$router->post('/admin/anggota_tim/update/{id}', 'AnggotaTimController@update');
-$router->delete('/admin/anggota_tim/delete/{id}', 'AnggotaTimController@destroy');

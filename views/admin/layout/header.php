@@ -1,12 +1,12 @@
 <?php
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-    if (! isset($_SESSION['user'])) {
-        header('Location: /admin/login');
-        exit;
-    }
+if (! isset($_SESSION['user'])) {
+    header('Location: /admin/login');
+    exit;
+}
 ?>
 
 
@@ -122,6 +122,63 @@
 
         .select2-container .select2-selection__rendered {
             line-height: 30px;
+        }
+
+        body.dark .select2-container--default .select2-selection--multiple {
+            background-color: #1e1e2d;
+            border: 1px solid #444;
+            color: #fff;
+            min-height: 38px;
+            padding: 2px 12px;
+        }
+
+        body.dark .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #2c2f33;
+            border: 1px solid #555;
+            color: #fff;
+            border-radius: 4px;
+            padding: 1px 25px;
+
+        }
+
+        body.dark .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: #fff;
+            margin-right: 4px;
+        }
+
+        body.dark .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+            color: #fff;
+        }
+
+        /* Dropdown item */
+        body.dark .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #444;
+            color: #fff;
+        }
+
+        body.dark .select2-container--default .select2-results__option {
+            color: #fff;
+        }
+
+        body.light .select2-container--default .select2-selection--multiple {
+            background-color: #fff;
+            border: 1px solid #ced4da;
+            min-height: 38px;
+            padding: 2px 12px;
+        }
+
+        body.light .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #f0f0f0;
+            color: #333;
+            border-radius: 4px;
+            padding: 1px 25px;
+            border: 1px solid #ccc;
+
+        }
+
+        body.light .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: #333;
+            margin-right: 4px;
         }
 
         #main-navbar {
@@ -242,12 +299,21 @@
         .card.border-danger.shadow {
             box-shadow: 0 0 10px rgba(220, 53, 69, .6) !important;
         }
-    </style>
 
+        body.light .data-table td,
+        body.light .data-table th {
+            vertical-align: top !important;
+        }
+
+        body.dark .data-table td,
+        body.dark .data-table th {
+            vertical-align: top !important;
+        }
+    </style>
 
 </head>
 
-<body class="<?php echo(isset($_SESSION['theme']) && $_SESSION['theme'] === 'dark') ? 'theme-dark' : ''; ?>">
+<body class="<?php echo (isset($_SESSION['theme']) && $_SESSION['theme'] === 'dark') ? 'theme-dark' : ''; ?>">
 
     <script src="/template_admin/assets/static/js/initTheme.js"></script>
     <div id="app">
@@ -297,14 +363,15 @@
                 <div class="sidebar-menu">
                     <ul class="menu">
                         <?php
-                    $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-                    $uri = rtrim($uri, '/');
-                    function isActive($route) {
-                        global $uri;
-                        $cleanRoute = rtrim($route, '/');
-                        return $uri === $cleanRoute ? 'active' : '';
-                    }
-                ?>
+                        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+                        $uri = rtrim($uri, '/');
+                        function isActive($route)
+                        {
+                            global $uri;
+                            $cleanRoute = rtrim($route, '/');
+                            return $uri === $cleanRoute ? 'active' : '';
+                        }
+                        ?>
 
                         <li class="sidebar-item <?php echo isActive('/admin/dashboard') ?>">
                             <a href="/admin/dashboard" class="sidebar-link">
@@ -335,6 +402,13 @@
                                 <span>Tim</span>
                             </a>
                         </li>
+                        
+                        <li class="sidebar-item <?php echo isActive('/admin/status') ?>">
+                            <a href="/admin/status" class="sidebar-link">
+                                <i class="bi bi-flag-fill"></i>
+                                <span>Status</span>
+                            </a>
+                        </li>
 
                         <li class="sidebar-title">Manajemen Proyek</li>
 
@@ -352,35 +426,7 @@
                             </a>
                         </li>
 
-                        <li class="sidebar-item <?php echo isActive('/admin/status') ?>">
-                            <a href="/admin/status" class="sidebar-link">
-                                <i class="bi bi-flag-fill"></i>
-                                <span>Status</span>
-                            </a>
-                        </li>
-
-                        <li class="sidebar-title">Relasi & Pengaturan</li>
-
-                        <li class="sidebar-item <?php echo isActive('/admin/proyek_tim') ?>">
-                            <a href="/admin/proyek_tim" class="sidebar-link">
-                                <i class="bi bi-diagram-3-fill"></i>
-                                <span>Proyek Tim</span>
-                            </a>
-                        </li>
-
-                        <li class="sidebar-item <?php echo isActive('/admin/proyek_klien') ?>">
-                            <a href="/admin/proyek_klien" class="sidebar-link">
-                                <i class="bi bi-briefcase-fill"></i>
-                                <span>Proyek Klien</span>
-                            </a>
-                        </li>
-
-                        <li class="sidebar-item <?php echo isActive('/admin/anggota_tim') ?>">
-                            <a href="/admin/anggota_tim" class="sidebar-link">
-                                <i class="bi bi-person-plus-fill"></i>
-                                <span>Anggota Tim</span>
-                            </a>
-                        </li>
+                        <li class="sidebar-title">Pengaturan</li>
 
                         <li class="sidebar-item <?php echo isActive('/admin/users') ?>">
                             <a href="/admin/users" class="sidebar-link">
@@ -416,27 +462,27 @@
                                 <a data-bs-toggle="dropdown" aria-expanded="false">
                                     <div class="user-menu d-flex">
                                         <?php
-                                    if (session_status() === PHP_SESSION_NONE) {
-                                        session_start();
-                                    }
-
-                                    require_once __DIR__ . '/../../../app/models/Users.php';
-
-                                    $usernameSession = $_SESSION['user']['username'] ?? null;
-                                    $username = '-';
-                                    $nama_role = '-';
-                                    $fotoPath = '/img/1.jpg';
-
-                                    if ($usernameSession) {
-                                        $userModel = new Users();
-                                        $user = $userModel->findWithRole($usernameSession);
-
-                                        if ($user) {
-                                            $username = htmlspecialchars($user['username']);
-                                            $nama_role = htmlspecialchars($user['nama_role'] ?? '-');
+                                        if (session_status() === PHP_SESSION_NONE) {
+                                            session_start();
                                         }
-                                    }
-                                    ?>
+
+                                        require_once __DIR__ . '/../../../app/models/Users.php';
+
+                                        $usernameSession = $_SESSION['user']['username'] ?? null;
+                                        $username = '-';
+                                        $nama_role = '-';
+                                        $fotoPath = '/img/1.jpg';
+
+                                        if ($usernameSession) {
+                                            $userModel = new Users();
+                                            $user = $userModel->findWithRole($usernameSession);
+
+                                            if ($user) {
+                                                $username = htmlspecialchars($user['username']);
+                                                $nama_role = htmlspecialchars($user['nama_role'] ?? '-');
+                                            }
+                                        }
+                                        ?>
 
                                         <div class="user-name text-end me-3">
                                             <h6 class="mb-0 text-gray-600"><?php echo $username; ?></h6>

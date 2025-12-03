@@ -2,67 +2,283 @@
 <div class="page-content">
     <section class="section">
         <div class="card">
-            <div class="card-header d-flex justify-content-between">
-                <h3>Data Tim</h3>
-                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalForm">Tambah Tim</button>
+            <div class="card-header">
+                <div class="d-flex align-content-center justify-content-between">
+                    <h3 class="font-weight-bold text-xl">Tim</h3>
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalForm">
+                            <i class="bi bi-plus-lg"></i> Tambah Tim
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
-                <table class="table data-table table-bordered table-striped w-100">
-                    <thead><tr><th>No</th><th>Nama Tim</th><th>Action</th></tr></thead>
-                    <tbody></tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table data-table table-bordered table-striped w-100">
+                        <thead>
+                            <tr>
+                                <th width="50px">No</th>
+                                <th>Nama Tim</th>
+                                <th>Anggota Tim</th>
+                                <th width="100px" class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </section>
 </div>
 
-<div class="modal fade" id="modalForm" tabindex="-1" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered">
+<div class="modal fade text-left" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel"
+    aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white"><h5 class="modal-title">Form Tim</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body">
-                <form id="formData">
-                    <input type="hidden" id="primary_id" name="primary_id">
-                    <div class="mb-3"><label>Nama Tim</label><input type="text" class="form-control" id="nama_tim" name="nama_tim"></div>
-                    <button type="submit" class="btn btn-primary w-100">Simpan</button>
-                </form>
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title white" id="myModalLabel160">Form Tim
+                </h5>
+                <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
+                    <i data-feather="x"></i>
+                </button>
             </div>
+            <div class="modal-body">
+                <form id="formData" enctype="multipart/form-data">
+                    <input type="hidden" id="primary_id" name="primary_id">
+
+                    <div class="row mb-3 align-items-center">
+                        <label class="col-sm-3 col-form-label">Nama Tim</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="nama_tim" name="nama_tim">
+                        </div>
+                    </div>
+                    <div class="row mb-3 align-items-center">
+                        <label class="col-sm-3 col-form-label">Anggota Tim</label>
+                        <div class="col-sm-7">
+                            <select name="id_pegawai[]" id="id_pegawai" class="form-control select-anggota-tim"
+                                multiple="multiple">
+                                <?php foreach ($pegawai as $data): ?>
+                                    <option value="<?php echo $data['id_pegawai']; ?>"><?php echo htmlspecialchars($data['nama_pegawai']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <span class="button-text">Batal</span>
+                </button>
+                <button type="submit" class="btn btn-primary ms-1" id="submitBtn">
+                    <span class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
+                    <span class="button-text">Simpan</span>
+                </button>
+            </div>
+            </form>
         </div>
     </div>
 </div>
 
+
 <?php include __DIR__ . '/../layout/footer.php'; ?>
+
 <script>
-$(document).ready(function() {
-    var table = $('.data-table').DataTable({
-        ajax: '/admin/tim?ajax=1',
-        columns: [{data:'DT_RowIndex'}, {data:'nama_tim'}, {data:'action'}]
-    });
+    var audio = new Audio("/audio/notification.ogg");
 
-    $('#formData').on('submit', function(e){
-        e.preventDefault();
-        var id = $('#primary_id').val();
-        var url = id ? '/admin/tim/update/'+id : '/admin/tim/store';
-        $.ajax({
-            url: url, type: 'POST', data: $(this).serialize(),
-            success: function(){ $('#modalForm').modal('hide'); toastr.success('Berhasil'); table.ajax.reload(); },
-            error: function(){ toastr.error('Gagal simpan'); }
+    $(document).ready(function() {
+        $('.select-anggota-tim').select2({
+            dropdownParent: $('#modalForm'),
+            width: '100%',
+            placeholder: 'Pilih Anggota Tim',
+            minimumResultsForSearch: -1
         });
-    });
 
-    $(document).on('click', '.edit-button', function(){
-        $.get($(this).data('url'), function(res){
-            $('#primary_id').val(res.data.id_tim);
-            $('#nama_tim').val(res.data.nama_tim);
-            $('#modalForm').modal('show');
-        });
-    });
-    
-     $(document).on('click', '.delete-button', function() {
-        if(confirm('Hapus?')) {
-            $.ajax({ url: $(this).data('url'), type: 'DELETE', success: function(){ toastr.success('Dihapus'); table.ajax.reload(); } });
+        if ($('body').hasClass('dark')) {
+            $('.select2-container').addClass('select2-dark');
         }
+
+        $(function() {
+            $('.data-table').DataTable({
+                processing: false,
+                serverSide: false,
+                ordering: false,
+                responsive: true,
+                ajax: '/admin/tim?ajax=1',
+                columns: [{
+                        data: 'DT_RowIndex',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'nama_tim'
+                    },
+                    {
+                        data: 'anggota_tim'
+                    },
+                    {
+                        data: 'action',
+                        className: 'text-center'
+                    }
+                ]
+            });
+        });
+
+        $(document).on('click', '.edit-button', function() {
+            var url = $(this).data('url');
+            $.get(url, function(response) {
+                if (response.status === 'success') {
+                    $('#primary_id').val(response.data.id_tim);
+                    $('#nama_tim').val(response.data.nama_tim);
+                    $('#id_pegawai').val(response.data.pegawai_ids).trigger('change');
+
+                    $('#modalForm').modal('show');
+                }
+            });
+        });
+
+        $('#modalForm').on('hidden.bs.modal', function() {
+            $('#formData')[0].reset();
+            $('#primary_id').val('');
+            $('#id_pegawai').val([]).trigger('change');
+
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+            let submitBtn = $('#submitBtn');
+            let spinner = submitBtn.find('.spinner-border');
+            let btnText = submitBtn.find('.button-text');
+
+            spinner.addClass('d-none');
+            btnText.text('Simpan');
+            submitBtn.prop('disabled', false);
+        });
+
+        $('#formData').on('submit', function(e) {
+            e.preventDefault();
+
+            let submitBtn = $('#submitBtn');
+            let spinner = submitBtn.find('.spinner-border');
+            let btnText = submitBtn.find('.button-text');
+
+            spinner.removeClass('d-none');
+            btnText.text('Menyimpan...');
+            submitBtn.prop('disabled', true);
+
+            let id = $('#primary_id').val();
+            let url = id ? '/admin/tim/update/' + id : '/admin/tim/store';
+            let method = id ? 'PUT' : 'POST';
+
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+
+            let formData = new FormData(this);
+            formData.append('_method', method);
+
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    $('#modalForm').modal('hide');
+                    audio.play();
+                    let msg = id ? "Tim berhasil diupdate!" : "Tim berhasil ditambahkan!";
+                    toastr.success(msg, "BERHASIL", {
+                        progressBar: true,
+                        timeOut: 3500,
+                        positionClass: "toast-bottom-right",
+                    });
+                    $('.data-table').DataTable().ajax.reload();
+                },
+                error: function(xhr) {
+                    if (xhr.status === 422) {
+                        audio.play();
+                        toastr.error("Ada inputan yang salah!", "GAGAL!", {
+                            progressBar: true,
+                            timeOut: 3500,
+                            positionClass: "toast-bottom-right",
+                        });
+
+                        let errors = xhr.responseJSON.errors;
+                        $.each(errors, function(key, val) {
+                            let input = $('#' + key);
+                            input.addClass('is-invalid');
+                            input.parent().find('.invalid-feedback').remove();
+                            input.parent().append(
+                                '<span class="invalid-feedback" role="alert"><strong>' +
+                                val[0] + '</strong></span>'
+                            );
+                        });
+                    }
+                },
+                complete: function() {
+                    spinner.addClass('d-none');
+                    btnText.text('Simpan');
+                    submitBtn.prop('disabled', false);
+                }
+            });
+        });
+
+        $(document).on('click', '.delete-button', function(e) {
+            e.preventDefault();
+
+            const url = $(this).data('url');
+
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: 'Tim ini akan dihapus secara permanen!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '<span class="swal-btn-text">Ya, Hapus</span>',
+                cancelButtonText: 'Batal',
+                showLoaderOnConfirm: false,
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'btn btn-danger mx-2',
+                    cancelButton: 'btn btn-secondary'
+                },
+                preConfirm: () => {
+                    return new Promise((resolve) => {
+                        const confirmBtn = Swal.getConfirmButton();
+                        const btnText = confirmBtn.querySelector('.swal-btn-text');
+
+                        btnText.innerHTML =
+                            `<span class="spinner-border spinner-border-sm mx-2" role="status" aria-hidden="true"></span> Menghapus...`;
+                        confirmBtn.disabled = true;
+
+                        $.ajax({
+                            url: url,
+                            method: 'DELETE',
+                            success: function() {
+                                audio.play();
+                                toastr.success("Tim telah dihapus!", "BERHASIL", {
+                                    progressBar: true,
+                                    timeOut: 3500,
+                                    positionClass: "toast-bottom-right"
+                                });
+
+                                $('.data-table').DataTable().ajax.reload(null, false);
+                                Swal.close();
+                            },
+                            error: function(xhr) {
+                                audio.play();
+                                toastr.error(
+                                    "Gagal menghapus Tim.",
+                                    "GAGAL!", {
+                                        progressBar: true,
+                                        timeOut: 3500,
+                                        positionClass: "toast-bottom-right"
+                                    }
+                                );
+
+                                btnText.innerHTML = `Ya, Hapus`;
+                                confirmBtn.disabled = false;
+                            }
+                        });
+                    });
+                }
+            });
+        });
+
     });
-    $('#modalForm').on('hidden.bs.modal', function() { $('#formData')[0].reset(); $('#primary_id').val(''); });
-});
 </script>

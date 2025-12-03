@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/Controller.php';
-require_once __DIR__ . '/../Models/Pegawai.php';
+require_once __DIR__ . '/../models/Pegawai.php';
 
 class PegawaiController extends Controller
 {
@@ -17,92 +17,174 @@ class PegawaiController extends Controller
         if (isset($_GET['ajax'])) {
             ob_clean();
             header('Content-Type: application/json; charset=utf-8');
+
             try {
-                $data = $this->pegawaiModel->getAll();
-                $result = [];
-                $no = 1;
-                $baseUrl = ''; 
+                $datatables = $this->pegawaiModel->getAll();
 
-                foreach ($data as $row) {
-                    $editUrl = $baseUrl . '/admin/pegawai/edit/' . $row['id_pegawai'];
-                    $delUrl  = $baseUrl . '/admin/pegawai/delete/' . $row['id_pegawai'];
-                    
-                    $action = '<div class="d-flex justify-content-center">
-                        <button class="btn btn-primary btn-sm mx-1 edit-button" data-url="'.$editUrl.'">Edit</button>
-                        <button class="btn btn-danger btn-sm mx-1 delete-button" data-url="'.$delUrl.'">Hapus</button>
-                    </div>';
+                $data  = [];
+                $index = 1;
 
-                    $result[] = [
-                        'DT_RowIndex' => $no++,
-                        'nama_pegawai' => htmlspecialchars($row['nama_pegawai']),
-                        'telp_pegawai' => htmlspecialchars($row['telp_pegawai']),
-                        'email_pegawai' => htmlspecialchars($row['email_pegawai'] ?? '-'),
-                        'action' => $action
+                foreach ($datatables as $row) {
+                    $editUrl   = '/admin/pegawai/' . $row['id_pegawai'];
+                    $deleteUrl = '/admin/pegawai/delete/' . $row['id_pegawai'];
+
+                    $action = '
+                        <div class="d-flex justify-content-center">
+                            <button class="btn btn-primary btn-sm mx-1 edit-button"
+                                data-id="' . htmlspecialchars($row['id_pegawai']) . '"
+                                data-url="' . htmlspecialchars($editUrl) . '">Edit</button>
+                            <button class="btn btn-danger btn-sm mx-1 delete-button"
+                                data-url="' . htmlspecialchars($deleteUrl) . '">Hapus</button>
+                        </div>
+                    ';
+
+                    $data[] = [
+                        'DT_RowIndex' => $index++,
+                        'nama_pegawai'  => htmlspecialchars($row['nama_pegawai']),
+                        'telp_pegawai'  => htmlspecialchars($row['telp_pegawai']),
+                        'email_pegawai' => htmlspecialchars($row['email_pegawai']),
+                        'action'      => $action,
                     ];
                 }
-                echo json_encode(['data' => $result]);
-            } catch (Throwable $e) { echo json_encode(['error' => $e->getMessage()]); }
+
+                echo json_encode(['data' => $data], JSON_UNESCAPED_UNICODE);
+            } catch (Throwable $e) {
+                echo json_encode(['error' => $e->getMessage()]);
+            }
+
             exit;
         }
+
         $this->view('admin/pegawai/index');
-    }
-
-    public function store()
-    {
-        header('Content-Type: application/json; charset=utf-8');
-        $data = $_POST;
-        
-        if(empty($data['nama_pegawai'])) {
-             http_response_code(422);
-             echo json_encode(['errors' => ['msg' => ['Nama Pegawai wajib diisi']]]);
-             exit;
-        }
-
-        try {
-            $this->pegawaiModel->insert([
-                'nama_pegawai'  => $data['nama_pegawai'],
-                'telp_pegawai'  => $data['telp_pegawai'],
-                'email_pegawai' => $data['email_pegawai']
-            ]);
-            echo json_encode(['status' => 'success']);
-        } catch (Throwable $e) {
-            http_response_code(500);
-            echo json_encode(['errors' => ['msg' => [$e->getMessage()]]]); 
-        }
     }
 
     public function edit($id)
     {
         ob_clean();
         header('Content-Type: application/json; charset=utf-8');
-        $data = $this->pegawaiModel->findById($id);
-        echo json_encode(['status' => 'success', 'data' => $data]);
+
+        try {
+            $data = $this->pegawaiModel->findById($id);
+
+            if ($data) {
+                echo json_encode([
+                    'status' => 'success',
+                    'data'   => $data,
+                ]);
+            } else {
+                echo json_encode([
+                    'status'  => 'error',
+                    'message' => 'Data tidak ditemukan',
+                ]);
+            }
+        } catch (Throwable $e) {
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+
         exit;
+    }
+
+    public function store()
+    {
+        header('Content-Type: application/json; charset=utf-8');
+        $data = $_POST;
+
+        $errors = [];
+        if (empty($data['nama_pegawai'])) {
+            $errors['nama_pegawai'][] = 'Nama pegawai wajib diisi.';
+        }
+
+        if (empty($data['telp_pegawai'])) {
+            $errors['telp_pegawai'][] = 'Telepon pegawai wajib diisi.';
+        }
+
+        if (empty($data['email_pegawai'])) {
+            $errors['email_pegawai'][] = 'Email pegawai wajib diisi.';
+        }
+
+        if ($errors) {
+            http_response_code(422);
+            echo json_encode(['errors' => $errors]);
+            return;
+        }
+
+        $insertData = [
+            'nama_pegawai'  => $data['nama_pegawai'],
+            'telp_pegawai'  => $data['telp_pegawai'],
+            'email_pegawai' => $data['email_pegawai'],
+        ];
+
+        try {
+            $this->pegawaiModel->insert($insertData);
+            echo json_encode(['status' => 'success']);
+        } catch (Throwable $e) {
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
     }
 
     public function update($id)
     {
         header('Content-Type: application/json; charset=utf-8');
-        $data = $_POST;
-        
+
+        $data     = $_POST;
+        $existing = $this->pegawaiModel->findById($id);
+
+        if (! $existing) {
+            http_response_code(404);
+            echo json_encode(['message' => 'Data tidak ditemukan.']);
+            return;
+        }
+
+        $errors = [];
+        if (empty($data['nama_pegawai'])) {
+            $errors['nama_pegawai'][] = 'Nama pegawai wajib diisi.';
+        }
+
+        if (empty($data['telp_pegawai'])) {
+            $errors['telp_pegawai'][] = 'Telepon pegawai wajib diisi.';
+        }
+
+        if (empty($data['email_pegawai'])) {
+            $errors['email_pegawai'][] = 'Email pegawai wajib diisi.';
+        }
+
+        if ($errors) {
+            http_response_code(422);
+            echo json_encode(['errors' => $errors]);
+            return;
+        }
+
+        $updateData = [
+            'nama_pegawai'  => $data['nama_pegawai'],
+            'telp_pegawai'  => $data['telp_pegawai'],
+            'email_pegawai' => $data['email_pegawai'],
+        ];
+
         try {
-            $this->pegawaiModel->update($id, [
-                'nama_pegawai'  => $data['nama_pegawai'],
-                'telp_pegawai'  => $data['telp_pegawai'],
-                'email_pegawai' => $data['email_pegawai']
-            ]);
+            $this->pegawaiModel->update($id, $updateData);
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
             http_response_code(500);
-            echo json_encode(['errors' => ['msg' => [$e->getMessage()]]]);
+            echo json_encode(['error' => $e->getMessage()]);
         }
     }
 
     public function destroy($id)
     {
         header('Content-Type: application/json; charset=utf-8');
+
         try {
+            $user = $this->pegawaiModel->findById($id);
+
+            if (! $user) {
+                http_response_code(404);
+                echo json_encode(['message' => 'Data tidak ditemukan.']);
+                return;
+            }
+
             $this->pegawaiModel->delete($id);
+
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
             http_response_code(500);

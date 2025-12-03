@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/Controller.php';
-require_once __DIR__ . '/../Models/Status.php';
+require_once __DIR__ . '/../models/Status.php';
 
 class StatusController extends Controller
 {
@@ -20,17 +20,13 @@ class StatusController extends Controller
 
             try {
                 $datatables = $this->statusModel->getAll();
+
                 $data  = [];
                 $index = 1;
-                
-                // Cek apakah kamu pakai subfolder url manual atau virtual host
-                // Jika pakai Virtual Host (.test), $baseUrl kosongkan saja.
-                // Jika pakai localhost/folder, isi: $baseUrl = '/manajemen-proyek-bdl';
-                $baseUrl = ''; 
 
                 foreach ($datatables as $row) {
-                    $editUrl   = $baseUrl . '/admin/status/edit/' . $row['id_status'];
-                    $deleteUrl = $baseUrl . '/admin/status/delete/' . $row['id_status'];
+                    $editUrl   = '/admin/status/' . $row['id_status'];
+                    $deleteUrl = '/admin/status/delete/' . $row['id_status'];
 
                     $action = '
                         <div class="d-flex justify-content-center">
@@ -44,28 +40,56 @@ class StatusController extends Controller
 
                     $data[] = [
                         'DT_RowIndex' => $index++,
-                        'nama_status' => htmlspecialchars($row['nama_status']),
+                        'nama_status'  => htmlspecialchars($row['nama_status']),
                         'action'      => $action,
                     ];
                 }
+
                 echo json_encode(['data' => $data], JSON_UNESCAPED_UNICODE);
             } catch (Throwable $e) {
                 echo json_encode(['error' => $e->getMessage()]);
             }
+
             exit;
         }
 
         $this->view('admin/status/index');
     }
 
+    public function edit($id)
+    {
+        ob_clean();
+        header('Content-Type: application/json; charset=utf-8');
+
+        try {
+            $data = $this->statusModel->findById($id);
+
+            if ($data) {
+                echo json_encode([
+                    'status' => 'success',
+                    'data'   => $data,
+                ]);
+            } else {
+                echo json_encode([
+                    'status'  => 'error',
+                    'message' => 'Data tidak ditemukan',
+                ]);
+            }
+        } catch (Throwable $e) {
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+
+        exit;
+    }
+
     public function store()
     {
         header('Content-Type: application/json; charset=utf-8');
         $data = $_POST;
-        $errors = [];
 
+        $errors = [];
         if (empty($data['nama_status'])) {
-            $errors['nama_status'][] = 'Nama Status wajib diisi.';
+            $errors['nama_status'][] = 'Nama status wajib diisi.';
         }
 
         if ($errors) {
@@ -74,10 +98,12 @@ class StatusController extends Controller
             return;
         }
 
+        $insertData = [
+            'nama_status'  => $data['nama_status'],
+        ];
+
         try {
-            $this->statusModel->insert([
-                'nama_status' => $data['nama_status']
-            ]);
+            $this->statusModel->insert($insertData);
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
             http_response_code(500);
@@ -85,35 +111,36 @@ class StatusController extends Controller
         }
     }
 
-    public function edit($id)
-    {
-        ob_clean();
-        header('Content-Type: application/json; charset=utf-8');
-        $data = $this->statusModel->findById($id);
-        
-        if ($data) {
-            echo json_encode(['status' => 'success', 'data' => $data]);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Data not found']);
-        }
-        exit;
-    }
-
     public function update($id)
     {
         header('Content-Type: application/json; charset=utf-8');
-        $data = $_POST;
-        
-        if (empty($data['nama_status'])) {
-            http_response_code(422);
-            echo json_encode(['errors' => ['nama_status' => ['Nama Status wajib diisi.']]]);
+
+        $data     = $_POST;
+        $existing = $this->statusModel->findById($id);
+
+        if (! $existing) {
+            http_response_code(404);
+            echo json_encode(['message' => 'Data tidak ditemukan.']);
             return;
         }
 
+        $errors = [];
+        if (empty($data['nama_status'])) {
+            $errors['nama_status'][] = 'Nama status wajib diisi.';
+        }
+
+        if ($errors) {
+            http_response_code(422);
+            echo json_encode(['errors' => $errors]);
+            return;
+        }
+
+        $updateData = [
+            'nama_status'  => $data['nama_status'],
+        ];
+
         try {
-            $this->statusModel->update($id, [
-                'nama_status' => $data['nama_status']
-            ]);
+            $this->statusModel->update($id, $updateData);
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
             http_response_code(500);
@@ -124,8 +151,18 @@ class StatusController extends Controller
     public function destroy($id)
     {
         header('Content-Type: application/json; charset=utf-8');
+
         try {
+            $user = $this->statusModel->findById($id);
+
+            if (! $user) {
+                http_response_code(404);
+                echo json_encode(['message' => 'Data tidak ditemukan.']);
+                return;
+            }
+
             $this->statusModel->delete($id);
+
             echo json_encode(['status' => 'success']);
         } catch (Throwable $e) {
             http_response_code(500);
