@@ -4,7 +4,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex align-content-center justify-content-between">
-                    <h3 class="font-weight-bold text-xl">Pegawai</h3>
+                    <h3 class="font-weight-bold text-xl text-primary">Pegawai</h3>
                     <div class="d-flex align-items-center">
                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalForm">
                             <i class="bi bi-plus-lg"></i> Tambah Pegawai
@@ -91,11 +91,16 @@
     $(document).ready(function() {
         $(function() {
             $('.data-table').DataTable({
-                processing: false,
-                serverSide: false,
+                processing: true,
+                serverSide: true,
                 ordering: false,
                 responsive: true,
-                ajax: '/admin/pegawai?ajax=1',
+                lengthChange: false,
+                pageLength: 10,
+                ajax: {
+                    url: '/admin/pegawai',
+                    type: 'GET'
+                },
                 columns: [{
                         data: 'DT_RowIndex',
                         className: 'text-center'
@@ -116,6 +121,7 @@
                 ]
             });
         });
+
 
         $(document).on('click', '.edit-button', function() {
             var url = $(this).data('url');

@@ -1,105 +1,104 @@
 <?php include __DIR__ . '/../layout/header.php'; ?>
-    <div class="page-content">
-        <section class="section">
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex align-content-center justify-content-between">
-                        <h3 class="font-weight-bold text-xl">Users</h3>
-                        <div class="d-flex align-items-center">
-                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalForm">
-                                <i class="bi bi-plus-lg"></i> Tambah Users
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table data-table table-bordered table-striped w-100">
-                            <thead>
-                                <tr>
-                                    <th width="50px">No</th>
-                                    <th>Nama</th>
-                                    <th>Username</th>
-                                    <th class="text-center">Role</th>
-                                    <th width="100px" class="text-center">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+<div class="page-content">
+    <section class="section">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex align-content-center justify-content-between">
+                    <h3 class="font-weight-bold text-xl text-primary">Users</h3>
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalForm">
+                            <i class="bi bi-plus-lg"></i> Tambah Users
+                        </button>
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
-
-    <div class="modal fade text-left" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel"
-        aria-hidden="true" data-backdrop="static" data-keyboard="false" data-focus="false">
-
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-md" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <h5 class="modal-title white" id="myModalLabel160">Form Data Users
-                    </h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table data-table table-bordered table-striped w-100">
+                        <thead>
+                            <tr>
+                                <th width="50px">No</th>
+                                <th>Nama</th>
+                                <th>Username</th>
+                                <th class="text-center">Role</th>
+                                <th width="100px" class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
-                <div class="modal-body">
-                    <form id="formData" enctype="multipart/form-data">
-                        <input type="hidden" id="primary_id" name="primary_id">
-
-                        <div class="row mb-3 align-items-center">
-                            <label class="col-sm-3 col-form-label">Nama</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nama" name="nama">
-                            </div>
-                        </div>
-                        <div class="row mb-3 align-items-center">
-                            <label class="col-sm-3 col-form-label">Username</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="username" name="username">
-                            </div>
-                        </div>
-                        <div class="row mb-3 align-items-center">
-                            <label class="col-sm-3 col-form-label">Password</label>
-                            <div class="col-sm-9">
-                                <input type="password" class="form-control" id="password" name="password">
-                            </div>
-                        </div>
-
-                        <div class="row mb-3 align-items-center">
-                            <label class="col-sm-3 col-form-label">Role</label>
-                            <div class="col-sm-9">
-                                <select class="form-select select-role" id="id_role" name="id_role">
-                                    <option value=""></option>
-                                    <?php foreach ($roles as $role): ?>
-                                        <option value="<?php echo $role['id'];?>"><?php echo htmlspecialchars($role['nama_role']);?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
-                        <span class="button-text">Batal</span>
-                    </button>
-                    <button type="submit" class="btn btn-primary ms-1" id="submitBtn">
-                        <span class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
-                        <span class="button-text">Simpan</span>
-                    </button>
-                </div>
-                </form>
             </div>
         </div>
+    </section>
+</div>
+
+<div class="modal fade text-left" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="modalFormLabel"
+    aria-hidden="true" data-backdrop="static" data-keyboard="false" data-focus="false">
+
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title white" id="myModalLabel160">Form Data Users
+                </h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formData" enctype="multipart/form-data">
+                    <input type="hidden" id="primary_id" name="primary_id">
+
+                    <div class="row mb-3 align-items-center">
+                        <label class="col-sm-3 col-form-label">Nama</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="nama" name="nama">
+                        </div>
+                    </div>
+                    <div class="row mb-3 align-items-center">
+                        <label class="col-sm-3 col-form-label">Username</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="username" name="username">
+                        </div>
+                    </div>
+                    <div class="row mb-3 align-items-center">
+                        <label class="col-sm-3 col-form-label">Password</label>
+                        <div class="col-sm-9">
+                            <input type="password" class="form-control" id="password" name="password">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3 align-items-center">
+                        <label class="col-sm-3 col-form-label">Role</label>
+                        <div class="col-sm-9">
+                            <select class="form-select select-role" id="id_role" name="id_role">
+                                <option value=""></option>
+                                <?php foreach ($roles as $role): ?>
+                                    <option value="<?php echo $role['id']; ?>"><?php echo htmlspecialchars($role['nama_role']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <span class="button-text">Batal</span>
+                </button>
+                <button type="submit" class="btn btn-primary ms-1" id="submitBtn">
+                    <span class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
+                    <span class="button-text">Simpan</span>
+                </button>
+            </div>
+            </form>
+        </div>
     </div>
+</div>
 
 
 <?php include __DIR__ . '/../layout/footer.php'; ?>
 
 <script>
-
     var audio = new Audio("/audio/notification.ogg");
 
     $(document).ready(function() {
@@ -116,22 +115,39 @@
 
         $(function() {
             $('.data-table').DataTable({
-                processing: false,
-                serverSide: false,
+                processing: true,
+                serverSide: true,
                 ordering: false,
                 responsive: true,
-                ajax: '/admin/users?ajax=1',
-                columns: [
-                    { data: 'DT_RowIndex', className: 'text-center' },
-                    { data: 'nama' },
-                    { data: 'username' },
-                    { data: 'role', className: 'text-center' },
-                    { data: 'action', className: 'text-center' }
+                lengthChange: false,
+                pageLength: 10,
+                ajax: {
+                    url: '/admin/users',
+                    type: 'GET'
+                },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'nama'
+                    },
+                    {
+                        data: 'username'
+                    },
+                    {
+                        data: 'role',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'action',
+                        className: 'text-center'
+                    }
                 ]
             });
         });
 
-         $(document).on('click', '.edit-button', function() {
+        $(document).on('click', '.edit-button', function() {
             var url = $(this).data('url');
             $.get(url, function(response) {
                 if (response.status === 'success') {
@@ -145,7 +161,7 @@
             });
         });
 
-         $('#modalForm').on('hidden.bs.modal', function() {
+        $('#modalForm').on('hidden.bs.modal', function() {
             $('#formData')[0].reset();
             $('#primary_id').val('');
             $('#id_role').val('').trigger('change');
@@ -191,7 +207,7 @@
                 contentType: false,
                 processData: false,
                 success: function(response) {
-                     $('#modalForm').modal('hide');
+                    $('#modalForm').modal('hide');
                     audio.play();
                     let msg = id ? "Pengguna berhasil diupdate!" : "Pengguna berhasil ditambahkan!";
                     toastr.success(msg, "BERHASIL", {
@@ -230,7 +246,7 @@
             });
         });
 
-       $(document).on('click', '.delete-button', function(e) {
+        $(document).on('click', '.delete-button', function(e) {
             e.preventDefault();
 
             const url = $(this).data('url');
@@ -275,8 +291,7 @@
                                 audio.play();
                                 toastr.error(
                                     "Gagal menghapus Users.",
-                                    "GAGAL!",
-                                    {
+                                    "GAGAL!", {
                                         progressBar: true,
                                         timeOut: 3500,
                                         positionClass: "toast-bottom-right"
@@ -293,5 +308,4 @@
         });
 
     });
-
 </script>

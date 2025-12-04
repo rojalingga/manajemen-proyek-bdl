@@ -4,7 +4,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex align-content-center justify-content-between">
-                    <h3 class="font-weight-bold text-xl">Tim</h3>
+                    <h3 class="font-weight-bold text-xl text-primary">Tim</h3>
                     <div class="d-flex align-items-center">
                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalForm">
                             <i class="bi bi-plus-lg"></i> Tambah Tim
@@ -100,11 +100,16 @@
 
         $(function() {
             $('.data-table').DataTable({
-                processing: false,
-                serverSide: false,
+                processing: true,
+                serverSide: true,
                 ordering: false,
                 responsive: true,
-                ajax: '/admin/tim?ajax=1',
+                lengthChange: false,
+                pageLength: 10,
+                ajax: {
+                    url: '/admin/tim',
+                    type: 'GET'
+                },
                 columns: [{
                         data: 'DT_RowIndex',
                         className: 'text-center'

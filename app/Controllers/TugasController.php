@@ -19,66 +19,149 @@ class TugasController extends Controller
 
     public function __construct()
     {
-        $this->tugasModel = new Tugas();
-        $this->proyekModel = new Proyek();
-        $this->timModel = new Tim();
-        $this->statusModel = new Status();
-        $this->pegawaiModel = new Pegawai();
+        $this->tugasModel     = new Tugas();
+        $this->proyekModel    = new Proyek();
+        $this->timModel       = new Tim();
+        $this->statusModel    = new Status();
+        $this->pegawaiModel   = new Pegawai();
         $this->proyekTimModel = new ProyekTim();
     }
 
     public function index()
     {
-        if (isset($_GET['ajax'])) {
+        if (isset($_GET['draw'])) {
             ob_clean();
             header('Content-Type: application/json; charset=utf-8');
 
-            try {
-                $datatables = $this->tugasModel->getAll();
+            $draw   = intval($_GET['draw']);
+            $start  = intval($_GET['start']);
+            $length = intval($_GET['length']);
+            $search = $_GET['search']['value'] ?? '';
 
-                $data  = [];
-                $index = 1;
+            $filterProyek   = $_GET['filter_proyek'] ?? '';
+            $filterStatus   = $_GET['filter_status'] ?? '';
+            $filterDeadline = $_GET['filter_deadline'] ?? '';
 
-                foreach ($datatables as $row) {
-                    $editUrl   = '/admin/tugas/' . $row['id_tugas'];
-                    $deleteUrl = '/admin/tugas/delete/' . $row['id_tugas'];
+            $result = $this->tugasModel->getServerSide(
+                $start,
+                $length,
+                $search,
+                $filterProyek,
+                $filterStatus,
+                $filterDeadline
+            );
 
-                    $action = '
-                        <div class="d-flex justify-content-center">
-                            <button class="btn btn-primary btn-sm mx-1 edit-button"
-                                data-id="' . htmlspecialchars($row['id_tugas']) . '"
-                                data-url="' . htmlspecialchars($editUrl) . '">Edit</button>
-                            <button class="btn btn-danger btn-sm mx-1 delete-button"
-                                data-url="' . htmlspecialchars($deleteUrl) . '">Hapus</button>
-                        </div>
-                    ';
+            $data  = [];
+            $index = $start + 1;
 
-                    $data[] = [
-                        'DT_RowIndex' => $index++,
-                        'nama_tugas'  => htmlspecialchars($row['nama_tugas']),
-                        'nama_proyek'  => htmlspecialchars($row['nama_proyek']),
-                        'nama_tim'  => htmlspecialchars($row['nama_tim']),
-                        'nama_status'  => htmlspecialchars($row['nama_status']),
-                        'action'      => $action,
-                    ];
+            foreach ($result['data'] as $row) {
+                $editUrl   = '/admin/tugas/' . $row['id_tugas'];
+                $deleteUrl = '/admin/tugas/delete/' . $row['id_tugas'];
+
+                $action = '
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-primary btn-sm mx-1 edit-button"
+                        data-id="' . $row['id_tugas'] . '"
+                        data-url="' . $editUrl . '">Edit</button>
+
+                    <button class="btn btn-danger btn-sm mx-1 delete-button"
+                        data-url="' . $deleteUrl . '">Hapus</button>
+                </div>
+                ';
+
+                $now          = new DateTime();
+                $deadline     = $row['deadline'] ? new DateTime($row['deadline']) : null;
+                $deadlineText = '-';
+
+                if ($deadline) {
+                    if ($now > $deadline) {
+                        $diff  = $now->diff($deadline);
+                        $parts = [];
+
+                        if ($diff->y > 0) {
+                            $parts[] = $diff->y . " tahun";
+                        }
+
+                        if ($diff->m > 0) {
+                            $parts[] = $diff->m . " bulan";
+                        }
+
+                        if ($diff->d > 0) {
+                            $parts[] = $diff->d . " hari";
+                        }
+
+                        if ($diff->y == 0 && $diff->m == 0 && $diff->d == 0) {
+                            $parts[] = $diff->h . " jam";
+                        }
+
+                        $deadlineText = "<span class='text-danger fw-bold'>Terlambat " . implode(' ', $parts) . "</span>";
+                    } else {
+                        $diff  = $deadline->diff($now);
+                        $parts = [];
+
+                        if ($diff->y > 0) {
+                            $parts[] = $diff->y . " tahun";
+                        }
+
+                        if ($diff->m > 0) {
+                            $parts[] = $diff->m . " bulan";
+                        }
+
+                        if ($diff->d > 0) {
+                            $parts[] = $diff->d . " hari";
+                        }
+
+                        if ($diff->y == 0 && $diff->m == 0 && $diff->d == 0) {
+                            $parts[] = $diff->h . " jam";
+                        }
+
+                        $deadlineText = "<span class='text-primary fw-bold'>" . implode(' ', $parts) . "</span>";
+                    }
                 }
 
-                echo json_encode(['data' => $data], JSON_UNESCAPED_UNICODE);
-            } catch (Throwable $e) {
-                echo json_encode(['error' => $e->getMessage()]);
+                if ($row['nama_status'] === 'Belum Mulai') {
+                    $badgeStatus = '<span class="badge bg-warning text-white">Belum Mulai</span>';
+                } elseif ($row['nama_status'] === 'Selesai') {
+                    $badgeStatus = '<span class="badge bg-success">Selesai</span>';
+                } else {
+                    $badgeStatus = '<span class="badge bg-info">' . htmlspecialchars($row['nama_status']) . '</span>';
+                }
+
+                $proyekTim = '
+                    <div>
+                        <div>' . htmlspecialchars($row['nama_proyek']) . '</div>
+                        <div><span class="badge bg-dark mt-2">' . htmlspecialchars($row['nama_tim']) . '</span></div>
+                    </div>
+                ';
+
+                $data[] = [
+                    'DT_RowIndex' => $index++,
+                    'nama_tugas'  => $row['nama_tugas'],
+                    'proyek_tim'  => $proyekTim,
+                    'deadline'    => $deadlineText,
+                    'nama_status' => $badgeStatus,
+                    'action'      => $action,
+                ];
             }
+
+            echo json_encode([
+                'draw'            => $draw,
+                'recordsTotal'    => $result['total'],
+                'recordsFiltered' => $result['filtered'],
+                'data'            => $data,
+            ], JSON_UNESCAPED_UNICODE);
 
             exit;
         }
 
-        $proyek = $this->proyekModel->getAll();
-        $status = $this->statusModel->getAll();
+        $proyek  = $this->proyekModel->getAll();
+        $status  = $this->statusModel->getAll();
         $pegawai = $this->pegawaiModel->getAll();
 
         $this->view('admin/tugas/index', [
-            'proyek' => $proyek,
-            'status' => $status,
-            'pegawai' => $pegawai
+            'proyek'  => $proyek,
+            'status'  => $status,
+            'pegawai' => $pegawai,
         ]);
     }
 
@@ -117,7 +200,7 @@ class TugasController extends Controller
 
             $idTimList = array_column($timByProyek, 'id_tim');
 
-            if (!$idTimList) {
+            if (! $idTimList) {
                 echo json_encode([]);
                 return;
             }
@@ -130,7 +213,6 @@ class TugasController extends Controller
             echo json_encode(['error' => $e->getMessage()]);
         }
     }
-
 
     public function store()
     {
@@ -156,6 +238,9 @@ class TugasController extends Controller
         if (empty($data['id_penanggung_jawab'])) {
             $errors['id_penanggung_jawab'][] = 'Penanggung Jawab wajib diisi.';
         }
+        if (empty($data['deadline'])) {
+            $errors['deadline'][] = 'Deadline wajib diisi.';
+        }
 
         if ($errors) {
             http_response_code(422);
@@ -164,12 +249,13 @@ class TugasController extends Controller
         }
 
         $insertData = [
-            'nama_tugas'  => $data['nama_tugas'],
-            'deskripsi'  => $data['deskripsi'],
-            'id_proyek'  => $data['id_proyek'],
-            'id_tim'  => $data['id_tim'],
-            'id_status'  => $data['id_status'],
-            'id_penanggung_jawab'  => $data['id_penanggung_jawab'],
+            'nama_tugas'          => $data['nama_tugas'],
+            'deskripsi'           => $data['deskripsi'],
+            'id_proyek'           => $data['id_proyek'],
+            'id_tim'              => $data['id_tim'],
+            'id_status'           => $data['id_status'],
+            'id_penanggung_jawab' => $data['id_penanggung_jawab'],
+            'deadline'            => $data['deadline'],
         ];
 
         try {
@@ -213,6 +299,9 @@ class TugasController extends Controller
         if (empty($data['id_penanggung_jawab'])) {
             $errors['id_penanggung_jawab'][] = 'Penanggung Jawab wajib diisi.';
         }
+        if (empty($data['deadline'])) {
+            $errors['deadline'][] = 'Deadline wajib diisi.';
+        }
 
         if ($errors) {
             http_response_code(422);
@@ -221,12 +310,13 @@ class TugasController extends Controller
         }
 
         $updateData = [
-            'nama_tugas'  => $data['nama_tugas'],
-            'deskripsi'  => $data['deskripsi'],
-            'id_proyek'  => $data['id_proyek'],
-            'id_tim'  => $data['id_tim'],
-            'id_status'  => $data['id_status'],
-            'id_penanggung_jawab'  => $data['id_penanggung_jawab'],
+            'nama_tugas'          => $data['nama_tugas'],
+            'deskripsi'           => $data['deskripsi'],
+            'id_proyek'           => $data['id_proyek'],
+            'id_tim'              => $data['id_tim'],
+            'id_status'           => $data['id_status'],
+            'id_penanggung_jawab' => $data['id_penanggung_jawab'],
+            'deadline'            => $data['deadline'],
         ];
 
         try {

@@ -402,26 +402,19 @@ if (! isset($_SESSION['user'])) {
                                 <span>Tim</span>
                             </a>
                         </li>
-                        
-                        <li class="sidebar-item <?php echo isActive('/admin/status') ?>">
-                            <a href="/admin/status" class="sidebar-link">
-                                <i class="bi bi-flag-fill"></i>
-                                <span>Status</span>
-                            </a>
-                        </li>
 
                         <li class="sidebar-title">Manajemen Proyek</li>
 
                         <li class="sidebar-item <?php echo isActive('/admin/proyek') ?>">
                             <a href="/admin/proyek" class="sidebar-link">
-                                <i class="bi bi-kanban"></i>
+                                <i class="bi bi-file-earmark-bar-graph"></i>
                                 <span>Proyek</span>
                             </a>
                         </li>
 
                         <li class="sidebar-item <?php echo isActive('/admin/tugas') ?>">
                             <a href="/admin/tugas" class="sidebar-link">
-                                <i class="bi bi-list-check"></i>
+                                <i class="bi bi-card-checklist"></i>
                                 <span>Tugas</span>
                             </a>
                         </li>

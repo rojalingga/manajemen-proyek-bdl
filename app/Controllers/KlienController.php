@@ -14,49 +14,59 @@ class KlienController extends Controller
 
     public function index()
     {
-        if (isset($_GET['ajax'])) {
+        if (isset($_GET['draw'])) {
             ob_clean();
             header('Content-Type: application/json; charset=utf-8');
 
+            $draw   = intval($_GET['draw']);
+            $start  = intval($_GET['start']);
+            $length = intval($_GET['length']);
+            $search = $_GET['search']['value'] ?? '';
+
             try {
-                $datatables = $this->klienModel->getAll();
+                $result = $this->klienModel->getServerSide($start, $length, $search);
 
-                $data  = [];
-                $index = 1;
+                $data = [];
+                $index = $start + 1;
 
-                foreach ($datatables as $row) {
+                foreach ($result['data'] as $row) {
                     $editUrl   = '/admin/klien/' . $row['id_klien'];
                     $deleteUrl = '/admin/klien/delete/' . $row['id_klien'];
 
                     $action = '
                         <div class="d-flex justify-content-center">
                             <button class="btn btn-primary btn-sm mx-1 edit-button"
-                                data-id="' . htmlspecialchars($row['id_klien']) . '"
-                                data-url="' . htmlspecialchars($editUrl) . '">Edit</button>
+                                data-id="' . $row['id_klien'] . '"
+                                data-url="' . $editUrl . '">Edit</button>
                             <button class="btn btn-danger btn-sm mx-1 delete-button"
-                                data-url="' . htmlspecialchars($deleteUrl) . '">Hapus</button>
+                                data-url="' . $deleteUrl . '">Hapus</button>
                         </div>
                     ';
 
                     $data[] = [
                         'DT_RowIndex' => $index++,
-                        'nama_klien'  => htmlspecialchars($row['nama_klien']),
-                        'telp_klien'  => htmlspecialchars($row['telp_klien']),
-                        'email_klien' => htmlspecialchars($row['email_klien']),
-                        'action'      => $action,
+                        'nama_klien'  => $row['nama_klien'],
+                        'telp_klien'  => $row['telp_klien'],
+                        'email_klien' => $row['email_klien'],
+                        'action'      => $action
                     ];
                 }
 
-                echo json_encode(['data' => $data], JSON_UNESCAPED_UNICODE);
+                echo json_encode([
+                    'draw'            => $draw,
+                    'recordsTotal'    => $result['total'],
+                    'recordsFiltered' => $result['filtered'],
+                    'data'            => $data
+                ], JSON_UNESCAPED_UNICODE);
             } catch (Throwable $e) {
                 echo json_encode(['error' => $e->getMessage()]);
             }
-
             exit;
         }
 
         $this->view('admin/klien/index');
     }
+
 
     public function edit($id)
     {

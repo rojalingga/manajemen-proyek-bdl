@@ -14,44 +14,53 @@ class PegawaiController extends Controller
 
     public function index()
     {
-        if (isset($_GET['ajax'])) {
+        if (isset($_GET['draw'])) {
             ob_clean();
             header('Content-Type: application/json; charset=utf-8');
 
+            $draw   = intval($_GET['draw']);
+            $start  = intval($_GET['start']);
+            $length = intval($_GET['length']);
+            $search = $_GET['search']['value'] ?? '';
+
             try {
-                $datatables = $this->pegawaiModel->getAll();
+                $result = $this->pegawaiModel->getServerSide($start, $length, $search);
 
                 $data  = [];
-                $index = 1;
+                $index = $start + 1;
 
-                foreach ($datatables as $row) {
+                foreach ($result['data'] as $row) {
                     $editUrl   = '/admin/pegawai/' . $row['id_pegawai'];
                     $deleteUrl = '/admin/pegawai/delete/' . $row['id_pegawai'];
 
                     $action = '
                         <div class="d-flex justify-content-center">
                             <button class="btn btn-primary btn-sm mx-1 edit-button"
-                                data-id="' . htmlspecialchars($row['id_pegawai']) . '"
-                                data-url="' . htmlspecialchars($editUrl) . '">Edit</button>
+                                data-id="' . $row['id_pegawai'] . '"
+                                data-url="' . $editUrl . '">Edit</button>
                             <button class="btn btn-danger btn-sm mx-1 delete-button"
-                                data-url="' . htmlspecialchars($deleteUrl) . '">Hapus</button>
+                                data-url="' . $deleteUrl . '">Hapus</button>
                         </div>
                     ';
 
                     $data[] = [
-                        'DT_RowIndex' => $index++,
-                        'nama_pegawai'  => htmlspecialchars($row['nama_pegawai']),
-                        'telp_pegawai'  => htmlspecialchars($row['telp_pegawai']),
-                        'email_pegawai' => htmlspecialchars($row['email_pegawai']),
-                        'action'      => $action,
+                        'DT_RowIndex'   => $index++,
+                        'nama_pegawai'  => $row['nama_pegawai'],
+                        'telp_pegawai'  => $row['telp_pegawai'],
+                        'email_pegawai' => $row['email_pegawai'],
+                        'action'        => $action,
                     ];
                 }
 
-                echo json_encode(['data' => $data], JSON_UNESCAPED_UNICODE);
+                echo json_encode([
+                    'draw'            => $draw,
+                    'recordsTotal'    => $result['total'],
+                    'recordsFiltered' => $result['filtered'],
+                    'data'            => $data,
+                ], JSON_UNESCAPED_UNICODE);
             } catch (Throwable $e) {
                 echo json_encode(['error' => $e->getMessage()]);
             }
-
             exit;
         }
 

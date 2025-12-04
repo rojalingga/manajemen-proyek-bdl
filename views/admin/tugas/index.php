@@ -4,7 +4,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex align-content-center justify-content-between">
-                    <h3 class="font-weight-bold text-xl">Tugas</h3>
+                    <h3 class="font-weight-bold text-xl text-primary">Tugas</h3>
                     <div class="d-flex align-items-center">
                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalForm">
                             <i class="bi bi-plus-lg"></i> Tambah Tugas
@@ -13,14 +13,48 @@
                 </div>
             </div>
             <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4 mb-2">
+                        <label for="filter_proyek" class="form-label fw-bold">Proyek</label>
+                        <select class="form-select select-filter-proyek" id="filter_proyek" name="filter_proyek">
+                            <option value=""></option>
+                            <?php foreach ($proyek as $data): ?>
+                                <option value="<?php echo $data['id_proyek']; ?>">
+                                    <?php echo htmlspecialchars($data['nama_proyek']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-3 mb-2">
+                        <label for="filter_status" class="form-label fw-bold">Status Progres</label>
+                        <select class="form-select select-filter-status" id="filter_status" name="filter_status">
+                            <option value=""></option>
+                            <?php foreach ($status as $data): ?>
+                                <option value="<?php echo $data['id_status']; ?>">
+                                    <?php echo htmlspecialchars($data['nama_status']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-2 mb-2">
+                        <label for="filter_deadline" class="form-label fw-bold">Deadline</label>
+                        <select class="form-select select-filter-deadline" id="filter_deadline" name="filter_deadline">
+                            <option value=""></option>
+                            <option value="1">Terdekat</option>
+                            <option value="2">Terlama</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table class="table data-table table-bordered table-striped w-100">
                         <thead>
                             <tr>
                                 <th width="50px">No</th>
-                                <th>Nama Tugas</th>
-                                <th>Proyek</th>
-                                <th>Tim</th>
+                                <th>Tugas</th>
+                                <th>Proyek & Tim</th>
+                                <th>Deadline</th>
                                 <th>Status</th>
                                 <th width="100px" class="text-center">Action</th>
                             </tr>
@@ -81,7 +115,7 @@
                         </div>
                     </div>
                     <div class="row mb-3 align-items-center">
-                        <label class="col-sm-3 col-form-label">Status</label>
+                        <label class="col-sm-3 col-form-label">Status Progres</label>
                         <div class="col-sm-7">
                             <select class="form-select select-status" id="id_status" name="id_status">
                                 <?php foreach ($status as $data): ?>
@@ -99,6 +133,12 @@
                                     <option value="<?php echo $data['id_pegawai']; ?>"><?php echo htmlspecialchars($data['nama_pegawai']); ?></option>
                                 <?php endforeach; ?>
                             </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3 align-items-center">
+                        <label class="col-sm-3 col-form-label">Deadline</label>
+                        <div class="col-sm-4">
+                            <input type="date" class="form-control" id="deadline" name="deadline">
                         </div>
                     </div>
             </div>
@@ -138,12 +178,30 @@
             dropdownParent: $('#modalForm'),
             width: '100%',
             placeholder: 'Pilih Status Pengerjaan',
-            minimumResultsForSearch: -1
         });
         $('.select-penanggung-jawab').select2({
             dropdownParent: $('#modalForm'),
             width: '100%',
             placeholder: 'Pilih Penanggung Jawab',
+        });
+        $('.select-filter-proyek').select2({
+            dropdownParent: $('body'),
+            width: '100%',
+            placeholder: 'Pilih',
+            allowClear: true
+        });
+        $('.select-filter-status').select2({
+            dropdownParent: $('body'),
+            width: '100%',
+            placeholder: 'Pilih',
+            allowClear: true
+        });
+        $('.select-filter-deadline').select2({
+            dropdownParent: $('body'),
+            width: '100%',
+            placeholder: 'Pilih',
+            allowClear: true,
+            minimumResultsForSearch: -1
         });
 
         if ($('body').hasClass('dark')) {
@@ -171,12 +229,22 @@
         });
 
         $(function() {
-            $('.data-table').DataTable({
-                processing: false,
-                serverSide: false,
+            let table = $('.data-table').DataTable({
+                processing: true,
+                serverSide: true,
                 ordering: false,
                 responsive: true,
-                ajax: '/admin/tugas?ajax=1',
+                lengthChange: false,
+                pageLength: 10,
+                ajax: {
+                    url: '/admin/tugas',
+                    type: 'GET',
+                    data: function(d) {
+                        d.filter_proyek = $('#filter_proyek').val();
+                        d.filter_status = $('#filter_status').val();
+                        d.filter_deadline = $('#filter_deadline').val();
+                    }
+                },
                 columns: [{
                         data: 'DT_RowIndex',
                         className: 'text-center'
@@ -185,13 +253,14 @@
                         data: 'nama_tugas'
                     },
                     {
-                        data: 'nama_proyek'
+                        data: 'proyek_tim'
                     },
                     {
-                        data: 'nama_tim'
+                        data: 'deadline'
                     },
                     {
-                        data: 'nama_status'
+                        data: 'nama_status',
+                        className: 'text-center'
                     },
                     {
                         data: 'action',
@@ -199,7 +268,23 @@
                     }
                 ]
             });
+
+            $('#filter_status').on('change', function() {
+                $('#filter_deadline').val('').trigger('change.select2');
+                table.ajax.reload();
+            });
+
+            $('#filter_deadline').on('change', function() {
+                $('#filter_status').val('').trigger('change.select2');
+                table.ajax.reload();
+            });
+
+            $('#filter_proyek').on('change', function() {
+                table.ajax.reload();
+            });
+
         });
+
 
         $(document).on('click', '.edit-button', function() {
             var url = $(this).data('url');
@@ -210,6 +295,7 @@
                     $('#deskripsi').val(response.data.deskripsi);
                     $('#id_status').val(response.data.id_status).trigger('change');
                     $('#id_penanggung_jawab').val(response.data.id_penanggung_jawab).trigger('change');
+                    $('#deadline').val(response.data.deadline);
 
                     $('#id_proyek').val(response.data.id_proyek).trigger('change');
 
@@ -286,6 +372,7 @@
                     $('.data-table').DataTable().ajax.reload();
                 },
                 error: function(xhr) {
+                    console.log(xhr);
                     if (xhr.status === 422) {
                         audio.play();
                         toastr.error("Ada inputan yang salah!", "GAGAL!", {

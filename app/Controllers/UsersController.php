@@ -15,41 +15,50 @@ class UsersController extends Controller
 
     public function index()
     {
-        if (isset($_GET['ajax'])) {
+        if (isset($_GET['draw'])) {
             ob_clean();
             header('Content-Type: application/json; charset=utf-8');
 
+            $draw   = intval($_GET['draw']);
+            $start  = intval($_GET['start']);
+            $length = intval($_GET['length']);
+            $search = $_GET['search']['value'] ?? '';
+
             try {
-                $datatables      = $this->usersModel->getAll();
+                $result = $this->usersModel->getServerSide($start, $length, $search);
 
-                $data  = [];
-                $index = 1;
+                $data = [];
+                $index = $start + 1;
 
-                foreach ($datatables as $row) {
-
-                    $editUrl   = '/admin/users/' . $row['id'];
+                foreach ($result['data'] as $row) {
+                    $editUrl = '/admin/users/' . $row['id'];
                     $deleteUrl = '/admin/users/delete/' . $row['id'];
 
                     $action = '
-                        <div class="d-flex justify-content-center">
-                            <button class="btn btn-primary btn-sm mx-1 edit-button"
-                                data-id="' . htmlspecialchars($row['id']) . '"
-                                data-url="' . htmlspecialchars($editUrl) . '">Edit</button>
-                            <button class="btn btn-danger btn-sm mx-1 delete-button"
-                                data-url="' . htmlspecialchars($deleteUrl) . '">Hapus</button>
-                        </div>
-                    ';
+                    <div class="d-flex justify-content-center">
+                        <button class="btn btn-primary btn-sm mx-1 edit-button"
+                            data-id="' . $row['id'] . '"
+                            data-url="' . $editUrl . '">Edit</button>
+                        <button class="btn btn-danger btn-sm mx-1 delete-button"
+                            data-url="' . $deleteUrl . '">Hapus</button>
+                    </div>
+                ';
 
                     $data[] = [
                         'DT_RowIndex' => $index++,
-                        'nama'    => htmlspecialchars($row['nama']),
-                        'username'    => htmlspecialchars($row['username']),
-                        'role'        => htmlspecialchars($row['nama_role'] ?? '-'),
-                        'action'      => $action,
+                        'nama'        => $row['nama'],
+                        'username'    => $row['username'],
+                        'role'        => $row['nama_role'] ?? '-',
+                        'action'      => $action
                     ];
                 }
 
-                echo json_encode(['data' => $data], JSON_UNESCAPED_UNICODE);
+                echo json_encode([
+                    'draw'            => $draw,
+                    'recordsTotal'    => $result['total'],
+                    'recordsFiltered' => $result['filtered'],
+                    'data'            => $data
+                ], JSON_UNESCAPED_UNICODE);
             } catch (Throwable $e) {
                 echo json_encode(['error' => $e->getMessage()]);
             }
@@ -58,10 +67,11 @@ class UsersController extends Controller
         }
 
         $roleModel = new Role();
-        $roles     = $roleModel->getAll();
+        $roles = $roleModel->getAll();
 
         $this->view('admin/users/index', ['roles' => $roles]);
     }
+
 
     public function edit($id)
     {

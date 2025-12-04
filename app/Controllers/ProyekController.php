@@ -29,29 +29,38 @@ class ProyekController extends Controller
 
     public function index()
     {
-        if (isset($_GET['ajax'])) {
+        if (isset($_GET['draw'])) {
             ob_clean();
             header('Content-Type: application/json; charset=utf-8');
 
+            $draw   = intval($_GET['draw']);
+            $start  = intval($_GET['start']);
+            $length = intval($_GET['length']);
+            $search = $_GET['search']['value'] ?? '';
+            $filterStatus   = $_GET['filter_status'] ?? '';
+            $filterDeadline = $_GET['filter_deadline'] ?? '';
+
             try {
-                $datatables = $this->proyekModel->getAll();
+                $result = $this->proyekModel->getServerSide($start, $length, $search, $filterStatus, $filterDeadline);
 
-                $data  = [];
-                $index = 1;
+                $data = [];
+                $index = $start + 1;
 
-                foreach ($datatables as $row) {
+                foreach ($result['data'] as $row) {
+
                     $editUrl   = '/admin/proyek/' . $row['id_proyek'];
                     $deleteUrl = '/admin/proyek/delete/' . $row['id_proyek'];
 
                     $action = '
-                        <div class="d-flex justify-content-center">
-                            <button class="btn btn-primary btn-sm mx-1 edit-button"
-                                data-id="' . htmlspecialchars($row['id_proyek']) . '"
-                                data-url="' . htmlspecialchars($editUrl) . '">Edit</button>
-                            <button class="btn btn-danger btn-sm mx-1 delete-button"
-                                data-url="' . htmlspecialchars($deleteUrl) . '">Hapus</button>
-                        </div>
-                    ';
+                    <div class="d-flex justify-content-center">
+                        <button class="btn btn-primary btn-sm mx-1 edit-button"
+                            data-id="' . $row['id_proyek'] . '"
+                            data-url="' . $editUrl . '">Edit</button>
+
+                        <button class="btn btn-danger btn-sm delete-button"
+                            data-url="' . $deleteUrl . '">Hapus</button>
+                    </div>
+                ';
 
                     $bulanIndo = [
                         1 => 'Januari',
@@ -68,24 +77,79 @@ class ProyekController extends Controller
                         12 => 'Desember'
                     ];
 
-                    $tanggalMulai = $row['tanggal_mulai'] ? strtotime($row['tanggal_mulai']) : null;
+                    $tanggalMulai   = $row['tanggal_mulai'] ? strtotime($row['tanggal_mulai']) : null;
                     $tanggalSelesai = $row['tanggal_selesai'] ? strtotime($row['tanggal_selesai']) : null;
 
-                    $mulai = $tanggalMulai ? date('j', $tanggalMulai) . ' ' . $bulanIndo[(int)date('n', $tanggalMulai)] . ' ' . date('Y', $tanggalMulai) : '-';
-                    $selesai = $tanggalSelesai ? date('j', $tanggalSelesai) . ' ' . $bulanIndo[(int)date('n', $tanggalSelesai)] . ' ' . date('Y', $tanggalSelesai) : '-';
+                    $mulai = $tanggalMulai
+                        ? date('j', $tanggalMulai) . ' ' . $bulanIndo[(int)date('n', $tanggalMulai)] . ' ' . date('Y', $tanggalMulai)
+                        : '-';
 
-                    $rentangWaktu = "Dimulai: $mulai<br>Selesai: $selesai";
+                    $selesai = $tanggalSelesai
+                        ? date('j', $tanggalSelesai) . ' ' . $bulanIndo[(int)date('n', $tanggalSelesai)] . ' ' . date('Y', $tanggalSelesai)
+                        : '-';
+
+                    $rentangWaktu = "Dimulai : $mulai<br>Selesai : $selesai";
+
+                    if ($row['nama_status'] === 'Belum Mulai') {
+                        $badge = '<span class="badge bg-warning text-white">Belum Mulai</span>';
+                    } elseif ($row['nama_status'] === 'Selesai') {
+                        $badge = '<span class="badge bg-primary">Selesai</span>';
+                    } else {
+                        $badge = '<span class="badge bg-danger">' . htmlspecialchars($row['nama_status']) . '</span>';
+                    }
+
+                    $now = new DateTime();
+                    $deadline = $row['tanggal_selesai'] ? new DateTime($row['tanggal_selesai']) : null;
+                    $deadlineText = '-';
+
+                    if ($deadline) {
+                        if ($now > $deadline) {
+                            $diff = $now->diff($deadline);
+
+                            $parts = [];
+                            if ($diff->y > 0) $parts[] = $diff->y . " tahun";
+                            if ($diff->m > 0) $parts[] = $diff->m . " bulan";
+                            if ($diff->d > 0) $parts[] = $diff->d . " hari";
+                            if ($diff->y == 0 && $diff->m == 0 && $diff->d == 0) {
+                                $parts[] = $diff->h . " jam";
+                            }
+
+                            $deadlineText = "<span class='text-danger fw-bold'>
+                            Terlambat " . implode(' ', $parts) . "
+                        </span>";
+                        } else {
+                            $diff = $deadline->diff($now);
+
+                            $parts = [];
+                            if ($diff->y > 0) $parts[] = $diff->y . " tahun";
+                            if ($diff->m > 0) $parts[] = $diff->m . " bulan";
+                            if ($diff->d > 0) $parts[] = $diff->d . " hari";
+                            if ($diff->y == 0 && $diff->m == 0 && $diff->d == 0) {
+                                $parts[] = $diff->h . " jam";
+                            }
+
+                            $deadlineText = "<span class='text-primary fw-bold'>
+                            " . implode(' ', $parts) . "
+                        </span>";
+                        }
+                    }
 
                     $data[] = [
-                        'DT_RowIndex'    => $index++,
-                        'nama_proyek'    => htmlspecialchars($row['nama_proyek']),
-                        'rentang_waktu'  => $rentangWaktu,
-                        'status'         => htmlspecialchars($row['nama_status']),
-                        'action'         => $action,
+                        'DT_RowIndex'   => $index++,
+                        'nama_proyek'   => $row['nama_proyek'],
+                        'timeline'      => $rentangWaktu,
+                        'deadline'      => $deadlineText,
+                        'status'        => $badge,
+                        'action'        => $action
                     ];
                 }
 
-                echo json_encode(['data' => $data], JSON_UNESCAPED_UNICODE);
+                echo json_encode([
+                    'draw'            => $draw,
+                    'recordsTotal'    => $result['total'],
+                    'recordsFiltered' => $result['filtered'],
+                    'data'            => $data
+                ], JSON_UNESCAPED_UNICODE);
             } catch (Throwable $e) {
                 echo json_encode(['error' => $e->getMessage()]);
             }
@@ -93,8 +157,8 @@ class ProyekController extends Controller
             exit;
         }
 
-        $tim = $this->timModel->getAllTim();
-        $klien = $this->klienModel->getAll();
+        $tim    = $this->timModel->getAll();
+        $klien  = $this->klienModel->getAll();
         $status = $this->statusModel->getAll();
 
         $this->view('admin/proyek/index', [
@@ -103,6 +167,7 @@ class ProyekController extends Controller
             'status' => $status
         ]);
     }
+
 
     public function edit($id)
     {
@@ -139,8 +204,14 @@ class ProyekController extends Controller
         if (empty($data['nama_proyek'])) {
             $errors['nama_proyek'][] = 'Nama Proyek wajib diisi.';
         }
+        if (empty($data['budget'])) {
+            $errors['budget'][] = 'Budget wajib diisi.';
+        }
         if (empty($data['tanggal_mulai'])) {
             $errors['tanggal_mulai'][] = 'Tanggal Mulai wajib diisi.';
+        }
+        if (empty($data['tanggal_selesai'])) {
+            $errors['tanggal_selesai'][] = 'Tanggal Selesai wajib diisi.';
         }
         if (empty($data['id_status'])) {
             $errors['id_status'][] = 'Status wajib diisi.';
@@ -163,6 +234,7 @@ class ProyekController extends Controller
             'tanggal_mulai'  => $data['tanggal_mulai'],
             'tanggal_selesai'  => $data['tanggal_selesai'] ?? null,
             'id_status' => $data['id_status'],
+            'budget' => str_replace('.', '', $data['budget']),
         ];
 
         try {
@@ -205,6 +277,9 @@ class ProyekController extends Controller
         if (empty($data['nama_proyek'])) {
             $errors['nama_proyek'][] = 'Nama Proyek wajib diisi.';
         }
+        if (empty($data['budget'])) {
+            $errors['budget'][] = 'Budget wajib diisi.';
+        }
         if (empty($data['tanggal_mulai'])) {
             $errors['tanggal_mulai'][] = 'Tanggal Mulai wajib diisi.';
         }
@@ -229,6 +304,7 @@ class ProyekController extends Controller
             'tanggal_mulai'  => $data['tanggal_mulai'],
             'tanggal_selesai'  => $data['tanggal_selesai'] ?? null,
             'id_status' => $data['id_status'],
+            'budget' => str_replace('.', '', $data['budget']),
         ];
 
         try {

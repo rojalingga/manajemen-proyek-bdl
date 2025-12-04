@@ -26,22 +26,63 @@ class Users
         return $stmt->fetch();
     }
 
-    public function getAll()
+    public function getServerSide($start, $length, $search)
     {
-        $query = "
-            SELECT
+        $base = "
+            FROM {$this->table} u
+            INNER JOIN role r ON u.id_role = r.id
+        ";
+
+        $where = "";
+        $params = [];
+
+        if (!empty($search)) {
+            $where = "
+            WHERE 
+                u.nama ILIKE :s 
+                OR u.username ILIKE :s 
+                OR r.nama_role ILIKE :s
+        ";
+            $params[':s'] = "%{$search}%";
+        }
+
+        $stmtTotal = $this->db->prepare("SELECT COUNT(*) AS total {$base}");
+        $stmtTotal->execute();
+        $total = $stmtTotal->fetch()['total'];
+
+        $stmtFiltered = $this->db->prepare("SELECT COUNT(*) AS total {$base} {$where}");
+        $stmtFiltered->execute($params);
+        $filtered = $stmtFiltered->fetch()['total'];
+
+        $sqlData = "
+            SELECT 
                 u.id,
                 u.nama,
                 u.username,
                 r.nama_role
-            FROM {$this->table} u
-            INNER JOIN role r ON u.id_role = r.id
+            {$base} 
+            {$where}
             ORDER BY u.id DESC
+            LIMIT :length OFFSET :start
         ";
 
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll();
+        $stmtData = $this->db->prepare($sqlData);
+
+        foreach ($params as $key => $val) {
+            $stmtData->bindValue($key, $val);
+        }
+
+        $stmtData->bindValue(':length', (int)$length, PDO::PARAM_INT);
+        $stmtData->bindValue(':start', (int)$start, PDO::PARAM_INT);
+
+        $stmtData->execute();
+        $data = $stmtData->fetchAll();
+
+        return [
+            'total'    => $total,
+            'filtered' => $filtered,
+            'data'     => $data
+        ];
     }
 
     public function findById($id)

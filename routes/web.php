@@ -26,17 +26,12 @@ $router->post('/admin/tim/store', 'TimController@store');
 $router->put('/admin/tim/update/{id_tim}', 'TimController@update');
 $router->delete('/admin/tim/delete/{id_tim}', 'TimController@destroy');
 
-$router->get('/admin/status', 'StatusController@index');
-$router->get('/admin/status/{id_status}', 'StatusController@edit');
-$router->post('/admin/status/store', 'StatusController@store');
-$router->put('/admin/status/update/{id_status}', 'StatusController@update');
-$router->delete('/admin/status/delete/{id_status}', 'StatusController@destroy');
-
 $router->get('/admin/proyek', 'ProyekController@index');
 $router->get('/admin/proyek/{id_proyek}', 'ProyekController@edit');
 $router->post('/admin/proyek/store', 'ProyekController@store');
 $router->put('/admin/proyek/update/{id_proyek}', 'ProyekController@update');
 $router->delete('/admin/proyek/delete/{id_proyek}', 'ProyekController@destroy');
+$router->get('/admin/proyek/detail-progres-proyek/{id_proyek}', 'ProyekController@detailProgresProyek');
 
 $router->get('/admin/tugas', 'TugasController@index');
 $router->get('/admin/tugas/{id_tugas}', 'TugasController@edit');

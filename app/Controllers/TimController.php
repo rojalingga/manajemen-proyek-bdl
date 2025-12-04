@@ -13,68 +13,65 @@ class TimController extends Controller
 
     public function __construct()
     {
-        $this->timModel = new Tim();
-        $this->pegawaiModel = new Pegawai();
+        $this->timModel        = new Tim();
+        $this->pegawaiModel    = new Pegawai();
         $this->anggotaTimModel = new AnggotaTim();
     }
 
     public function index()
     {
-        if (isset($_GET['ajax'])) {
+        if (isset($_GET['draw'])) {
             ob_clean();
             header('Content-Type: application/json; charset=utf-8');
 
+            $draw   = intval($_GET['draw']);
+            $start  = intval($_GET['start']);
+            $length = intval($_GET['length']);
+            $search = $_GET['search']['value'] ?? '';
+
             try {
-                $datatables = $this->timModel->getAll();
+                $result = $this->timModel->getServerSide($start, $length, $search);
 
                 $data  = [];
-                $index = 1;
+                $index = $start + 1;
 
-                $timGrouped = [];
-                foreach ($datatables as $row) {
-                    $idTim = $row['id_tim'];
-                    if (!isset($timGrouped[$idTim])) {
-                        $timGrouped[$idTim] = [
-                            'nama_tim' => $row['nama_tim'],
-                            'anggota'  => []
-                        ];
-                    }
-                    if (!empty($row['nama_pegawai'])) {
-                        $timGrouped[$idTim]['anggota'][] = $row['nama_pegawai'];
-                    }
-                }
-
-                foreach ($timGrouped as $idTim => $timData) {
-                    $editUrl   = '/admin/tim/' . $idTim;
-                    $deleteUrl = '/admin/tim/delete/' . $idTim;
+                foreach ($result['data'] as $row) {
+                    $editUrl   = '/admin/tim/' . $row['id_tim'];
+                    $deleteUrl = '/admin/tim/delete/' . $row['id_tim'];
 
                     $action = '
                         <div class="d-flex justify-content-center">
                             <button class="btn btn-primary btn-sm mx-1 edit-button"
-                                data-id="' . htmlspecialchars($idTim) . '"
-                                data-url="' . htmlspecialchars($editUrl) . '">Edit</button>
+                                data-id="' . $row['id_tim'] . '"
+                                data-url="' . $editUrl . '">Edit</button>
                             <button class="btn btn-danger btn-sm mx-1 delete-button"
-                                data-url="' . htmlspecialchars($deleteUrl) . '">Hapus</button>
+                                data-url="' . $deleteUrl . '">Hapus</button>
                         </div>
                     ';
 
                     $anggotaList = '';
-                    foreach ($timData['anggota'] as $key => $pegawai) {
-                        $anggotaList .= ($key + 1) . '. ' . htmlspecialchars($pegawai) . '<br>';
+                    foreach ($row['anggota'] as $i => $anggota) {
+                        $anggotaList .= ($i + 1) . '. ' . htmlspecialchars($anggota) . '<br>';
                     }
+
                     if (empty($anggotaList)) {
                         $anggotaList = '<i>- Tidak ada anggota</i>';
                     }
 
                     $data[] = [
                         'DT_RowIndex' => $index++,
-                        'nama_tim'    => htmlspecialchars($timData['nama_tim']),
+                        'nama_tim'    => htmlspecialchars($row['nama_tim']),
                         'anggota_tim' => $anggotaList,
                         'action'      => $action,
                     ];
                 }
 
-                echo json_encode(['data' => $data], JSON_UNESCAPED_UNICODE);
+                echo json_encode([
+                    'draw'            => $draw,
+                    'recordsTotal'    => $result['total'],
+                    'recordsFiltered' => $result['filtered'],
+                    'data'            => $data,
+                ], JSON_UNESCAPED_UNICODE);
             } catch (Throwable $e) {
                 echo json_encode(['error' => $e->getMessage()]);
             }
@@ -85,10 +82,9 @@ class TimController extends Controller
         $pegawai = $this->pegawaiModel->getAll();
 
         $this->view('admin/tim/index', [
-            'pegawai' => $pegawai
+            'pegawai' => $pegawai,
         ]);
     }
-
 
     public function edit($id)
     {
@@ -136,7 +132,7 @@ class TimController extends Controller
         }
 
         $insertData = [
-            'nama_tim'  => $data['nama_tim'],
+            'nama_tim' => $data['nama_tim'],
         ];
 
         try {
@@ -144,8 +140,8 @@ class TimController extends Controller
 
             foreach ($data['id_pegawai'] as $idPegawai) {
                 $this->anggotaTimModel->insert([
-                    'id_pegawai'    => $idPegawai,
-                    'id_tim' => $id_tim,
+                    'id_pegawai' => $idPegawai,
+                    'id_tim'     => $id_tim,
                 ]);
             }
 
@@ -185,7 +181,7 @@ class TimController extends Controller
         }
 
         $updateData = [
-            'nama_tim'  => $data['nama_tim'],
+            'nama_tim' => $data['nama_tim'],
         ];
 
         try {
@@ -194,8 +190,8 @@ class TimController extends Controller
 
             foreach ($data['id_pegawai'] as $idPegawai) {
                 $this->anggotaTimModel->insert([
-                    'id_pegawai'    => $idPegawai,
-                    'id_tim' => $id,
+                    'id_pegawai' => $idPegawai,
+                    'id_tim'     => $id,
                 ]);
             }
             echo json_encode(['status' => 'success']);
