@@ -48,9 +48,14 @@ class Proyek
         $stmtFiltered->execute($params);
         $filtered = $stmtFiltered->fetch()['total'];
 
-        $sql = "SELECT p.*, s.nama_status {$base} {$whereSQL} "
-            . ($orderDeadline ?: "ORDER BY p.id_proyek DESC")
-            . " LIMIT :length OFFSET :start";
+        // Menambahkan hitung_progress_proyek()
+        $sql = "SELECT
+                    p.*,
+                    s.nama_status,
+                    hitung_progress_proyek(p.id_proyek) as progress 
+                {$base} {$whereSQL} "
+             . ($orderDeadline ?: "ORDER BY p.id_proyek DESC")
+             . " LIMIT :length OFFSET :start";
 
         $stmtData = $this->db->prepare($sql);
 
@@ -71,11 +76,9 @@ class Proyek
         ];
     }
 
-
     public function getAll()
     {
         $query = "SELECT * FROM {$this->table} ORDER BY id_proyek DESC";
-
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -92,18 +95,15 @@ class Proyek
             WHERE p.id_proyek = :id_proyek
             GROUP BY p.id_proyek LIMIT 1
         ";
-
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id_proyek', $id_proyek, PDO::PARAM_INT);
         $stmt->execute();
-
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($data) {
             $data['tim_ids']   = $data['tim_ids'] ? explode('||', $data['tim_ids']) : [];
             $data['klien_ids'] = $data['klien_ids'] ? explode('||', $data['klien_ids']) : [];
         }
-
         return $data;
     }
 
@@ -111,12 +111,9 @@ class Proyek
     {
         $query = "INSERT INTO {$this->table} (nama_proyek, tanggal_mulai, tanggal_selesai, id_status, budget)
               VALUES (:nama_proyek, :tanggal_mulai, :tanggal_selesai, :id_status, :budget) RETURNING id_proyek";
-
         $stmt = $this->db->prepare($query);
         $stmt->execute($data);
-
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
         return $row['id_proyek'];
     }
 
@@ -126,7 +123,6 @@ class Proyek
         foreach ($data as $key => $value) {
             $fields[] = "$key = :$key";
         }
-
         $query      = "UPDATE {$this->table} SET " . implode(',', $fields) . " WHERE id_proyek = :id_proyek";
         $stmt       = $this->db->prepare($query);
         $data['id_proyek'] = $id_proyek;

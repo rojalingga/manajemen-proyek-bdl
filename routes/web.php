@@ -7,6 +7,7 @@ $router->post('/admin/logout', 'AuthController@logout');
 
 $router->get('/test-koneksi', 'TestKoneksiController@test_koneksi');
 $router->get('/admin/dashboard', 'DashboardController@index');
+$router->post('/admin/dashboard/refresh', 'DashboardController@refreshData');
 
 $router->get('/admin/klien', 'KlienController@index');
 $router->get('/admin/klien/{id_klien}', 'KlienController@edit');

@@ -10,11 +10,18 @@ class AnggotaTim
         $this->db = Database::getInstance()->getConnection();
     }
 
+    // Menggunakan Stored Procedure untuk Insert
     public function insert($data)
     {
-        $query = "INSERT INTO {$this->table} (id_pegawai, id_tim) VALUES (:id_pegawai, :id_tim)";
+        $query = "CALL tambah_anggota_tim_aman(:id_pegawai, :id_tim)";
+        
         $stmt = $this->db->prepare($query);
-        $stmt->execute($data);
+        
+        // Bind parameter
+        $stmt->bindValue(':id_pegawai', $data['id_pegawai']);
+        $stmt->bindValue(':id_tim', $data['id_tim']);
+        
+        $stmt->execute();
     }
 
     public function deleteByTim($id_tim)

@@ -33,124 +33,103 @@ class TugasController extends Controller
             ob_clean();
             header('Content-Type: application/json; charset=utf-8');
 
-            $draw   = intval($_GET['draw']);
-            $start  = intval($_GET['start']);
-            $length = intval($_GET['length']);
-            $search = $_GET['search']['value'] ?? '';
+            try {
+                // Menyalakan Stopwatch
+                $startTime = microtime(true);
 
-            $filterProyek   = $_GET['filter_proyek'] ?? '';
-            $filterStatus   = $_GET['filter_status'] ?? '';
-            $filterDeadline = $_GET['filter_deadline'] ?? '';
+                $draw   = intval($_GET['draw']);
+                $start  = intval($_GET['start']);
+                $length = intval($_GET['length']);
+                $search = $_GET['search']['value'] ?? '';
 
-            $result = $this->tugasModel->getServerSide(
-                $start,
-                $length,
-                $search,
-                $filterProyek,
-                $filterStatus,
-                $filterDeadline
-            );
+                $filterProyek   = $_GET['filter_proyek'] ?? '';
+                $filterStatus   = $_GET['filter_status'] ?? '';
+                $filterDeadline = $_GET['filter_deadline'] ?? '';
 
-            $data  = [];
-            $index = $start + 1;
+                //logika "Performance Optimization"
+                $result = $this->tugasModel->getServerSide(
+                    $start,
+                    $length,
+                    $search,
+                    $filterProyek,
+                    $filterStatus,
+                    $filterDeadline
+                );
 
-            foreach ($result['data'] as $row) {
-                $editUrl   = '/admin/tugas/' . $row['id_tugas'];
-                $deleteUrl = '/admin/tugas/delete/' . $row['id_tugas'];
+                // Mematikan Stopwatch & Hitung Selisih
+                $endTime = microtime(true);
+                $executionTime = round($endTime - $startTime, 5);
 
-                $action = '
-                <div class="d-flex justify-content-center">
-                    <button class="btn btn-primary btn-sm mx-1 edit-button"
-                        data-id="' . $row['id_tugas'] . '"
-                        data-url="' . $editUrl . '">Edit</button>
+                $data  = [];
+                $index = $start + 1;
 
-                    <button class="btn btn-danger btn-sm mx-1 delete-button"
-                        data-url="' . $deleteUrl . '">Hapus</button>
-                </div>
-                ';
+                foreach ($result['data'] as $row) {
+                    $editUrl   = '/admin/tugas/' . $row['id_tugas'];
+                    $deleteUrl = '/admin/tugas/delete/' . $row['id_tugas'];
 
-                $now          = new DateTime();
-                $deadline     = $row['deadline'] ? new DateTime($row['deadline']) : null;
-                $deadlineText = '-';
+                    $action = '
+                    <div class="d-flex justify-content-center">
+                        <button class="btn btn-primary btn-sm mx-1 edit-button"
+                            data-id="' . $row['id_tugas'] . '"
+                            data-url="' . $editUrl . '">Edit</button>
 
-                if ($deadline) {
-                    if ($now > $deadline) {
-                        $diff  = $now->diff($deadline);
-                        $parts = [];
-
-                        if ($diff->y > 0) {
-                            $parts[] = $diff->y . " tahun";
-                        }
-
-                        if ($diff->m > 0) {
-                            $parts[] = $diff->m . " bulan";
-                        }
-
-                        if ($diff->d > 0) {
-                            $parts[] = $diff->d . " hari";
-                        }
-
-                        if ($diff->y == 0 && $diff->m == 0 && $diff->d == 0) {
-                            $parts[] = $diff->h . " jam";
-                        }
-
-                        $deadlineText = "<span class='text-danger fw-bold'>Terlambat " . implode(' ', $parts) . "</span>";
-                    } else {
-                        $diff  = $deadline->diff($now);
-                        $parts = [];
-
-                        if ($diff->y > 0) {
-                            $parts[] = $diff->y . " tahun";
-                        }
-
-                        if ($diff->m > 0) {
-                            $parts[] = $diff->m . " bulan";
-                        }
-
-                        if ($diff->d > 0) {
-                            $parts[] = $diff->d . " hari";
-                        }
-
-                        if ($diff->y == 0 && $diff->m == 0 && $diff->d == 0) {
-                            $parts[] = $diff->h . " jam";
-                        }
-
-                        $deadlineText = "<span class='text-primary fw-bold'>" . implode(' ', $parts) . "</span>";
-                    }
-                }
-
-                if ($row['nama_status'] === 'Belum Mulai') {
-                    $badgeStatus = '<span class="badge bg-warning text-white">Belum Mulai</span>';
-                } elseif ($row['nama_status'] === 'Selesai') {
-                    $badgeStatus = '<span class="badge bg-success">Selesai</span>';
-                } else {
-                    $badgeStatus = '<span class="badge bg-info">' . htmlspecialchars($row['nama_status']) . '</span>';
-                }
-
-                $proyekTim = '
-                    <div>
-                        <div>' . htmlspecialchars($row['nama_proyek']) . '</div>
-                        <div><span class="badge bg-dark mt-2">' . htmlspecialchars($row['nama_tim']) . '</span></div>
+                        <button class="btn btn-danger btn-sm mx-1 delete-button"
+                            data-url="' . $deleteUrl . '">Hapus</button>
                     </div>
-                ';
+                    ';
 
-                $data[] = [
-                    'DT_RowIndex' => $index++,
-                    'nama_tugas'  => $row['nama_tugas'],
-                    'proyek_tim'  => $proyekTim,
-                    'deadline'    => $deadlineText,
-                    'nama_status' => $badgeStatus,
-                    'action'      => $action,
-                ];
+                    $sisaHari = intval($row['sisa_hari']); 
+                    $deadlineText = '-';
+
+                    if ($row['deadline']) {
+                        if ($sisaHari < 0) {
+                            $telat = abs($sisaHari);
+                            $deadlineText = "<span class='text-danger fw-bold'>Terlambat {$telat} hari</span>";
+                        } elseif ($sisaHari == 0) {
+                            $deadlineText = "<span class='text-warning fw-bold'>Hari ini</span>";
+                        } else {
+                            $deadlineText = "<span class='text-primary fw-bold'>{$sisaHari} hari lagi</span>";
+                        }
+                    }
+
+                    if ($row['nama_status'] === 'Belum Mulai') {
+                        $badgeStatus = '<span class="badge bg-warning text-white">Belum Mulai</span>';
+                    } elseif ($row['nama_status'] === 'Selesai') {
+                        $badgeStatus = '<span class="badge bg-success">Selesai</span>';
+                    } else {
+                        $badgeStatus = '<span class="badge bg-info">' . htmlspecialchars($row['nama_status']) . '</span>';
+                    }
+
+                    $proyekTim = '
+                        <div>
+                            <div>' . htmlspecialchars($row['nama_proyek']) . '</div>
+                            <div><span class="badge bg-dark mt-2">' . htmlspecialchars($row['nama_tim']) . '</span></div>
+                        </div>
+                    ';
+
+                    $data[] = [
+                        'DT_RowIndex' => $index++,
+                        'nama_tugas'  => $row['nama_tugas'],
+                        'proyek_tim'  => $proyekTim,
+                        'deadline'    => $deadlineText,
+                        'nama_status' => $badgeStatus,
+                        'action'      => $action,
+                    ];
+                }
+
+                echo json_encode([
+                    'draw'            => $draw,
+                    'recordsTotal'    => $result['total'],
+                    'recordsFiltered' => $result['filtered'],
+                    'data'            => $data,
+                    'executionTime'   => $executionTime . ' detik' 
+                ], JSON_UNESCAPED_UNICODE);
+
+            } catch (Throwable $e) {
+                echo json_encode([
+                    'error' => 'Error: ' . $e->getMessage()
+                ]);
             }
-
-            echo json_encode([
-                'draw'            => $draw,
-                'recordsTotal'    => $result['total'],
-                'recordsFiltered' => $result['filtered'],
-                'data'            => $data,
-            ], JSON_UNESCAPED_UNICODE);
-
             exit;
         }
 
@@ -197,7 +176,6 @@ class TugasController extends Controller
 
         try {
             $timByProyek = $this->proyekTimModel->getTimIdsByProyek($id_proyek);
-
             $idTimList = array_column($timByProyek, 'id_tim');
 
             if (! $idTimList) {
@@ -206,7 +184,6 @@ class TugasController extends Controller
             }
 
             $timData = $this->timModel->getTimByIds($idTimList);
-
             echo json_encode($timData, JSON_UNESCAPED_UNICODE);
         } catch (Throwable $e) {
             http_response_code(500);
@@ -220,27 +197,12 @@ class TugasController extends Controller
         $data = $_POST;
 
         $errors = [];
-        if (empty($data['nama_tugas'])) {
-            $errors['nama_tugas'][] = 'Nama tugas wajib diisi.';
-        }
-        if (empty($data['deskripsi'])) {
-            $errors['deskripsi'][] = 'Deskripsi wajib diisi.';
-        }
-        if (empty($data['id_proyek'])) {
-            $errors['id_proyek'][] = 'Proyek wajib diisi.';
-        }
-        if (empty($data['id_tim'])) {
-            $errors['id_tim'][] = 'Tim wajib diisi.';
-        }
-        if (empty($data['id_status'])) {
-            $errors['id_status'][] = 'Status wajib diisi.';
-        }
-        if (empty($data['id_penanggung_jawab'])) {
-            $errors['id_penanggung_jawab'][] = 'Penanggung Jawab wajib diisi.';
-        }
-        if (empty($data['deadline'])) {
-            $errors['deadline'][] = 'Deadline wajib diisi.';
-        }
+        if (empty($data['nama_tugas'])) $errors['nama_tugas'][] = 'Nama tugas wajib diisi.';
+        if (empty($data['deskripsi'])) $errors['deskripsi'][] = 'Deskripsi wajib diisi.';
+        if (empty($data['id_proyek'])) $errors['id_proyek'][] = 'Proyek wajib diisi.';
+        if (empty($data['id_tim'])) $errors['id_tim'][] = 'Tim wajib diisi.';
+        if (empty($data['id_penanggung_jawab'])) $errors['id_penanggung_jawab'][] = 'Penanggung Jawab wajib diisi.';
+        if (empty($data['deadline'])) $errors['deadline'][] = 'Deadline wajib diisi.';
 
         if ($errors) {
             http_response_code(422);
@@ -253,17 +215,22 @@ class TugasController extends Controller
             'deskripsi'           => $data['deskripsi'],
             'id_proyek'           => $data['id_proyek'],
             'id_tim'              => $data['id_tim'],
-            'id_status'           => $data['id_status'],
             'id_penanggung_jawab' => $data['id_penanggung_jawab'],
             'deadline'            => $data['deadline'],
         ];
 
         try {
+            $this->tugasModel->beginTransaction();
             $this->tugasModel->insert($insertData);
+            $this->proyekModel->update($data['id_proyek'], ['id_status' => 4]);
+            $this->tugasModel->commit();
             echo json_encode(['status' => 'success']);
+
         } catch (Throwable $e) {
+            $this->tugasModel->rollBack();
+
             http_response_code(500);
-            echo json_encode(['error' => $e->getMessage()]);
+            echo json_encode(['error' => 'Gagal menyimpan transaksi: ' . $e->getMessage()]);
         }
     }
 

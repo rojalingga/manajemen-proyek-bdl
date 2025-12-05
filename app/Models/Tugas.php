@@ -10,6 +10,7 @@ class Tugas
         $this->db = Database::getInstance()->getConnection();
     }
 
+    //Function 'hitung_sisa_hari'
     public function getServerSide($start, $length, $search, $filterProyek, $filterStatus, $filterDeadline)
     {
         $base = "
@@ -38,7 +39,6 @@ class Tugas
         }
 
         $orderDeadline = "";
-
         if (!empty($filterDeadline)) {
             if ($filterDeadline == "1") {
                 $orderDeadline = "ORDER BY t.deadline ASC";
@@ -65,7 +65,8 @@ class Tugas
                 t.*, 
                 p.nama_proyek, 
                 tm.nama_tim, 
-                s.nama_status
+                s.nama_status,
+                hitung_sisa_hari(t.deadline) as sisa_hari 
             {$base}
             {$whereSQL}
             " . ($orderDeadline ?: "ORDER BY t.id_tugas DESC") . "
@@ -91,7 +92,6 @@ class Tugas
         ];
     }
 
-
     public function findById($id)
     {
         $query = "SELECT * FROM {$this->table} WHERE id_tugas = :id LIMIT 1";
@@ -101,14 +101,28 @@ class Tugas
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    //STORED PROCEDURE 'tambah_tugas_baru'
     public function insert($data)
     {
-        $query = "INSERT INTO {$this->table} 
-                  (nama_tugas, deskripsi, id_proyek, id_tim, id_status, id_penanggung_jawab, deadline) 
-                  VALUES (:nama_tugas, :deskripsi, :id_proyek, :id_tim, :id_status, :id_penanggung_jawab, :deadline)";
+        $query = "CALL tambah_tugas_baru(
+            :nama_tugas,
+            :deskripsi,
+            :id_proyek,
+            :id_tim,
+            :id_penanggung_jawab,
+            :deadline
+        )";
 
         $stmt = $this->db->prepare($query);
-        $stmt->execute($data);
+        
+        $stmt->bindValue(':nama_tugas', $data['nama_tugas']);
+        $stmt->bindValue(':deskripsi', $data['deskripsi']);
+        $stmt->bindValue(':id_proyek', $data['id_proyek']);
+        $stmt->bindValue(':id_tim', $data['id_tim']);
+        $stmt->bindValue(':id_penanggung_jawab', $data['id_penanggung_jawab']);
+        $stmt->bindValue(':deadline', $data['deadline']);
+
+        $stmt->execute();
     }
 
     public function update($id_tugas, $data)
@@ -129,5 +143,36 @@ class Tugas
         $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id_tugas = :id");
         $stmt->bindValue(':id', $id);
         $stmt->execute();
+    }
+
+    public function getTugasWithDeadline()
+    {
+        $sql = "SELECT
+                    t.*,
+                    p.nama_proyek,
+                    tm.nama_tim,
+                    s.nama_status,
+                    hitung_sisa_hari(t.deadline) as sisa_hari
+                FROM tugas t
+                JOIN proyek p ON t.id_proyek = p.id_proyek
+                JOIN tim tm ON t.id_tim = tm.id_tim
+                JOIN status s ON t.id_status = s.id_status";
+
+        return $this->db->query($sql)->fetchAll();
+    }
+
+    public function beginTransaction()
+    {
+        $this->db->beginTransaction();
+    }
+
+    public function commit()
+    {
+        $this->db->commit();
+    }
+
+    public function rollBack()
+    {
+        $this->db->rollBack();
     }
 }

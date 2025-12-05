@@ -19,9 +19,9 @@
                         <select class="form-select select-filter-proyek" id="filter_proyek" name="filter_proyek">
                             <option value=""></option>
                             <?php foreach ($proyek as $data): ?>
-                                <option value="<?php echo $data['id_proyek']; ?>">
-                                    <?php echo htmlspecialchars($data['nama_proyek']); ?>
-                                </option>
+                            <option value="<?php echo $data['id_proyek']; ?>">
+                                <?php echo htmlspecialchars($data['nama_proyek']); ?>
+                            </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -31,9 +31,9 @@
                         <select class="form-select select-filter-status" id="filter_status" name="filter_status">
                             <option value=""></option>
                             <?php foreach ($status as $data): ?>
-                                <option value="<?php echo $data['id_status']; ?>">
-                                    <?php echo htmlspecialchars($data['nama_status']); ?>
-                                </option>
+                            <option value="<?php echo $data['id_status']; ?>">
+                                <?php echo htmlspecialchars($data['nama_status']); ?>
+                            </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -47,6 +47,14 @@
                         </select>
                     </div>
                 </div>
+                <div class="alert alert-light-success color-success d-flex align-items-center" role="alert">
+                    <i class="bi bi-lightning-charge-fill me-2"></i>
+                    <div>
+                        Query Performance: <span id="query-speed" class="fw-bold">Menghitung...</span>
+                        <span class="badge bg-success ms-2">Indexed</span>
+                    </div>
+                </div>
+
                 <div class="table-responsive">
                     <table class="table data-table table-bordered table-striped w-100">
                         <thead>
@@ -101,7 +109,8 @@
                             <select class="form-select select-proyek" id="id_proyek" name="id_proyek">
                                 <option value=""></option>
                                 <?php foreach ($proyek as $data): ?>
-                                    <option value="<?php echo $data['id_proyek']; ?>"><?php echo htmlspecialchars($data['nama_proyek']); ?></option>
+                                <option value="<?php echo $data['id_proyek']; ?>">
+                                    <?php echo htmlspecialchars($data['nama_proyek']); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -119,7 +128,8 @@
                         <div class="col-sm-7">
                             <select class="form-select select-status" id="id_status" name="id_status">
                                 <?php foreach ($status as $data): ?>
-                                    <option value="<?php echo $data['id_status']; ?>"><?php echo htmlspecialchars($data['nama_status']); ?></option>
+                                <option value="<?php echo $data['id_status']; ?>">
+                                    <?php echo htmlspecialchars($data['nama_status']); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -127,10 +137,12 @@
                     <div class="row mb-3 align-items-center">
                         <label class="col-sm-3 col-form-label">Penanggung Jawab</label>
                         <div class="col-sm-7">
-                            <select class="form-select select-penanggung-jawab" id="id_penanggung_jawab" name="id_penanggung_jawab">
+                            <select class="form-select select-penanggung-jawab" id="id_penanggung_jawab"
+                                name="id_penanggung_jawab">
                                 <option value=""></option>
                                 <?php foreach ($pegawai as $data): ?>
-                                    <option value="<?php echo $data['id_pegawai']; ?>"><?php echo htmlspecialchars($data['nama_pegawai']); ?></option>
+                                <option value="<?php echo $data['id_pegawai']; ?>">
+                                    <?php echo htmlspecialchars($data['nama_pegawai']); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -163,7 +175,7 @@
 <script>
     var audio = new Audio("/audio/notification.ogg");
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('.select-proyek').select2({
             dropdownParent: $('#modalForm'),
             width: '100%',
@@ -208,7 +220,7 @@
             $('.select2-container').addClass('select2-dark');
         }
 
-        $('#id_proyek').on('change', function() {
+        $('#id_proyek').on('change', function () {
             var id_proyek = $(this).val();
             var $timSelect = $('#id_tim');
 
@@ -219,16 +231,17 @@
                 return;
             }
 
-            $.getJSON('/admin/tugas/get-tim-by-proyek/' + id_proyek, function(data) {
+            $.getJSON('/admin/tugas/get-tim-by-proyek/' + id_proyek, function (data) {
                 var options = '<option value=""></option>';
-                $.each(data, function(i, tim) {
-                    options += '<option value="' + tim.id_tim + '">' + tim.nama_tim + '</option>';
+                $.each(data, function (i, tim) {
+                    options += '<option value="' + tim.id_tim + '">' + tim.nama_tim +
+                        '</option>';
                 });
                 $timSelect.html(options);
             });
         });
 
-        $(function() {
+        $(function () {
             let table = $('.data-table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -239,10 +252,16 @@
                 ajax: {
                     url: '/admin/tugas',
                     type: 'GET',
-                    data: function(d) {
+                    data: function (d) {
                         d.filter_proyek = $('#filter_proyek').val();
                         d.filter_status = $('#filter_status').val();
                         d.filter_deadline = $('#filter_deadline').val();
+                    }
+                },
+                drawCallback: function (settings) {
+                    var json = this.api().ajax.json();
+                    if (json && json.executionTime) {
+                        $('#query-speed').text(json.executionTime);
                     }
                 },
                 columns: [{
@@ -269,52 +288,55 @@
                 ]
             });
 
-            $('#filter_status').on('change', function() {
+            $('#filter_status').on('change', function () {
                 $('#filter_deadline').val('').trigger('change.select2');
                 table.ajax.reload();
             });
 
-            $('#filter_deadline').on('change', function() {
+            $('#filter_deadline').on('change', function () {
                 $('#filter_status').val('').trigger('change.select2');
                 table.ajax.reload();
             });
 
-            $('#filter_proyek').on('change', function() {
+            $('#filter_proyek').on('change', function () {
                 table.ajax.reload();
             });
 
         });
 
 
-        $(document).on('click', '.edit-button', function() {
+        $(document).on('click', '.edit-button', function () {
             var url = $(this).data('url');
-            $.get(url, function(response) {
+            $.get(url, function (response) {
                 if (response.status === 'success') {
                     $('#primary_id').val(response.data.id_tugas);
                     $('#nama_tugas').val(response.data.nama_tugas);
                     $('#deskripsi').val(response.data.deskripsi);
                     $('#id_status').val(response.data.id_status).trigger('change');
-                    $('#id_penanggung_jawab').val(response.data.id_penanggung_jawab).trigger('change');
+                    $('#id_penanggung_jawab').val(response.data.id_penanggung_jawab).trigger(
+                        'change');
                     $('#deadline').val(response.data.deadline);
 
                     $('#id_proyek').val(response.data.id_proyek).trigger('change');
 
-                    $.getJSON('/admin/tugas/get-tim-by-proyek/' + response.data.id_proyek, function(timData) {
-                        var options = '<option value=""></option>';
-                        $.each(timData, function(i, tim) {
-                            options += '<option value="' + tim.id_tim + '">' + tim.nama_tim + '</option>';
+                    $.getJSON('/admin/tugas/get-tim-by-proyek/' + response.data.id_proyek,
+                        function (timData) {
+                            var options = '<option value=""></option>';
+                            $.each(timData, function (i, tim) {
+                                options += '<option value="' + tim.id_tim + '">' +
+                                    tim.nama_tim + '</option>';
+                            });
+                            $('#id_tim').html(options);
+
+                            $('#id_tim').val(response.data.id_tim).trigger('change');
+
+                            $('#modalForm').modal('show');
                         });
-                        $('#id_tim').html(options);
-
-                        $('#id_tim').val(response.data.id_tim).trigger('change');
-
-                        $('#modalForm').modal('show');
-                    });
                 }
             });
         });
 
-        $('#modalForm').on('hidden.bs.modal', function() {
+        $('#modalForm').on('hidden.bs.modal', function () {
             $('#formData')[0].reset();
             $('#primary_id').val('');
             $('#id_proyek').val('').trigger('change');
@@ -333,7 +355,7 @@
             submitBtn.prop('disabled', false);
         });
 
-        $('#formData').on('submit', function(e) {
+        $('#formData').on('submit', function (e) {
             e.preventDefault();
 
             let submitBtn = $('#submitBtn');
@@ -360,10 +382,11 @@
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function(response) {
+                success: function (response) {
                     $('#modalForm').modal('hide');
                     audio.play();
-                    let msg = id ? "Tugas berhasil diupdate!" : "Tugas berhasil ditambahkan!";
+                    let msg = id ? "Tugas berhasil diupdate!" :
+                        "Tugas berhasil ditambahkan!";
                     toastr.success(msg, "BERHASIL", {
                         progressBar: true,
                         timeOut: 3500,
@@ -371,10 +394,11 @@
                     });
                     $('.data-table').DataTable().ajax.reload();
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     console.log(xhr);
+                    audio.play();
+
                     if (xhr.status === 422) {
-                        audio.play();
                         toastr.error("Ada inputan yang salah!", "GAGAL!", {
                             progressBar: true,
                             timeOut: 3500,
@@ -382,7 +406,7 @@
                         });
 
                         let errors = xhr.responseJSON.errors;
-                        $.each(errors, function(key, val) {
+                        $.each(errors, function (key, val) {
                             let input = $('#' + key);
                             input.addClass('is-invalid');
                             input.parent().find('.invalid-feedback').remove();
@@ -392,8 +416,25 @@
                             );
                         });
                     }
+                    else {
+                        let errorMsg = "Terjadi kesalahan pada server.";
+                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                            errorMsg = xhr.responseJSON.error;
+                        }
+
+                        toastr.error(errorMsg, "ERROR TRANSAKSI!", {
+                            progressBar: true,
+                            timeOut: 5000,
+                            positionClass: "toast-bottom-right",
+                        });
+                    }
                 },
-                complete: function() {
+                complete: function () {
+                    spinner.addClass('d-none');
+                    btnText.text('Simpan');
+                    submitBtn.prop('disabled', false);
+                },
+                complete: function () {
                     spinner.addClass('d-none');
                     btnText.text('Simpan');
                     submitBtn.prop('disabled', false);
@@ -401,7 +442,7 @@
             });
         });
 
-        $(document).on('click', '.delete-button', function(e) {
+        $(document).on('click', '.delete-button', function (e) {
             e.preventDefault();
 
             const url = $(this).data('url');
@@ -431,18 +472,20 @@
                         $.ajax({
                             url: url,
                             method: 'DELETE',
-                            success: function() {
+                            success: function () {
                                 audio.play();
-                                toastr.success("Tugas telah dihapus!", "BERHASIL", {
-                                    progressBar: true,
-                                    timeOut: 3500,
-                                    positionClass: "toast-bottom-right"
-                                });
+                                toastr.success("Tugas telah dihapus!",
+                                    "BERHASIL", {
+                                        progressBar: true,
+                                        timeOut: 3500,
+                                        positionClass: "toast-bottom-right"
+                                    });
 
-                                $('.data-table').DataTable().ajax.reload(null, false);
+                                $('.data-table').DataTable().ajax
+                                    .reload(null, false);
                                 Swal.close();
                             },
-                            error: function(xhr) {
+                            error: function (xhr) {
                                 audio.play();
                                 toastr.error(
                                     "Gagal menghapus Tugas.",
